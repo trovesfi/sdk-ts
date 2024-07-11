@@ -1,12 +1,5 @@
-// import {createLogger, format, transports} from 'winston';
 import { TokenInfo } from './interfaces';
-import axios from 'axios';
-import { ZkLend } from './modules';
 import TOKENS from '@/data/tokens.json';
-import { isAsyncFunction } from 'util/types';
-// import { verbose } from 'winston';
-
-// const winston = require('winston');
 
 const colors = {
     error: 'red',

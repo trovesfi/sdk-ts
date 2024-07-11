@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FatalError, Global, logger } from "@/global";
 import { TokenInfo } from "@/interfaces/common";
-import { IConfig } from "@/index";
+import { IConfig } from "@/interfaces/common";
 
 export class Pricer {
     readonly config: IConfig;

@@ -4,7 +4,8 @@ import { Web3Number } from "@/dataTypes/bignumber";
 import { FatalError, Global, logger } from "@/global";
 import { TokenInfo } from "@/interfaces";
 import { ILending, ILendingPosition, LendingToken, MarginType } from "@/interfaces/lending";
-import { ContractAddr, IConfig } from "@/index";
+import { ContractAddr } from "@/dataTypes/address";
+import { IConfig } from "@/interfaces";
 import { Pricer } from "./pricer";
 
 export class ZkLend extends ILending implements ILending {

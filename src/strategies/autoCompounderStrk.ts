@@ -1,7 +1,7 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
 import { IConfig } from "@/interfaces";
 import { Contract, uint256 } from "starknet";
-import { Pricer } from "..";
+import { Pricer } from "@/modules/pricer";
 
 export class AutoCompounderSTRK {
     readonly config: IConfig;
