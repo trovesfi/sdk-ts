@@ -61,7 +61,7 @@ export class AutoCompounderSTRK {
     /** Returns usd value of assets */
     async usdBalanceOfUnderlying(user: ContractAddr) {
         const assets = await this.balanceOfUnderlying(user);
-        const price = this.pricer.getPrice(this.metadata.underlying.name);
+        const price = await this.pricer.getPrice(this.metadata.underlying.name);
         const usd = assets.multipliedBy(price.price.toFixed(6))
         return {
             usd,

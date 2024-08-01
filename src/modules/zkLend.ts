@@ -26,15 +26,17 @@ export class ZkLend extends ILending implements ILending {
             logger.verbose(`Initialising ${this.metadata.name}`);
             const result = await axios.get(ZkLend.POOLS_URL);
             const data: any[] = result.data;
+            const savedTokens = await Global.getTokens()
             data.forEach((pool) => {
                 let collareralFactor = new Web3Number(0, 0);
                 if (pool.collateral_factor) {
                     collareralFactor = Web3Number.fromWei(pool.collateral_factor.value, pool.collateral_factor.decimals);
                 }
+                const savedTokenInfo = savedTokens.find(t => t.symbol == pool.token.symbol);
                 const token: LendingToken = {
                     name: pool.token.name,
                     symbol: pool.token.symbol,
-                    address: pool.address,
+                    address: savedTokenInfo?.address || '',
                     decimals: pool.token.decimals,
                     borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
                     collareralFactor
@@ -144,7 +146,7 @@ export class ZkLend extends ILending implements ILending {
             }
             const debtAmount = Web3Number.fromWei(pool.data.debt_amount, token.decimals);
             const supplyAmount = Web3Number.fromWei(pool.data.supply_amount, token.decimals);
-            const price = this.pricer.getPrice(token.symbol).price;
+            const price = (await this.pricer.getPrice(token.symbol)).price;
             lendingPosition.push({
                 tokenName: token.name,
                 tokenSymbol: token.symbol,

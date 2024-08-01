@@ -5,6 +5,9 @@
   "typings": "dist/index.d.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "accountsecure": "./dist/cli.js"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -19,8 +22,10 @@
   ],
   "scripts": {
     "test": "jest",
-    "build": "tsup --clean && pnpm run build:esm && npm run build:dts && npm run build:iife",
+    "build": "tsup --clean && pnpm run build:esm && npm run build:dts && npm run build:iife && npm run build-cli",
     "build:esm": "tsup --clean false --format esm --platform node",
+    "build-cli:esm": "tsup ./src/cli.ts --clean false --format esm --platform node",
+    "build-cli": "tsup ./src/cli.ts --clean false && pnpm run build-cli:esm",
     "build:dts": "tsup --clean false --dts-only",
     "build:iife": "tsup --clean false --format iife --platform browser"
   },
@@ -42,7 +47,11 @@
     "axios": "^1.7.2",
     "bignumber.js": "4.0.4",
     "browser-assert": "^1.2.1",
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "inquirer": "^10.1.2",
     "node-telegram-bot-api": "^0.66.0",
+    "redis": "^4.7.0",
     "starknet": "^6.11.0",
     "winston": "^3.13.0"
   }

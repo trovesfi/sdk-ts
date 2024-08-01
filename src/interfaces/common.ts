@@ -1,4 +1,4 @@
-import { RpcProvider } from "starknet"
+import { BlockIdentifier, RpcProvider } from "starknet"
 
 export interface TokenInfo {
     name: string,
@@ -8,15 +8,26 @@ export interface TokenInfo {
     pricerKey?: string
 }
 
-export interface IConfig {
-    provider: RpcProvider
-  }
+export enum Network {
+    mainnet = "mainnet",
+    sepolia = "sepolia",
+    devnet = "devnet"
+}
 
-export function getMainnetConfig(rpcUrl = "https://starknet-mainnet.public.blastapi.io") {
+export interface IConfig {
+    provider: RpcProvider,
+    network: Network,
+    stage: 'production' | 'staging',
+    heartbeatUrl?: string
+}
+
+export function getMainnetConfig(rpcUrl = "https://starknet-mainnet.public.blastapi.io", blockIdentifier: BlockIdentifier = 'pending'): IConfig {
     return {
         provider: new RpcProvider({
             nodeUrl: rpcUrl,
-            blockIdentifier: 'pending'
-        })
+            blockIdentifier: blockIdentifier
+        }),
+        stage: "production",
+        network: Network.mainnet
     }
 }

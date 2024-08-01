@@ -1,4 +1,4 @@
-import { RpcProvider, Contract, Account } from 'starknet';
+import { RpcProvider, BlockIdentifier, Contract, Account } from 'starknet';
 import BigNumber from 'bignumber.js';
 import * as util from 'util';
 import TelegramBot from 'node-telegram-bot-api';
@@ -10,30 +10,48 @@ interface TokenInfo {
     decimals: number;
     pricerKey?: string;
 }
+declare enum Network {
+    mainnet = "mainnet",
+    sepolia = "sepolia",
+    devnet = "devnet"
+}
 interface IConfig {
     provider: RpcProvider;
+    network: Network;
+    stage: 'production' | 'staging';
+    heartbeatUrl?: string;
 }
-declare function getMainnetConfig(rpcUrl?: string): {
-    provider: RpcProvider;
-};
+declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
 
+interface PriceInfo {
+    price: number;
+    timestamp: Date;
+}
 declare class Pricer {
     readonly config: IConfig;
     readonly tokens: TokenInfo[];
-    private prices;
+    protected prices: {
+        [key: string]: PriceInfo;
+    };
     /**
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
-    private PRICE_API;
+    protected PRICE_API: string;
     constructor(config: IConfig, tokens: TokenInfo[]);
     isReady(): boolean;
     waitTillReady(): Promise<void>;
     start(): void;
-    getPrice(tokenName: string): {
-        price: number;
-        timestamp: Date;
-    };
-    private _loadPrices;
+    isStale(timestamp: Date, tokenName: string): boolean;
+    assertNotStale(timestamp: Date, tokenName: string): void;
+    getPrice(tokenName: string): Promise<PriceInfo>;
+    protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
+}
+
+declare class Pragma {
+    contractAddr: string;
+    readonly contract: Contract;
+    constructor(provider: RpcProvider);
+    getPrice(tokenAddr: string): Promise<number>;
 }
 
 /**
@@ -241,15 +259,101 @@ declare class TelegramNotif {
     sendMessage(msg: string): void;
 }
 
+/**
+ * @description Config to manage storage of files on disk
+ * @param SECRET_FILE_FOLDER - Folder to store secret files (default: ~/.starknet-store)
+ * @param NETWORK - Network to use
+ */
 interface StoreConfig {
-    SECRET_FILE_FOLDER: string;
-    NETWORK: string;
+    SECRET_FILE_FOLDER?: string;
+    NETWORK: Network;
+    ACCOUNTS_FILE_NAME?: string;
+    PASSWORD: string;
 }
+/**
+ * @description Info of a particular account
+ */
+interface AccountInfo {
+    address: string;
+    pk: string;
+}
+/**
+ * @description map of accounts of a network
+ */
+interface NetworkAccounts {
+    [accountKey: string]: AccountInfo;
+}
+/**
+ * @description map of all accounts of all networks
+ */
+interface AllAccountsStore {
+    [networkKey: string]: NetworkAccounts;
+}
+/**
+ * @description StoreConfig with optional fields marked required
+ */
+type RequiredStoreConfig = Required<StoreConfig>;
+/**
+ * @description Get the default store config
+ * @param network
+ * @returns StoreConfig
+ */
+declare function getDefaultStoreConfig(network: Network): RequiredStoreConfig;
+/**
+ * @description Store class to manage accounts
+ */
 declare class Store {
     readonly config: IConfig;
-    readonly storeConfig: StoreConfig;
+    readonly storeConfig: RequiredStoreConfig;
+    private encryptor;
     constructor(config: IConfig, storeConfig: StoreConfig);
-    getAccount(): Account;
+    static logPassword(password: string): void;
+    getAccount(accountKey: string): Account;
+    addAccount(accountKey: string, address: string, pk: string): void;
+    private getAccountFilePath;
+    private getAllAccounts;
+    /**
+     * @description Load all accounts of the network
+     * @returns NetworkAccounts
+     */
+    loadAccounts(): NetworkAccounts;
+    /**
+     * @description List all accountKeys of the network
+     * @returns string[]
+     */
+    listAccounts(): string[];
+    static ensureFolder(folder: string): void;
 }
 
-export { AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, ILending, type ILendingMetadata, type ILendingPosition, Initializable, type LendingToken, MarginType, Pricer, Store, type StoreConfig, TelegramNotif, type TokenInfo, Web3Number, ZkLend, getMainnetConfig, logger };
+declare class PasswordJsonCryptoUtil {
+    private readonly algorithm;
+    private readonly keyLength;
+    private readonly saltLength;
+    private readonly ivLength;
+    private readonly tagLength;
+    private readonly pbkdf2Iterations;
+    private deriveKey;
+    encrypt(data: any, password: string): string;
+    decrypt(encryptedData: string, password: string): any;
+}
+
+type RequiredFields<T> = {
+    [K in keyof T]-?: T[K];
+};
+type RequiredKeys<T> = {
+    [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
+}[keyof T];
+
+declare class PricerRedis extends Pricer {
+    private redisClient;
+    constructor(config: IConfig, tokens: TokenInfo[]);
+    /** Reads prices from Pricer._loadPrices and uses a callback to set prices in redis */
+    startWithRedis(redisUrl: string): Promise<void>;
+    initRedis(redisUrl: string): Promise<void>;
+    /** sets current local price in redis */
+    private _setRedisPrices;
+    /** Returns price from redis */
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
+}
+
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, ILending, type ILendingMetadata, type ILendingPosition, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, Store, type StoreConfig, TelegramNotif, type TokenInfo, Web3Number, ZkLend, getDefaultStoreConfig, getMainnetConfig, logger };
