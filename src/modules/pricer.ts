@@ -115,7 +115,6 @@ export class Pricer {
                 }
             }
         })
-        console.log('checking heartbeat', this.isReady(), this.config.heartbeatUrl)
         if (this.isReady() && this.config.heartbeatUrl) {
             console.log(`sending beat`)
             axios.get(this.config.heartbeatUrl).catch(err => {

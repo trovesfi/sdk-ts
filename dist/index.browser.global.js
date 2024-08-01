@@ -16585,7 +16585,6 @@ var strkfarm_risk_engine = (() => {
           }
         }
       });
-      console.log("checking heartbeat", this.isReady(), this.config.heartbeatUrl);
       if (this.isReady() && this.config.heartbeatUrl) {
         console.log(`sending beat`);
         axios_default.get(this.config.heartbeatUrl).catch((err2) => {

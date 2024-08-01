@@ -258,7 +258,6 @@ var Pricer = class {
         }
       }
     });
-    console.log("checking heartbeat", this.isReady(), this.config.heartbeatUrl);
     if (this.isReady() && this.config.heartbeatUrl) {
       console.log(`sending beat`);
       import_axios.default.get(this.config.heartbeatUrl).catch((err) => {
