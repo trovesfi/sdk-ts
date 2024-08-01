@@ -4,6 +4,7 @@ import { Account } from 'starknet';
 import * as crypto from 'crypto';
 import { PasswordJsonCryptoUtil } from './encrypt';
 import { logger } from '..';
+import { log } from 'winston';
 
 /**
  * @description Config to manage storage of files on disk
@@ -122,12 +123,15 @@ export class Store {
     }
 
     private getAccountFilePath() {
-        return `${this.storeConfig.SECRET_FILE_FOLDER}/${this.storeConfig.ACCOUNTS_FILE_NAME}`;
+        const path = `${this.storeConfig.SECRET_FILE_FOLDER}/${this.storeConfig.ACCOUNTS_FILE_NAME}`;
+        logger.verbose(`Path: ${path}`);
+        return path
     }
 
     private getAllAccounts(): AllAccountsStore {
         const PATH = this.getAccountFilePath();
         if (!fs.existsSync(PATH)) {
+            logger.verbose(`Accounts: files doesnt exist`)
             return {};
         }
         let encryptedData = readFileSync(PATH, {

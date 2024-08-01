@@ -440,11 +440,14 @@ var Store = class _Store {
     logger.verbose(`Account added: ${accountKey} to network: ${this.config.network}`);
   }
   getAccountFilePath() {
-    return `${this.storeConfig.SECRET_FILE_FOLDER}/${this.storeConfig.ACCOUNTS_FILE_NAME}`;
+    const path = `${this.storeConfig.SECRET_FILE_FOLDER}/${this.storeConfig.ACCOUNTS_FILE_NAME}`;
+    logger.verbose(`Path: ${path}`);
+    return path;
   }
   getAllAccounts() {
     const PATH = this.getAccountFilePath();
     if (!fs.existsSync(PATH)) {
+      logger.verbose(`Accounts: files doesnt exist`);
       return {};
     }
     let encryptedData = readFileSync(PATH, {
