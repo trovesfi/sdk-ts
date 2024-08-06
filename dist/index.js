@@ -716,11 +716,26 @@ var AutoCompounderSTRK = class {
 var import_node_telegram_bot_api = __toESM(require("node-telegram-bot-api"));
 var TelegramNotif = class {
   constructor(token, shouldPoll) {
-    this.subscribers = ["6820228303"];
+    this.subscribers = [
+      "6820228303",
+      "1505578076"
+    ];
     this.bot = new import_node_telegram_bot_api.default(token, { polling: shouldPoll });
   }
   // listen to start msgs, register chatId and send registered msg
   activateChatBot() {
+    this.bot.on("message", (msg) => {
+      const chatId = msg.chat.id;
+      let text = msg.text.toLowerCase().trim();
+      logger.verbose(`Tg: IncomingMsg: ID: ${chatId}, msg: ${text}`);
+      if (text == "start") {
+        this.bot.sendMessage(chatId, "Registered");
+        this.subscribers.push(chatId);
+        logger.verbose(`Tg: New subscriber: ${chatId}`);
+      } else {
+        this.bot.sendMessage(chatId, "Unrecognized command. Supported commands: start");
+      }
+    });
   }
   // send a given msg to all registered users
   sendMessage(msg) {
