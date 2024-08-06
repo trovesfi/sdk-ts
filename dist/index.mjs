@@ -667,8 +667,12 @@ var TelegramNotif = class {
       "1505578076",
       "5434736198",
       // maaza
-      "1356705582"
+      "1356705582",
       // langs
+      "1388729514",
+      // hwashere
+      "6020162572"
+      //minato
     ];
     this.bot = new TelegramBot(token, { polling: shouldPoll });
   }
