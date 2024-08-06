@@ -718,7 +718,11 @@ var TelegramNotif = class {
   constructor(token, shouldPoll) {
     this.subscribers = [
       "6820228303",
-      "1505578076"
+      "1505578076",
+      "5434736198",
+      // maaza
+      "1356705582"
+      // langs
     ];
     this.bot = new import_node_telegram_bot_api.default(token, { polling: shouldPoll });
   }

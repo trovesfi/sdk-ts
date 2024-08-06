@@ -4,7 +4,9 @@ import TelegramBot from "node-telegram-bot-api";
 export class TelegramNotif {
     private subscribers: string[] = [
         '6820228303',
-        '1505578076'
+        '1505578076',
+        '5434736198', // maaza
+        '1356705582' // langs
     ];
     readonly bot: TelegramBot;
 
