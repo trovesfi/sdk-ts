@@ -65,6 +65,13 @@ var tokens_default = [
     address: "",
     decimals: 18,
     pricerKey: "DAI-USDT"
+  },
+  {
+    name: "Ekubo Protocol",
+    symbol: "EKUBO",
+    address: "",
+    decimals: 18,
+    pricerKey: "DAI-USDT"
   }
 ];
 
