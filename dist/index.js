@@ -732,8 +732,9 @@ var TelegramNotif = class {
       // langs
       "1388729514",
       // hwashere
-      "6020162572"
+      "6020162572",
       //minato
+      "985902592"
     ];
     this.bot = new import_node_telegram_bot_api.default(token, { polling: shouldPoll });
   }
