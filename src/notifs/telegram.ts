@@ -9,6 +9,7 @@ export class TelegramNotif {
         '1356705582', // langs
         '1388729514', // hwashere
         '6020162572', //minato
+        '985902592'
     ];
     readonly bot: TelegramBot;
 
