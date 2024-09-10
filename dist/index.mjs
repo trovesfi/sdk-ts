@@ -670,10 +670,9 @@ import TelegramBot from "node-telegram-bot-api";
 var TelegramNotif = class {
   constructor(token, shouldPoll) {
     this.subscribers = [
-      "6820228303",
+      // '6820228303',
       "1505578076",
-      "5434736198",
-      // maaza
+      // '5434736198', // maaza
       "1356705582",
       // langs
       "1388729514",
@@ -704,6 +703,7 @@ var TelegramNotif = class {
     logger.verbose(`Tg: Sending message: ${msg}`);
     for (let chatId of this.subscribers) {
       this.bot.sendMessage(chatId, msg).catch((err) => {
+        logger.error(`Tg: Error sending msg to ${chatId}`);
         logger.error(`Tg: Error sending message: ${err.message}`);
       }).then(() => {
         logger.verbose(`Tg: Message sent to ${chatId}`);
