@@ -32927,7 +32927,7 @@ var strkfarm_risk_engine = (() => {
       return new _Web3Number(bn.toString(), decimals);
     }
     toWei() {
-      return this.mul(10 ** this.decimals).toString();
+      return this.mul(10 ** this.decimals).toFixed();
     }
     multipliedBy(value) {
       return new _Web3Number(this.mul(value).toString(), this.decimals);

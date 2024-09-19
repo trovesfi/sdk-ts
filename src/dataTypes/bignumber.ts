@@ -21,7 +21,7 @@ export class Web3Number extends BigNumber {
     }
 
     toWei() {
-        return this.mul(10 ** this.decimals).toString();
+        return this.mul(10 ** this.decimals).toFixed();
     }
 
     multipliedBy(value: string | number) {
