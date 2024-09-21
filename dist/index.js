@@ -939,6 +939,11 @@ var PricerRedis = class extends Pricer {
       this._loadPrices(this._setRedisPrices.bind(this));
     }, 3e4);
   }
+  async close() {
+    if (this.redisClient) {
+      await this.redisClient.disconnect();
+    }
+  }
   async initRedis(redisUrl) {
     logger.info(`Initialising Redis Client`);
     this.redisClient = await (0, import_redis.createClient)({

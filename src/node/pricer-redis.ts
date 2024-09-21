@@ -21,6 +21,12 @@ export class PricerRedis extends Pricer {
         }, 30000);
     }
 
+    async close() {
+        if (this.redisClient) {
+            await this.redisClient.disconnect();
+        }
+    }
+
     async initRedis(redisUrl: string) {
         logger.info(`Initialising Redis Client`);
         this.redisClient = <RedisClientType>(await createClient({

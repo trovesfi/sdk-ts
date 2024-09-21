@@ -349,6 +349,7 @@ declare class PricerRedis extends Pricer {
     constructor(config: IConfig, tokens: TokenInfo[]);
     /** Reads prices from Pricer._loadPrices and uses a callback to set prices in redis */
     startWithRedis(redisUrl: string): Promise<void>;
+    close(): Promise<void>;
     initRedis(redisUrl: string): Promise<void>;
     /** sets current local price in redis */
     private _setRedisPrices;
