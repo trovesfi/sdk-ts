@@ -196,6 +196,9 @@ var Global = class {
   }
 };
 
+// src/modules/pricer.ts
+var CoinMarketCap = require("coinmarketcap-api");
+
 // src/modules/pragma.ts
 var import_starknet = require("starknet");
 

@@ -168,6 +168,7 @@ var Global = class {
 };
 
 // src/modules/pricer.ts
+var CoinMarketCap = require("coinmarketcap-api");
 var Pricer = class {
   constructor(config, tokens) {
     this.tokens = [];
@@ -176,6 +177,8 @@ var Pricer = class {
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
     this.PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
+    // backup oracle
+    this.client = new CoinMarketCap(process.env.COINMARKETCAP_KEY);
     this.config = config;
     this.tokens = tokens;
   }
@@ -239,13 +242,7 @@ var Pricer = class {
             onUpdate(token.symbol);
             return;
           }
-          if (!token.pricerKey) {
-            throw new FatalError(`Pricer key not found for ${token.name}`);
-          }
-          const url = this.PRICE_API.replace("{{PRICER_KEY}}", token.pricerKey);
-          const result = await import_axios.default.get(url);
-          const data = result.data;
-          const price = Number(data.data.amount);
+          const price = await this._getPrice(token);
           this.prices[token.symbol] = {
             price,
             timestamp: /* @__PURE__ */ new Date()
@@ -271,6 +268,30 @@ var Pricer = class {
         console.error("Pricer: Heartbeat err", err);
       });
     }
+  }
+  async _getPrice(token) {
+    try {
+      return await this._getPriceCoinbase(token);
+    } catch (error) {
+    }
+    try {
+      return await this._getPriceCoinMarketCap(token);
+    } catch (error) {
+    }
+    throw new FatalError(`Price not found for ${token.name}`);
+  }
+  async _getPriceCoinbase(token) {
+    if (!token.pricerKey) {
+      throw new FatalError(`Pricer key not found for ${token.name}`);
+    }
+    const url = this.PRICE_API.replace("{{PRICER_KEY}}", token.pricerKey);
+    const result = await import_axios.default.get(url);
+    const data = result.data;
+    return Number(data.data.amount);
+  }
+  async _getPriceCoinMarketCap(token) {
+    const result = await this.client.getQuotes({ symbol: token.symbol });
+    return result.data[token.symbol].quote.USD.price;
   }
 };
 

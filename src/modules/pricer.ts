@@ -2,6 +2,7 @@ import axios from "axios";
 import { FatalError, Global, logger } from "@/global";
 import { TokenInfo } from "@/interfaces/common";
 import { IConfig } from "@/interfaces/common";
+const CoinMarketCap = require('coinmarketcap-api')
 
 export interface PriceInfo {
     price: number,
@@ -18,6 +19,10 @@ export class Pricer {
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
     protected PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
+    
+    // backup oracle
+    protected client = new CoinMarketCap(process.env.COINMARKETCAP_KEY!);
+ 
     constructor(config: IConfig, tokens: TokenInfo[]) {
         this.config = config;
         this.tokens = tokens;
@@ -89,13 +94,8 @@ export class Pricer {
                         onUpdate(token.symbol);
                         return;
                     }
-                    if (!token.pricerKey) {
-                        throw new FatalError(`Pricer key not found for ${token.name}`);
-                    }
-                    const url = this.PRICE_API.replace("{{PRICER_KEY}}", token.pricerKey);
-                    const result = await axios.get(url);
-                    const data: any = result.data;
-                    const price = Number(data.data.amount);
+                    
+                    const price = await this._getPrice(token);
                     this.prices[token.symbol] = {
                         price,
                         timestamp: new Date()
@@ -121,5 +121,36 @@ export class Pricer {
                 console.error('Pricer: Heartbeat err', err);
             })
         }
+    }
+
+    async _getPrice(token: TokenInfo) {
+        try {
+            return await this._getPriceCoinbase(token);
+        } catch (error) {
+            // do nothing, try next
+        }
+
+        try {
+            return await this._getPriceCoinMarketCap(token);
+        } catch (error) {
+            // do nothing, try next
+        }
+
+        throw new FatalError(`Price not found for ${token.name}`);
+    }
+
+    async _getPriceCoinbase(token: TokenInfo) {
+        if (!token.pricerKey) {
+            throw new FatalError(`Pricer key not found for ${token.name}`);
+        }
+        const url = this.PRICE_API.replace("{{PRICER_KEY}}", token.pricerKey);
+        const result = await axios.get(url);
+        const data: any = result.data;
+        return Number(data.data.amount);
+    }
+
+    async _getPriceCoinMarketCap(token: TokenInfo): Promise<number> {
+        const result = await this.client.getQuotes({symbol: token.symbol});
+        return result.data[token.symbol].quote.USD.price as number
     }
 }

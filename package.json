@@ -1,6 +1,6 @@
 {
   "name": "@strkfarm/sdk",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "STRKFarm TS SDK (Meant for our internal use, but feel free to use it)",
   "typings": "dist/index.d.ts",
   "main": "dist/index.js",
@@ -48,6 +48,7 @@
     "bignumber.js": "4.0.4",
     "browser-assert": "^1.2.1",
     "chalk": "^4.1.2",
+    "coinmarketcap-api": "^3.1.1",
     "commander": "^12.1.0",
     "inquirer": "^10.1.2",
     "node-telegram-bot-api": "^0.66.0",

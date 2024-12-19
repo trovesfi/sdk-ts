@@ -37,6 +37,7 @@ declare class Pricer {
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
     protected PRICE_API: string;
+    protected client: any;
     constructor(config: IConfig, tokens: TokenInfo[]);
     isReady(): boolean;
     waitTillReady(): Promise<void>;
@@ -45,6 +46,9 @@ declare class Pricer {
     assertNotStale(timestamp: Date, tokenName: string): void;
     getPrice(tokenName: string): Promise<PriceInfo>;
     protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
+    _getPrice(token: TokenInfo): Promise<number>;
+    _getPriceCoinbase(token: TokenInfo): Promise<number>;
+    _getPriceCoinMarketCap(token: TokenInfo): Promise<number>;
 }
 
 declare class Pragma {
