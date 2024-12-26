@@ -1,6 +1,6 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
 import { IConfig } from "@/interfaces";
-import { Contract, uint256 } from "starknet";
+import { Contract, RpcProvider, uint256 } from "starknet";
 import { Pricer } from "@/modules/pricer";
 
 export class AutoCompounderSTRK {
@@ -29,8 +29,9 @@ export class AutoCompounderSTRK {
     }
 
     async init() {
-        const cls = await this.config.provider.getClassAt(this.addr.address);
-        this.contract = new Contract(cls.abi, this.addr.address, this.config.provider);
+        const provider: RpcProvider = this.config.provider;
+        const cls = await provider.getClassAt(this.addr.address);
+        this.contract = new Contract(cls.abi, this.addr.address, provider);
         this.initialized = true;
     }
 

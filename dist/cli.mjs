@@ -138,6 +138,13 @@ var tokens_default = [
     address: "",
     decimals: 18,
     pricerKey: "DAI-USDT"
+  },
+  {
+    name: "kSTRK token",
+    symbol: "kSTRK",
+    address: "",
+    decimals: 18,
+    pricerKey: "DAI-USDT"
   }
 ];
 
@@ -503,11 +510,11 @@ var Store = class _Store {
 
 // src/cli.ts
 import chalk from "chalk";
-import { RpcProvider as RpcProvider3 } from "starknet";
+import { RpcProvider as RpcProvider4 } from "starknet";
 var program = new Command();
 var getConfig = (network) => {
   return {
-    provider: new RpcProvider3({
+    provider: new RpcProvider4({
       nodeUrl: "https://starknet-mainnet.public.blastapi.io"
     }),
     network,

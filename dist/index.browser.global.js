@@ -18786,6 +18786,13 @@ var strkfarm_risk_engine = (() => {
       address: "",
       decimals: 18,
       pricerKey: "DAI-USDT"
+    },
+    {
+      name: "kSTRK token",
+      symbol: "kSTRK",
+      address: "",
+      decimals: 18,
+      pricerKey: "DAI-USDT"
     }
   ];
 
@@ -35553,8 +35560,9 @@ var strkfarm_risk_engine = (() => {
       this.init();
     }
     async init() {
-      const cls = await this.config.provider.getClassAt(this.addr.address);
-      this.contract = new Contract(cls.abi, this.addr.address, this.config.provider);
+      const provider = this.config.provider;
+      const cls = await provider.getClassAt(this.addr.address);
+      this.contract = new Contract(cls.abi, this.addr.address, provider);
       this.initialized = true;
     }
     async waitForInitilisation() {

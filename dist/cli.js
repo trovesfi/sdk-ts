@@ -155,6 +155,13 @@ var tokens_default = [
     address: "",
     decimals: 18,
     pricerKey: "DAI-USDT"
+  },
+  {
+    name: "kSTRK token",
+    symbol: "kSTRK",
+    address: "",
+    decimals: 18,
+    pricerKey: "DAI-USDT"
   }
 ];
 
