@@ -5,7 +5,7 @@ export interface TokenInfo {
     symbol: string,
     address: string,
     decimals: number,
-    pricerKey?: string
+    coingeckId?: string,
 }
 
 export enum Network {

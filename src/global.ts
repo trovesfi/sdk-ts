@@ -1,5 +1,5 @@
+import axios from 'axios';
 import { TokenInfo } from './interfaces';
-import TOKENS from '@/data/tokens.json';
 
 const colors = {
     error: 'red',
@@ -44,6 +44,9 @@ export class FatalError extends Error {
         this.name = "FatalError";
     }
 }
+
+const tokens: TokenInfo[] = [];
+
 /** Contains globally useful functions. 
  * - fatalError: Things to do when a fatal error occurs
  */
@@ -62,7 +65,46 @@ export class Global {
     }
 
     static async getTokens(): Promise<TokenInfo[]> {
-        return TOKENS;
+        if (tokens.length) return tokens;
+
+        // fetch from avnu API
+        const data = await axios.get('https://starknet.api.avnu.fi/v1/starknet/tokens');
+        const tokensData = data.data.content;
+
+        // Array of the following is returned
+        // {
+        //     "name": "USD Coin",
+        //     "address": "0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+        //     "symbol": "USDC",
+        //     "decimals": 6,
+        //     "logoUri": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+        //     "lastDailyVolumeUsd": 2964287916.82621,
+        //     "extensions": {
+        //       "coingeckoId": "usd-coin"
+        //     },
+        //     "tags": [
+        //       "AVNU",
+        //       "Verified"
+        //     ]
+        // }
+
+        tokensData.forEach((token: any) => {
+            // if tags do not contain Avnu and verified, ignore
+            // This would exclude meme coins for now
+            if (!token.tags.includes('AVNU') || !token.tags.includes('Verified')) {
+                return;
+            }
+
+            tokens.push({
+                name: token.name,
+                symbol: token.symbol,
+                address: token.address,
+                decimals: token.decimals,
+                coingeckId: token.extensions.coingeckoId,
+            });
+        });
+        console.log(tokens);
+        return tokens;
     }
 
     static assert(condition: any, message: string) {

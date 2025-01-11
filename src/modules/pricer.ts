@@ -2,6 +2,7 @@ import axios from "axios";
 import { FatalError, Global, logger } from "@/global";
 import { TokenInfo } from "@/interfaces/common";
 import { IConfig } from "@/interfaces/common";
+import { Web3Number } from "@/dataTypes";
 const CoinMarketCap = require('coinmarketcap-api')
 
 export interface PriceInfo {
@@ -19,8 +20,9 @@ export class Pricer {
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
     protected PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
-    
-    // backup oracle
+    protected EKUBO_API = 'https://mainnet-api.ekubo.org/quote/{{AMOUNT}}/{{TOKEN_SYMBOL}}/USDC'; // e.g. ETH/USDC
+
+    // backup oracle001
     protected client = new CoinMarketCap(process.env.COINMARKETCAP_KEY!);
  
     constructor(config: IConfig, tokens: TokenInfo[]) {
@@ -136,14 +138,17 @@ export class Pricer {
             // do nothing, try next
         }
 
+        try {
+            return await this._getPriceEkubo(token);
+        } catch (error) {
+            // do nothing, try next
+        }
+
         throw new FatalError(`Price not found for ${token.name}`);
     }
 
     async _getPriceCoinbase(token: TokenInfo) {
-        if (!token.pricerKey) {
-            throw new FatalError(`Pricer key not found for ${token.name}`);
-        }
-        const url = this.PRICE_API.replace("{{PRICER_KEY}}", token.pricerKey);
+        const url = this.PRICE_API.replace("{{PRICER_KEY}}", `${token.symbol}-USD`);
         const result = await axios.get(url);
         const data: any = result.data;
         return Number(data.data.amount);
@@ -152,5 +157,25 @@ export class Pricer {
     async _getPriceCoinMarketCap(token: TokenInfo): Promise<number> {
         const result = await this.client.getQuotes({symbol: token.symbol});
         return result.data[token.symbol].quote.USD.price as number
+    }
+
+    async _getPriceEkubo(token: TokenInfo, amountIn = new Web3Number(1, token.decimals), retry = 0): Promise<number> {
+        const url = this.EKUBO_API.replace("{{TOKEN_SYMBOL}}", token.symbol).replace("{{AMOUNT}}", amountIn.toWei());
+        const result = await axios.get(url);
+        const data: any = result.data;
+        const outputUSDC = Number(Web3Number.fromWei(data.total, 6).toFixed(6));
+        logger.verbose(`Ekubo: ${token.symbol} -> USDC: ${outputUSDC}, retry: ${retry}`);
+        if (outputUSDC === 0 && retry < 3) {
+            // try again with a higher amount
+            const amountIn = new Web3Number(100, token.decimals); // 100 unit of token
+            return await this._getPriceEkubo(token, amountIn, retry + 1);
+        }
+
+        // if usdc depegs, it will not longer be 1 USD
+        // so we need to get the price of USDC in USD
+        // and then convert the outputUSDC to USD
+        const usdcPrice = (await this.getPrice('USDC')).price;
+        logger.verbose(`USDC Price: ${usdcPrice}`);
+        return outputUSDC * usdcPrice;
     }
 }

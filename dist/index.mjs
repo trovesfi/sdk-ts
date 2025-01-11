@@ -6,90 +6,10 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
 });
 
 // src/modules/pricer.ts
-import axios from "axios";
-
-// src/data/tokens.json
-var tokens_default = [
-  {
-    name: "Ether",
-    symbol: "ETH",
-    address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    decimals: 18,
-    pricerKey: "ETH-USDT"
-  },
-  {
-    name: "USD Coin",
-    symbol: "USDC",
-    address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
-    decimals: 6,
-    pricerKey: "USDC-USDT"
-  },
-  {
-    name: "Wrapped BTC",
-    symbol: "WBTC",
-    address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
-    decimals: 8,
-    pricerKey: "WBTC-USDT"
-  },
-  {
-    name: "Tether USD",
-    symbol: "USDT",
-    address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
-    decimals: 6,
-    pricerKey: "USDT-USDT"
-  },
-  {
-    name: "Dai Stablecoin",
-    symbol: "DAIv0",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  },
-  {
-    name: "Starknet Wrapped Staked Ether",
-    symbol: "wstETH",
-    address: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
-    decimals: 18,
-    pricerKey: "wstETH-USDT"
-  },
-  {
-    name: "Starknet Token",
-    symbol: "STRK",
-    address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-    decimals: 18,
-    pricerKey: "STRK-USDT"
-  },
-  {
-    name: "zkLend Token",
-    symbol: "ZEND",
-    address: "",
-    decimals: 18,
-    pricerKey: "ZEND-USDT"
-  },
-  {
-    name: "Dai Stablecoin",
-    symbol: "DAI",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  },
-  {
-    name: "Ekubo Protocol",
-    symbol: "EKUBO",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  },
-  {
-    name: "kSTRK token",
-    symbol: "kSTRK",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  }
-];
+import axios2 from "axios";
 
 // src/global.ts
+import axios from "axios";
 var logger = {
   ...console,
   verbose(message) {
@@ -105,6 +25,7 @@ var FatalError = class extends Error {
     this.name = "FatalError";
   }
 };
+var tokens = [];
 var Global = class {
   static fatalError(message, err) {
     logger.error(message);
@@ -118,7 +39,23 @@ var Global = class {
     console.error(err);
   }
   static async getTokens() {
-    return tokens_default;
+    if (tokens.length) return tokens;
+    const data = await axios.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
+    const tokensData = data.data.content;
+    tokensData.forEach((token) => {
+      if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
+        return;
+      }
+      tokens.push({
+        name: token.name,
+        symbol: token.symbol,
+        address: token.address,
+        decimals: token.decimals,
+        coingeckId: token.extensions.coingeckoId
+      });
+    });
+    console.log(tokens);
+    return tokens;
   }
   static assert(condition, message) {
     if (!condition) {
@@ -127,20 +64,86 @@ var Global = class {
   }
 };
 
+// src/dataTypes/bignumber.ts
+import BigNumber from "bignumber.js";
+var Web3Number = class _Web3Number extends BigNumber {
+  constructor(value, decimals) {
+    super(value);
+    this.decimals = decimals;
+  }
+  static fromWei(weiNumber, decimals) {
+    const bn = new _Web3Number(weiNumber, decimals).dividedBy(10 ** decimals);
+    return new _Web3Number(bn.toString(), decimals);
+  }
+  toWei() {
+    return this.mul(10 ** this.decimals).toFixed(0);
+  }
+  multipliedBy(value) {
+    return new _Web3Number(this.mul(value).toString(), this.decimals);
+  }
+  dividedBy(value) {
+    return new _Web3Number(this.div(value).toString(), this.decimals);
+  }
+  plus(value) {
+    return new _Web3Number(this.add(value).toString(), this.decimals);
+  }
+  minus(n, base) {
+    return new _Web3Number(super.minus(n, base).toString(), this.decimals);
+  }
+  toString(base) {
+    return super.toString(base);
+  }
+  // [customInspectSymbol](depth: any, inspectOptions: any, inspect: any) {
+  // return this.toString();
+  // }
+};
+BigNumber.config({ DECIMAL_PLACES: 18 });
+Web3Number.config({ DECIMAL_PLACES: 18 });
+
+// src/dataTypes/address.ts
+import { num } from "starknet";
+var ContractAddr = class _ContractAddr {
+  constructor(address) {
+    this.address = _ContractAddr.standardise(address);
+  }
+  static from(address) {
+    return new _ContractAddr(address);
+  }
+  eq(other) {
+    return this.address === other.address;
+  }
+  eqString(other) {
+    return this.address === _ContractAddr.standardise(other);
+  }
+  static standardise(address) {
+    let _a = address;
+    if (!address) {
+      _a = "0";
+    }
+    const a = num.getHexString(num.getDecimalString(_a.toString()));
+    return a;
+  }
+  static eqString(a, b) {
+    return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
+  }
+};
+
 // src/modules/pricer.ts
 var CoinMarketCap = __require("coinmarketcap-api");
 var Pricer = class {
-  constructor(config, tokens) {
+  constructor(config, tokens2) {
     this.tokens = [];
     this.prices = {};
     /**
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
     this.PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
-    // backup oracle
+    this.EKUBO_API = "https://mainnet-api.ekubo.org/quote/{{AMOUNT}}/{{TOKEN_SYMBOL}}/USDC";
+    // e.g. ETH/USDC
+    // backup oracle001
     this.client = new CoinMarketCap(process.env.COINMARKETCAP_KEY);
     this.config = config;
-    this.tokens = tokens;
+    this.tokens = tokens2;
   }
   isReady() {
     const allPricesExist = Object.keys(this.prices).length === this.tokens.length;
@@ -224,7 +227,7 @@ var Pricer = class {
     });
     if (this.isReady() && this.config.heartbeatUrl) {
       console.log(`sending beat`);
-      axios.get(this.config.heartbeatUrl).catch((err) => {
+      axios2.get(this.config.heartbeatUrl).catch((err) => {
         console.error("Pricer: Heartbeat err", err);
       });
     }
@@ -238,20 +241,35 @@ var Pricer = class {
       return await this._getPriceCoinMarketCap(token);
     } catch (error) {
     }
+    try {
+      return await this._getPriceEkubo(token);
+    } catch (error) {
+    }
     throw new FatalError(`Price not found for ${token.name}`);
   }
   async _getPriceCoinbase(token) {
-    if (!token.pricerKey) {
-      throw new FatalError(`Pricer key not found for ${token.name}`);
-    }
-    const url = this.PRICE_API.replace("{{PRICER_KEY}}", token.pricerKey);
-    const result = await axios.get(url);
+    const url = this.PRICE_API.replace("{{PRICER_KEY}}", `${token.symbol}-USD`);
+    const result = await axios2.get(url);
     const data = result.data;
     return Number(data.data.amount);
   }
   async _getPriceCoinMarketCap(token) {
     const result = await this.client.getQuotes({ symbol: token.symbol });
     return result.data[token.symbol].quote.USD.price;
+  }
+  async _getPriceEkubo(token, amountIn = new Web3Number(1, token.decimals), retry = 0) {
+    const url = this.EKUBO_API.replace("{{TOKEN_SYMBOL}}", token.symbol).replace("{{AMOUNT}}", amountIn.toWei());
+    const result = await axios2.get(url);
+    const data = result.data;
+    const outputUSDC = Number(Web3Number.fromWei(data.total, 6).toFixed(6));
+    logger.verbose(`Ekubo: ${token.symbol} -> USDC: ${outputUSDC}, retry: ${retry}`);
+    if (outputUSDC === 0 && retry < 3) {
+      const amountIn2 = new Web3Number(100, token.decimals);
+      return await this._getPriceEkubo(token, amountIn2, retry + 1);
+    }
+    const usdcPrice = (await this.getPrice("USDC")).price;
+    logger.verbose(`USDC Price: ${usdcPrice}`);
+    return outputUSDC * usdcPrice;
   }
 };
 
@@ -374,43 +392,7 @@ var Pragma = class {
 };
 
 // src/modules/zkLend.ts
-import axios2 from "axios";
-
-// src/dataTypes/bignumber.ts
-import BigNumber from "bignumber.js";
-var Web3Number = class _Web3Number extends BigNumber {
-  constructor(value, decimals) {
-    super(value);
-    this.decimals = decimals;
-  }
-  static fromWei(weiNumber, decimals) {
-    const bn = new _Web3Number(weiNumber, decimals).dividedBy(10 ** decimals);
-    return new _Web3Number(bn.toString(), decimals);
-  }
-  toWei() {
-    return this.mul(10 ** this.decimals).toFixed(0);
-  }
-  multipliedBy(value) {
-    return new _Web3Number(this.mul(value).toString(), this.decimals);
-  }
-  dividedBy(value) {
-    return new _Web3Number(this.div(value).toString(), this.decimals);
-  }
-  plus(value) {
-    return new _Web3Number(this.add(value).toString(), this.decimals);
-  }
-  minus(n, base) {
-    return new _Web3Number(super.minus(n, base).toString(), this.decimals);
-  }
-  toString(base) {
-    return super.toString(base);
-  }
-  // [customInspectSymbol](depth: any, inspectOptions: any, inspect: any) {
-  // return this.toString();
-  // }
-};
-BigNumber.config({ DECIMAL_PLACES: 18 });
-Web3Number.config({ DECIMAL_PLACES: 18 });
+import axios3 from "axios";
 
 // src/interfaces/lending.ts
 var MarginType = /* @__PURE__ */ ((MarginType2) => {
@@ -454,7 +436,7 @@ var _ZkLend = class _ZkLend extends ILending {
   async init() {
     try {
       logger.verbose(`Initialising ${this.metadata.name}`);
-      const result = await axios2.get(_ZkLend.POOLS_URL);
+      const result = await axios3.get(_ZkLend.POOLS_URL);
       const data = result.data;
       const savedTokens = await Global.getTokens();
       data.forEach((pool) => {
@@ -544,7 +526,7 @@ var _ZkLend = class _ZkLend extends ILending {
    */
   async getPositions(user) {
     const url = this.POSITION_URL.replace("{{USER_ADDR}}", user.address);
-    const result = await axios2.get(url);
+    const result = await axios3.get(url);
     const data = result.data;
     const lendingPosition = [];
     logger.verbose(`${this.metadata.name}:: Positions: ${JSON.stringify(data)}`);
@@ -610,34 +592,6 @@ var Initializable = class {
         }
       }, 1e3);
     });
-  }
-};
-
-// src/dataTypes/address.ts
-import { num } from "starknet";
-var ContractAddr = class _ContractAddr {
-  constructor(address) {
-    this.address = _ContractAddr.standardise(address);
-  }
-  static from(address) {
-    return new _ContractAddr(address);
-  }
-  eq(other) {
-    return this.address === other.address;
-  }
-  eqString(other) {
-    return this.address === _ContractAddr.standardise(other);
-  }
-  static standardise(address) {
-    let _a = address;
-    if (!address) {
-      _a = "0";
-    }
-    const a = num.getHexString(num.getDecimalString(_a.toString()));
-    return a;
-  }
-  static eqString(a, b) {
-    return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
   }
 };
 
@@ -908,8 +862,8 @@ var Store = class _Store {
 // src/node/pricer-redis.ts
 import { createClient } from "redis";
 var PricerRedis = class extends Pricer {
-  constructor(config, tokens) {
-    super(config, tokens);
+  constructor(config, tokens2) {
+    super(config, tokens2);
     this.redisClient = null;
   }
   /** Reads prices from Pricer._loadPrices and uses a callback to set prices in redis */

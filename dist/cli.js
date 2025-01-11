@@ -82,90 +82,10 @@ var PasswordJsonCryptoUtil = class {
 };
 
 // src/modules/pricer.ts
-var import_axios = __toESM(require("axios"));
-
-// src/data/tokens.json
-var tokens_default = [
-  {
-    name: "Ether",
-    symbol: "ETH",
-    address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    decimals: 18,
-    pricerKey: "ETH-USDT"
-  },
-  {
-    name: "USD Coin",
-    symbol: "USDC",
-    address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
-    decimals: 6,
-    pricerKey: "USDC-USDT"
-  },
-  {
-    name: "Wrapped BTC",
-    symbol: "WBTC",
-    address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
-    decimals: 8,
-    pricerKey: "WBTC-USDT"
-  },
-  {
-    name: "Tether USD",
-    symbol: "USDT",
-    address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
-    decimals: 6,
-    pricerKey: "USDT-USDT"
-  },
-  {
-    name: "Dai Stablecoin",
-    symbol: "DAIv0",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  },
-  {
-    name: "Starknet Wrapped Staked Ether",
-    symbol: "wstETH",
-    address: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
-    decimals: 18,
-    pricerKey: "wstETH-USDT"
-  },
-  {
-    name: "Starknet Token",
-    symbol: "STRK",
-    address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-    decimals: 18,
-    pricerKey: "STRK-USDT"
-  },
-  {
-    name: "zkLend Token",
-    symbol: "ZEND",
-    address: "",
-    decimals: 18,
-    pricerKey: "ZEND-USDT"
-  },
-  {
-    name: "Dai Stablecoin",
-    symbol: "DAI",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  },
-  {
-    name: "Ekubo Protocol",
-    symbol: "EKUBO",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  },
-  {
-    name: "kSTRK token",
-    symbol: "kSTRK",
-    address: "",
-    decimals: 18,
-    pricerKey: "DAI-USDT"
-  }
-];
+var import_axios2 = __toESM(require("axios"));
 
 // src/global.ts
+var import_axios = __toESM(require("axios"));
 var logger = {
   ...console,
   verbose(message) {
@@ -181,6 +101,7 @@ var FatalError = class extends Error {
     this.name = "FatalError";
   }
 };
+var tokens = [];
 var Global = class {
   static fatalError(message, err) {
     logger.error(message);
@@ -194,7 +115,23 @@ var Global = class {
     console.error(err);
   }
   static async getTokens() {
-    return tokens_default;
+    if (tokens.length) return tokens;
+    const data = await import_axios.default.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
+    const tokensData = data.data.content;
+    tokensData.forEach((token) => {
+      if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
+        return;
+      }
+      tokens.push({
+        name: token.name,
+        symbol: token.symbol,
+        address: token.address,
+        decimals: token.decimals,
+        coingeckId: token.extensions.coingeckoId
+      });
+    });
+    console.log(tokens);
+    return tokens;
   }
   static assert(condition, message) {
     if (!condition) {
@@ -202,15 +139,6 @@ var Global = class {
     }
   }
 };
-
-// src/modules/pricer.ts
-var CoinMarketCap = require("coinmarketcap-api");
-
-// src/modules/pragma.ts
-var import_starknet = require("starknet");
-
-// src/modules/zkLend.ts
-var import_axios2 = __toESM(require("axios"));
 
 // src/dataTypes/bignumber.ts
 var import_bignumber = __toESM(require("bignumber.js"));
@@ -247,6 +175,18 @@ var Web3Number = class _Web3Number extends import_bignumber.default {
 };
 import_bignumber.default.config({ DECIMAL_PLACES: 18 });
 Web3Number.config({ DECIMAL_PLACES: 18 });
+
+// src/dataTypes/address.ts
+var import_starknet = require("starknet");
+
+// src/modules/pricer.ts
+var CoinMarketCap = require("coinmarketcap-api");
+
+// src/modules/pragma.ts
+var import_starknet2 = require("starknet");
+
+// src/modules/zkLend.ts
+var import_axios3 = __toESM(require("axios"));
 
 // src/interfaces/lending.ts
 var ILending = class {
@@ -285,7 +225,7 @@ var _ZkLend = class _ZkLend extends ILending {
   async init() {
     try {
       logger.verbose(`Initialising ${this.metadata.name}`);
-      const result = await import_axios2.default.get(_ZkLend.POOLS_URL);
+      const result = await import_axios3.default.get(_ZkLend.POOLS_URL);
       const data = result.data;
       const savedTokens = await Global.getTokens();
       data.forEach((pool) => {
@@ -375,7 +315,7 @@ var _ZkLend = class _ZkLend extends ILending {
    */
   async getPositions(user) {
     const url = this.POSITION_URL.replace("{{USER_ADDR}}", user.address);
-    const result = await import_axios2.default.get(url);
+    const result = await import_axios3.default.get(url);
     const data = result.data;
     const lendingPosition = [];
     logger.verbose(`${this.metadata.name}:: Positions: ${JSON.stringify(data)}`);
@@ -408,9 +348,6 @@ _ZkLend.POOLS_URL = "https://app.zklend.com/api/pools";
 var ZkLend = _ZkLend;
 
 // src/interfaces/common.ts
-var import_starknet2 = require("starknet");
-
-// src/dataTypes/address.ts
 var import_starknet3 = require("starknet");
 
 // src/strategies/autoCompounderStrk.ts

@@ -8,7 +8,7 @@ interface TokenInfo {
     symbol: string;
     address: string;
     decimals: number;
-    pricerKey?: string;
+    coingeckId?: string;
 }
 declare enum Network {
     mainnet = "mainnet",
@@ -23,39 +23,16 @@ interface IConfig {
 }
 declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
 
-interface PriceInfo {
-    price: number;
-    timestamp: Date;
-}
-declare class Pricer {
-    readonly config: IConfig;
-    readonly tokens: TokenInfo[];
-    protected prices: {
-        [key: string]: PriceInfo;
-    };
-    /**
-     * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
-     */
-    protected PRICE_API: string;
-    protected client: any;
-    constructor(config: IConfig, tokens: TokenInfo[]);
-    isReady(): boolean;
-    waitTillReady(): Promise<void>;
-    start(): void;
-    isStale(timestamp: Date, tokenName: string): boolean;
-    assertNotStale(timestamp: Date, tokenName: string): void;
-    getPrice(tokenName: string): Promise<PriceInfo>;
-    protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
-    _getPrice(token: TokenInfo): Promise<number>;
-    _getPriceCoinbase(token: TokenInfo): Promise<number>;
-    _getPriceCoinMarketCap(token: TokenInfo): Promise<number>;
-}
-
-declare class Pragma {
-    contractAddr: string;
-    readonly contract: Contract;
-    constructor(provider: RpcProvider);
-    getPrice(tokenAddr: string): Promise<number>;
+declare class Web3Number extends BigNumber {
+    decimals: number;
+    constructor(value: string | number, decimals: number);
+    static fromWei(weiNumber: string | number, decimals: number): Web3Number;
+    toWei(): string;
+    multipliedBy(value: string | number): Web3Number;
+    dividedBy(value: string | number): Web3Number;
+    plus(value: string | number): Web3Number;
+    minus(n: number | string, base?: number): Web3Number;
+    toString(base?: number | undefined): string;
 }
 
 /**
@@ -72,16 +49,41 @@ declare class ContractAddr {
     static eqString(a: string, b: string): boolean;
 }
 
-declare class Web3Number extends BigNumber {
-    decimals: number;
-    constructor(value: string | number, decimals: number);
-    static fromWei(weiNumber: string | number, decimals: number): Web3Number;
-    toWei(): string;
-    multipliedBy(value: string | number): Web3Number;
-    dividedBy(value: string | number): Web3Number;
-    plus(value: string | number): Web3Number;
-    minus(n: number | string, base?: number): Web3Number;
-    toString(base?: number | undefined): string;
+interface PriceInfo {
+    price: number;
+    timestamp: Date;
+}
+declare class Pricer {
+    readonly config: IConfig;
+    readonly tokens: TokenInfo[];
+    protected prices: {
+        [key: string]: PriceInfo;
+    };
+    /**
+     * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
+     */
+    protected PRICE_API: string;
+    protected EKUBO_API: string;
+    protected client: any;
+    constructor(config: IConfig, tokens: TokenInfo[]);
+    isReady(): boolean;
+    waitTillReady(): Promise<void>;
+    start(): void;
+    isStale(timestamp: Date, tokenName: string): boolean;
+    assertNotStale(timestamp: Date, tokenName: string): void;
+    getPrice(tokenName: string): Promise<PriceInfo>;
+    protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
+    _getPrice(token: TokenInfo): Promise<number>;
+    _getPriceCoinbase(token: TokenInfo): Promise<number>;
+    _getPriceCoinMarketCap(token: TokenInfo): Promise<number>;
+    _getPriceEkubo(token: TokenInfo, amountIn?: Web3Number, retry?: number): Promise<number>;
+}
+
+declare class Pragma {
+    contractAddr: string;
+    readonly contract: Contract;
+    constructor(provider: RpcProvider);
+    getPrice(tokenAddr: string): Promise<number>;
 }
 
 interface ILendingMetadata {
