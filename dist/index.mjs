@@ -130,15 +130,19 @@ var ContractAddr = class _ContractAddr {
 
 // src/modules/pricer.ts
 var CoinMarketCap = __require("coinmarketcap-api");
+var StackTrace = __require("stacktrace-js");
 var Pricer = class {
   constructor(config, tokens2) {
     this.tokens = [];
     this.prices = {};
+    // code populates this map during runtime to determine which method to use for a given token
+    // The method set will be the first one to try after first attempt
+    this.methodToUse = {};
     /**
      * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
      */
     this.PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
-    this.EKUBO_API = "https://mainnet-api.ekubo.org/quote/{{AMOUNT}}/{{TOKEN_SYMBOL}}/USDC";
+    this.EKUBO_API = "https://quoter-mainnet-api.ekubo.org/{{AMOUNT}}/{{TOKEN_ADDRESS}}/0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8";
     // e.g. ETH/USDC
     // backup oracle001
     this.client = new CoinMarketCap(process.env.COINMARKETCAP_KEY);
@@ -232,20 +236,41 @@ var Pricer = class {
       });
     }
   }
-  async _getPrice(token) {
-    try {
-      return await this._getPriceCoinbase(token);
-    } catch (error) {
+  async _getPrice(token, defaultMethod = "all") {
+    const methodToUse = this.methodToUse[token.symbol] || defaultMethod;
+    logger.info(`Fetching price of ${token.symbol} using ${methodToUse}`);
+    switch (methodToUse) {
+      case "Coinbase":
+        try {
+          const result = await this._getPriceCoinbase(token);
+          this.methodToUse[token.symbol] = "Coinbase";
+          return result;
+        } catch (error) {
+          console.warn(`Coinbase: price err: message [${token.symbol}]: `, error.message);
+        }
+      case "Coinmarketcap":
+        try {
+          const result = await this._getPriceCoinMarketCap(token);
+          this.methodToUse[token.symbol] = "Coinmarketcap";
+          return result;
+        } catch (error) {
+          console.warn(`CoinMarketCap: price err [${token.symbol}]: `, Object.keys(error));
+          console.warn(`CoinMarketCap: price err [${token.symbol}]: `, error.message);
+        }
+      case "Ekubo":
+        try {
+          const result = await this._getPriceEkubo(token);
+          this.methodToUse[token.symbol] = "Ekubo";
+          return result;
+        } catch (error) {
+          console.warn(`Ekubo: price err [${token.symbol}]: `, error.message);
+          console.warn(`Ekubo: price err [${token.symbol}]: `, Object.keys(error));
+        }
     }
-    try {
-      return await this._getPriceCoinMarketCap(token);
-    } catch (error) {
+    if (defaultMethod == "all") {
+      return await this._getPrice(token, "Coinbase");
     }
-    try {
-      return await this._getPriceEkubo(token);
-    } catch (error) {
-    }
-    throw new FatalError(`Price not found for ${token.name}`);
+    throw new FatalError(`Price not found for ${token.symbol}`);
   }
   async _getPriceCoinbase(token) {
     const url = this.PRICE_API.replace("{{PRICER_KEY}}", `${token.symbol}-USD`);
@@ -255,13 +280,15 @@ var Pricer = class {
   }
   async _getPriceCoinMarketCap(token) {
     const result = await this.client.getQuotes({ symbol: token.symbol });
-    return result.data[token.symbol].quote.USD.price;
+    if (result.data)
+      return result.data[token.symbol].quote.USD.price;
+    throw new Error(result);
   }
   async _getPriceEkubo(token, amountIn = new Web3Number(1, token.decimals), retry = 0) {
-    const url = this.EKUBO_API.replace("{{TOKEN_SYMBOL}}", token.symbol).replace("{{AMOUNT}}", amountIn.toWei());
+    const url = this.EKUBO_API.replace("{{TOKEN_ADDRESS}}", token.address).replace("{{AMOUNT}}", amountIn.toWei());
     const result = await axios2.get(url);
     const data = result.data;
-    const outputUSDC = Number(Web3Number.fromWei(data.total, 6).toFixed(6));
+    const outputUSDC = Number(Web3Number.fromWei(data.total_calculated, 6).toFixed(6));
     logger.verbose(`Ekubo: ${token.symbol} -> USDC: ${outputUSDC}, retry: ${retry}`);
     if (outputUSDC === 0 && retry < 3) {
       const amountIn2 = new Web3Number(100, token.decimals);

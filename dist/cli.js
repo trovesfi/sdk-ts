@@ -181,6 +181,7 @@ var import_starknet = require("starknet");
 
 // src/modules/pricer.ts
 var CoinMarketCap = require("coinmarketcap-api");
+var StackTrace = require("stacktrace-js");
 
 // src/modules/pragma.ts
 var import_starknet2 = require("starknet");
