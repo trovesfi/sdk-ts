@@ -130,7 +130,6 @@ var ContractAddr = class _ContractAddr {
 
 // src/modules/pricer.ts
 var CoinMarketCap = __require("coinmarketcap-api");
-var StackTrace = __require("stacktrace-js");
 var Pricer = class {
   constructor(config, tokens2) {
     this.tokens = [];

@@ -164,7 +164,6 @@ import { num } from "starknet";
 
 // src/modules/pricer.ts
 var CoinMarketCap = __require("coinmarketcap-api");
-var StackTrace = __require("stacktrace-js");
 
 // src/modules/pragma.ts
 import { Contract } from "starknet";
