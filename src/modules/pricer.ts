@@ -202,7 +202,7 @@ export class Pricer {
         // if usdc depegs, it will not longer be 1 USD
         // so we need to get the price of USDC in USD
         // and then convert the outputUSDC to USD
-        const usdcPrice = (await this.getPrice('USDC')).price;
+        const usdcPrice = 1; // (await this.getPrice('USDC')).price;
         logger.verbose(`USDC Price: ${usdcPrice}`);
         return outputUSDC * usdcPrice;
     }

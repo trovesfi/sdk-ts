@@ -35197,7 +35197,7 @@ var strkfarm_risk_engine = (() => {
         const amountIn2 = new Web3Number(100, token.decimals);
         return await this._getPriceEkubo(token, amountIn2, retry + 1);
       }
-      const usdcPrice = (await this.getPrice("USDC")).price;
+      const usdcPrice = 1;
       logger.verbose(`USDC Price: ${usdcPrice}`);
       return outputUSDC * usdcPrice;
     }
