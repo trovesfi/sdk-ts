@@ -730,7 +730,7 @@ var TelegramNotif = class {
 
 // src/utils/store.ts
 import fs, { readFileSync, writeFileSync } from "fs";
-import { Account } from "starknet";
+import { Account, constants } from "starknet";
 import * as crypto2 from "crypto";
 
 // src/utils/encrypt.ts
@@ -815,7 +815,7 @@ var Store = class _Store {
     logger.warn(`This not stored anywhere, please you backup this password for future use`);
     logger.warn(`\u26A0\uFE0F=========================================\u26A0\uFE0F`);
   }
-  getAccount(accountKey) {
+  getAccount(accountKey, txVersion = constants.TRANSACTION_VERSION.V2) {
     const accounts = this.loadAccounts();
     logger.verbose(`nAccounts loaded for network: ${Object.keys(accounts).length}`);
     const data = accounts[accountKey];
@@ -824,7 +824,8 @@ var Store = class _Store {
     }
     logger.verbose(`Account loaded: ${accountKey} from network: ${this.config.network}`);
     logger.verbose(`Address: ${data.address}`);
-    return new Account(this.config.provider, data.address, data.pk);
+    const acc = new Account(this.config.provider, data.address, data.pk, void 0, txVersion);
+    return acc;
   }
   addAccount(accountKey, address, pk) {
     const allAccounts = this.getAllAccounts();

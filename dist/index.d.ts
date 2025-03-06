@@ -315,7 +315,7 @@ declare class Store {
     private encryptor;
     constructor(config: IConfig, storeConfig: StoreConfig);
     static logPassword(password: string): void;
-    getAccount(accountKey: string): Account;
+    getAccount(accountKey: string, txVersion?: "0x2"): Account;
     addAccount(accountKey: string, address: string, pk: string): void;
     private getAccountFilePath;
     private getAllAccounts;
