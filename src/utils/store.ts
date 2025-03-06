@@ -96,7 +96,7 @@ export class Store {
         logger.warn(`⚠️=========================================⚠️`);
     }
 
-    getAccount(accountKey: string, txVersion = constants.TRANSACTION_VERSION.V2) {
+    getAccount(accountKey: string, txVersion: "0x2" | "0x3" = constants.TRANSACTION_VERSION.V2) {
         const accounts = this.loadAccounts();
         logger.verbose(`nAccounts loaded for network: ${Object.keys(accounts).length}`);
         const data = accounts[accountKey];
