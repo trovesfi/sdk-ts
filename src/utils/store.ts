@@ -1,6 +1,6 @@
 import { IConfig, Network } from '@/interfaces/common';
 import fs, { readFileSync, writeFileSync } from 'fs';
-import { Account } from 'starknet';
+import { Account, constants } from 'starknet';
 import * as crypto from 'crypto';
 import { PasswordJsonCryptoUtil } from './encrypt';
 import { logger } from '..';
@@ -96,7 +96,7 @@ export class Store {
         logger.warn(`⚠️=========================================⚠️`);
     }
 
-    getAccount(accountKey: string) {
+    getAccount(accountKey: string, txVersion = constants.TRANSACTION_VERSION.V2) {
         const accounts = this.loadAccounts();
         logger.verbose(`nAccounts loaded for network: ${Object.keys(accounts).length}`);
         const data = accounts[accountKey];
@@ -105,7 +105,8 @@ export class Store {
         }
         logger.verbose(`Account loaded: ${accountKey} from network: ${this.config.network}`);
         logger.verbose(`Address: ${data.address}`);
-        return new Account(<any>this.config.provider, data.address, data.pk);
+        const acc = new Account(<any>this.config.provider, data.address, data.pk, undefined, txVersion);
+        return acc;
     }
 
     addAccount(accountKey: string, address: string, pk: string) {
