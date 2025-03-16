@@ -16283,6 +16283,9 @@ var strkfarm_risk_engine = (() => {
     Network: () => Network,
     Pragma: () => Pragma,
     Pricer: () => Pricer,
+    PricerBase: () => PricerBase,
+    VesuRebalance: () => VesuRebalance,
+    VesuRebalanceStrategies: () => VesuRebalanceStrategies,
     Web3Number: () => Web3Number,
     ZkLend: () => ZkLend,
     getMainnetConfig: () => getMainnetConfig,
@@ -18731,7 +18734,13 @@ var strkfarm_risk_engine = (() => {
       this.name = "FatalError";
     }
   };
-  var tokens = [];
+  var tokens = [{
+    name: "Starknet",
+    symbol: "STRK",
+    address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+    decimals: 18,
+    coingeckId: "starknet"
+  }];
   var Global = class {
     static fatalError(message, err2) {
       logger.error(message);
@@ -18743,6 +18752,9 @@ var strkfarm_risk_engine = (() => {
     static httpError(url, err2, message) {
       logger.error(`${url}: ${message}`);
       console.error(err2);
+    }
+    static getDefaultTokens() {
+      return tokens;
     }
     static async getTokens() {
       if (tokens.length) return tokens;
@@ -18785,10 +18797,12 @@ var strkfarm_risk_engine = (() => {
       return this.mul(10 ** this.decimals).toFixed(0);
     }
     multipliedBy(value) {
-      return new _Web3Number(this.mul(value).toString(), this.decimals);
+      let _value = Number(value).toFixed(6);
+      return new _Web3Number(this.mul(_value).toString(), this.decimals);
     }
     dividedBy(value) {
-      return new _Web3Number(this.div(value).toString(), this.decimals);
+      let _value = Number(value).toFixed(6);
+      return new _Web3Number(this.div(_value).toString(), this.decimals);
     }
     plus(value) {
       return new _Web3Number(this.add(value).toString(), this.decimals);
@@ -35034,6 +35048,11 @@ var strkfarm_risk_engine = (() => {
 
   // src/modules/pricer.ts
   var CoinMarketCap = require_coinmarketcap_api();
+  var PricerBase = class {
+    async getPrice(tokenSymbol) {
+      throw new Error("Method not implemented");
+    }
+  };
   var Pricer = class {
     constructor(config2, tokens2) {
       this.tokens = [];
@@ -35092,10 +35111,10 @@ var strkfarm_risk_engine = (() => {
     assertNotStale(timestamp, tokenName) {
       Global.assert(!this.isStale(timestamp, tokenName), `Price of ${tokenName} is stale`);
     }
-    async getPrice(tokenName) {
-      Global.assert(this.prices[tokenName], `Price of ${tokenName} not found`);
-      this.assertNotStale(this.prices[tokenName].timestamp, tokenName);
-      return this.prices[tokenName];
+    async getPrice(tokenSymbol) {
+      Global.assert(this.prices[tokenSymbol], `Price of ${tokenSymbol} not found`);
+      this.assertNotStale(this.prices[tokenSymbol].timestamp, tokenSymbol);
+      return this.prices[tokenSymbol];
     }
     _loadPrices(onUpdate = () => {
     }) {
@@ -35576,6 +35595,1777 @@ var strkfarm_risk_engine = (() => {
       };
     }
   };
+
+  // src/data/vesu-rebalance.abi.json
+  var vesu_rebalance_abi_default = [
+    {
+      type: "impl",
+      name: "ExternalImpl",
+      interface_name: "strkfarm_contracts::strategies::vesu_rebalance::interface::IVesuRebal"
+    },
+    {
+      type: "enum",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::interface::Feature",
+      variants: [
+        {
+          name: "DEPOSIT",
+          type: "()"
+        },
+        {
+          name: "WITHDRAW",
+          type: "()"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::integer::u256",
+      members: [
+        {
+          name: "low",
+          type: "core::integer::u128"
+        },
+        {
+          name: "high",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::interface::Action",
+      members: [
+        {
+          name: "pool_id",
+          type: "core::felt252"
+        },
+        {
+          name: "feature",
+          type: "strkfarm_contracts::strategies::vesu_rebalance::interface::Feature"
+        },
+        {
+          name: "token",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "amount",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::interfaces::IEkuboDistributor::Claim",
+      members: [
+        {
+          name: "id",
+          type: "core::integer::u64"
+        },
+        {
+          name: "claimee",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "amount",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<core::felt252>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::swap::Route",
+      members: [
+        {
+          name: "token_from",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token_to",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "exchange_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "percent",
+          type: "core::integer::u128"
+        },
+        {
+          name: "additional_swap_params",
+          type: "core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap",
+      members: [
+        {
+          name: "token_from_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token_from_amount",
+          type: "core::integer::u256"
+        },
+        {
+          name: "token_to_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token_to_amount",
+          type: "core::integer::u256"
+        },
+        {
+          name: "token_to_min_amount",
+          type: "core::integer::u256"
+        },
+        {
+          name: "beneficiary",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "integrator_fee_amount_bps",
+          type: "core::integer::u128"
+        },
+        {
+          name: "integrator_fee_recipient",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "routes",
+          type: "core::array::Array::<strkfarm_contracts::components::swap::Route>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::interface::Settings",
+      members: [
+        {
+          name: "default_pool_index",
+          type: "core::integer::u8"
+        },
+        {
+          name: "fee_bps",
+          type: "core::integer::u32"
+        },
+        {
+          name: "fee_receiver",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::interface::PoolProps",
+      members: [
+        {
+          name: "pool_id",
+          type: "core::felt252"
+        },
+        {
+          name: "max_weight",
+          type: "core::integer::u32"
+        },
+        {
+          name: "v_token",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::interface::IVesuRebal",
+      items: [
+        {
+          type: "function",
+          name: "rebalance",
+          inputs: [
+            {
+              name: "actions",
+              type: "core::array::Array::<strkfarm_contracts::strategies::vesu_rebalance::interface::Action>"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "rebalance_weights",
+          inputs: [
+            {
+              name: "actions",
+              type: "core::array::Array::<strkfarm_contracts::strategies::vesu_rebalance::interface::Action>"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "emergency_withdraw",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "emergency_withdraw_pool",
+          inputs: [
+            {
+              name: "pool_index",
+              type: "core::integer::u32"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "compute_yield",
+          inputs: [],
+          outputs: [
+            {
+              type: "(core::integer::u256, core::integer::u256)"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "harvest",
+          inputs: [
+            {
+              name: "rewardsContract",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "claim",
+              type: "strkfarm_contracts::interfaces::IEkuboDistributor::Claim"
+            },
+            {
+              name: "proof",
+              type: "core::array::Span::<core::felt252>"
+            },
+            {
+              name: "swapInfo",
+              type: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_settings",
+          inputs: [
+            {
+              name: "settings",
+              type: "strkfarm_contracts::strategies::vesu_rebalance::interface::Settings"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_allowed_pools",
+          inputs: [
+            {
+              name: "pools",
+              type: "core::array::Array::<strkfarm_contracts::strategies::vesu_rebalance::interface::PoolProps>"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_incentives_off",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "get_settings",
+          inputs: [],
+          outputs: [
+            {
+              type: "strkfarm_contracts::strategies::vesu_rebalance::interface::Settings"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_allowed_pools",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::array::Array::<strkfarm_contracts::strategies::vesu_rebalance::interface::PoolProps>"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_previous_index",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "VesuERC4626Impl",
+      interface_name: "strkfarm_contracts::interfaces::IERC4626::IERC4626"
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::interfaces::IERC4626::IERC4626",
+      items: [
+        {
+          type: "function",
+          name: "asset",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "total_assets",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "convert_to_shares",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "convert_to_assets",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "max_deposit",
+          inputs: [
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "preview_deposit",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "deposit",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "max_mint",
+          inputs: [
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "preview_mint",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "max_withdraw",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "preview_withdraw",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "max_redeem",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "preview_redeem",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "redeem",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "VesuERC20Impl",
+      interface_name: "openzeppelin_token::erc20::interface::IERC20Mixin"
+    },
+    {
+      type: "enum",
+      name: "core::bool",
+      variants: [
+        {
+          name: "False",
+          type: "()"
+        },
+        {
+          name: "True",
+          type: "()"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::byte_array::ByteArray",
+      members: [
+        {
+          name: "data",
+          type: "core::array::Array::<core::bytes_31::bytes31>"
+        },
+        {
+          name: "pending_word",
+          type: "core::felt252"
+        },
+        {
+          name: "pending_word_len",
+          type: "core::integer::u32"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "openzeppelin_token::erc20::interface::IERC20Mixin",
+      items: [
+        {
+          type: "function",
+          name: "total_supply",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "balance_of",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "allowance",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "transfer",
+          inputs: [
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "transfer_from",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "approve",
+          inputs: [
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "name",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "decimals",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u8"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "transferFrom",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "CommonCompImpl",
+      interface_name: "strkfarm_contracts::interfaces::common::ICommon"
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::interfaces::common::ICommon",
+      items: [
+        {
+          type: "function",
+          name: "upgrade",
+          inputs: [
+            {
+              name: "new_class",
+              type: "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "pause",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "unpause",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "is_paused",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "RewardShareImpl",
+      interface_name: "strkfarm_contracts::components::harvester::reward_shares::IRewardShare"
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::harvester::reward_shares::UserRewardsInfo",
+      members: [
+        {
+          name: "pending_round_points",
+          type: "core::integer::u128"
+        },
+        {
+          name: "shares_owned",
+          type: "core::integer::u128"
+        },
+        {
+          name: "block_number",
+          type: "core::integer::u64"
+        },
+        {
+          name: "index",
+          type: "core::integer::u32"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardsInfo",
+      members: [
+        {
+          name: "amount",
+          type: "core::integer::u128"
+        },
+        {
+          name: "shares",
+          type: "core::integer::u128"
+        },
+        {
+          name: "total_round_points",
+          type: "core::integer::u128"
+        },
+        {
+          name: "block_number",
+          type: "core::integer::u64"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::components::harvester::reward_shares::IRewardShare",
+      items: [
+        {
+          type: "function",
+          name: "get_user_reward_info",
+          inputs: [
+            {
+              name: "user",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "strkfarm_contracts::components::harvester::reward_shares::UserRewardsInfo"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_rewards_info",
+          inputs: [
+            {
+              name: "index",
+              type: "core::integer::u32"
+            }
+          ],
+          outputs: [
+            {
+              type: "strkfarm_contracts::components::harvester::reward_shares::RewardsInfo"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_total_rewards",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u32"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_total_unminted_shares",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_additional_shares",
+          inputs: [
+            {
+              name: "user",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u64, core::integer::u128)"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::interfaces::IVesu::IStonDispatcher",
+      members: [
+        {
+          name: "contract_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::vesu::vesuStruct",
+      members: [
+        {
+          name: "singleton",
+          type: "strkfarm_contracts::interfaces::IVesu::IStonDispatcher"
+        },
+        {
+          name: "pool_id",
+          type: "core::felt252"
+        },
+        {
+          name: "debt",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "col",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "oracle",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "constructor",
+      name: "constructor",
+      inputs: [
+        {
+          name: "asset",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "access_control",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "allowed_pools",
+          type: "core::array::Array::<strkfarm_contracts::strategies::vesu_rebalance::interface::PoolProps>"
+        },
+        {
+          name: "settings",
+          type: "strkfarm_contracts::strategies::vesu_rebalance::interface::Settings"
+        },
+        {
+          name: "vesu_settings",
+          type: "strkfarm_contracts::components::vesu::vesuStruct"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+      kind: "enum",
+      variants: []
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::erc4626::ERC4626Component::Deposit",
+      kind: "struct",
+      members: [
+        {
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "assets",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "shares",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::erc4626::ERC4626Component::Withdraw",
+      kind: "struct",
+      members: [
+        {
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "receiver",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "assets",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "shares",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::erc4626::ERC4626Component::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Deposit",
+          type: "strkfarm_contracts::components::erc4626::ERC4626Component::Deposit",
+          kind: "nested"
+        },
+        {
+          name: "Withdraw",
+          type: "strkfarm_contracts::components::erc4626::ERC4626Component::Withdraw",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Rewards",
+      kind: "struct",
+      members: [
+        {
+          name: "index",
+          type: "core::integer::u32",
+          kind: "data"
+        },
+        {
+          name: "info",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardsInfo",
+          kind: "data"
+        },
+        {
+          name: "total_reward_shares",
+          type: "core::integer::u128",
+          kind: "data"
+        },
+        {
+          name: "timestamp",
+          type: "core::integer::u64",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::UserRewards",
+      kind: "struct",
+      members: [
+        {
+          name: "user",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "info",
+          type: "strkfarm_contracts::components::harvester::reward_shares::UserRewardsInfo",
+          kind: "data"
+        },
+        {
+          name: "total_reward_shares",
+          type: "core::integer::u128",
+          kind: "data"
+        },
+        {
+          name: "timestamp",
+          type: "core::integer::u64",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Rewards",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Rewards",
+          kind: "nested"
+        },
+        {
+          name: "UserRewards",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::UserRewards",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
+      kind: "struct",
+      members: [
+        {
+          name: "from",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "to",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "value",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Approval",
+      kind: "struct",
+      members: [
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "value",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Transfer",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
+          kind: "nested"
+        },
+        {
+          name: "Approval",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Approval",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_introspection::src5::SRC5Component::Event",
+      kind: "enum",
+      variants: []
+    },
+    {
+      type: "event",
+      name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+      kind: "struct",
+      members: [
+        {
+          name: "class_hash",
+          type: "core::starknet::class_hash::ClassHash",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Upgraded",
+          type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::pausable::PausableComponent::Paused",
+      kind: "struct",
+      members: [
+        {
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::pausable::PausableComponent::Unpaused",
+      kind: "struct",
+      members: [
+        {
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::pausable::PausableComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Paused",
+          type: "openzeppelin_security::pausable::PausableComponent::Paused",
+          kind: "nested"
+        },
+        {
+          name: "Unpaused",
+          type: "openzeppelin_security::pausable::PausableComponent::Unpaused",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::common::CommonComp::Event",
+      kind: "enum",
+      variants: []
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::vesu_rebalance::VesuRebalance::Rebalance",
+      kind: "struct",
+      members: [
+        {
+          name: "yield_before",
+          type: "core::integer::u128",
+          kind: "data"
+        },
+        {
+          name: "yield_after",
+          type: "core::integer::u128",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::vesu_rebalance::VesuRebalance::CollectFees",
+      kind: "struct",
+      members: [
+        {
+          name: "fee_collected",
+          type: "core::integer::u128",
+          kind: "data"
+        },
+        {
+          name: "fee_collector",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::vesu_rebalance::vesu_rebalance::VesuRebalance::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "ReentrancyGuardEvent",
+          type: "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "ERC4626Event",
+          type: "strkfarm_contracts::components::erc4626::ERC4626Component::Event",
+          kind: "flat"
+        },
+        {
+          name: "RewardShareEvent",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "ERC20Event",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Event",
+          kind: "flat"
+        },
+        {
+          name: "SRC5Event",
+          type: "openzeppelin_introspection::src5::SRC5Component::Event",
+          kind: "flat"
+        },
+        {
+          name: "UpgradeableEvent",
+          type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "PausableEvent",
+          type: "openzeppelin_security::pausable::PausableComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "CommonCompEvent",
+          type: "strkfarm_contracts::components::common::CommonComp::Event",
+          kind: "flat"
+        },
+        {
+          name: "Rebalance",
+          type: "strkfarm_contracts::strategies::vesu_rebalance::vesu_rebalance::VesuRebalance::Rebalance",
+          kind: "nested"
+        },
+        {
+          name: "CollectFees",
+          type: "strkfarm_contracts::strategies::vesu_rebalance::vesu_rebalance::VesuRebalance::CollectFees",
+          kind: "nested"
+        }
+      ]
+    }
+  ];
+
+  // src/utils/index.ts
+  function assert2(condition, message) {
+    if (!condition) {
+      throw new Error(message);
+    }
+  }
+
+  // src/strategies/vesu-rebalance.ts
+  var VesuRebalance = class _VesuRebalance {
+    // 10000 bps = 100%
+    /**
+     * Creates a new VesuRebalance strategy instance.
+     * @param config - Configuration object containing provider and other settings
+     * @param pricer - Pricer instance for token price calculations
+     * @param metadata - Strategy metadata including deposit tokens and address
+     * @throws {Error} If more than one deposit token is specified
+     */
+    constructor(config2, pricer, metadata) {
+      this.BASE_WEIGHT = 1e4;
+      this.config = config2;
+      this.pricer = pricer;
+      assert2(metadata.depositTokens.length === 1, "VesuRebalance only supports 1 deposit token");
+      this.metadata = metadata;
+      this.address = metadata.address;
+      this.contract = new Contract(vesu_rebalance_abi_default, this.address.address, this.config.provider);
+    }
+    /**
+     * Creates a deposit call to the strategy contract.
+     * @param assets - Amount of assets to deposit
+     * @param receiver - Address that will receive the strategy tokens
+     * @returns Populated contract call for deposit
+     */
+    depositCall(assets, receiver) {
+      const assetContract = new Contract(vesu_rebalance_abi_default, this.metadata.depositTokens[0].address, this.config.provider);
+      const call1 = assetContract.populate("approve", [this.address.address, uint256_exports.bnToUint256(assets.toWei())]);
+      const call2 = this.contract.populate("deposit", [uint256_exports.bnToUint256(assets.toWei()), receiver.address]);
+      return [call1, call2];
+    }
+    /**
+     * Creates a withdrawal call to the strategy contract.
+     * @param assets - Amount of assets to withdraw
+     * @param receiver - Address that will receive the withdrawn assets
+     * @param owner - Address that owns the strategy tokens
+     * @returns Populated contract call for withdrawal
+     */
+    withdrawCall(assets, receiver, owner) {
+      return [this.contract.populate("withdraw", [uint256_exports.bnToUint256(assets.toWei()), receiver.address, owner.address])];
+    }
+    /**
+     * Returns the underlying asset token of the strategy.
+     * @returns The deposit token supported by this strategy
+     */
+    asset() {
+      return this.metadata.depositTokens[0];
+    }
+    /**
+     * Returns the number of decimals used by the strategy token.
+     * @returns Number of decimals (same as the underlying token)
+     */
+    decimals() {
+      return this.metadata.depositTokens[0].decimals;
+    }
+    /**
+     * Calculates the Total Value Locked (TVL) for a specific user.
+     * @param user - Address of the user
+     * @returns Object containing the amount in token units and USD value
+     */
+    async getUserTVL(user) {
+      const shares = await this.contract.balanceOf(user.address);
+      const assets = await this.contract.convert_to_assets(uint256_exports.bnToUint256(shares));
+      const amount = Web3Number.fromWei(assets.toString(), this.metadata.depositTokens[0].decimals);
+      let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
+      const usdValue = Number(amount.toFixed(6)) * price.price;
+      return {
+        amount,
+        usdValue
+      };
+    }
+    /**
+     * Calculates the total TVL of the strategy.
+     * @returns Object containing the total amount in token units and USD value
+     */
+    async getTVL() {
+      const assets = await this.contract.total_assets();
+      const amount = Web3Number.fromWei(assets.toString(), this.metadata.depositTokens[0].decimals);
+      let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
+      const usdValue = Number(amount.toFixed(6)) * price.price;
+      return {
+        amount,
+        usdValue
+      };
+    }
+    /**
+     * Retrieves the list of allowed pools and their detailed information from multiple sources:
+     * 1. Contract's allowed pools
+     * 2. Vesu positions API for current positions
+     * 3. Vesu pools API for APY and utilization data
+     * 
+     * @returns {Promise<{
+     *   data: Array<PoolInfoFull>,
+     *   isErrorPositionsAPI: boolean
+     * }>} Object containing:
+     *   - data: Array of pool information including IDs, weights, amounts, APYs and utilization
+     *   - isErrorPositionsAPI: Boolean indicating if there was an error fetching position data
+     */
+    async getPools() {
+      const allowedPools = (await this.contract.get_allowed_pools()).map((p) => ({
+        pool_id: ContractAddr.from(p.pool_id),
+        max_weight: Number(p.max_weight) / this.BASE_WEIGHT,
+        v_token: ContractAddr.from(p.v_token)
+      }));
+      let isErrorPositionsAPI = false;
+      let vesuPositions = [];
+      try {
+        const res = await axios_default.get(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`);
+        const data2 = await res.data;
+        vesuPositions = data2.data;
+      } catch (e) {
+        console.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
+        isErrorPositionsAPI = true;
+      }
+      let isErrorPoolsAPI = false;
+      let pools = [];
+      try {
+        const res = await axios_default.get(`https://api.vesu.xyz/pools`);
+        const data2 = await res.data;
+        pools = data2.data;
+      } catch (e) {
+        console.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
+        isErrorPoolsAPI = true;
+      }
+      const totalAssets = (await this.getTVL()).amount;
+      const info = allowedPools.map(async (p) => {
+        const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === num_exports.getDecimalString(p.pool_id.address.toString()));
+        const pool = pools.find((d) => d.id == num_exports.getDecimalString(p.pool_id.address));
+        const assetInfo = pool?.assets.find((d) => ContractAddr.from(this.asset().address).eqString(d.address));
+        let vTokenContract = new Contract(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
+        const bal = await vTokenContract.balanceOf(this.address.address);
+        const assets = await vTokenContract.convert_to_assets(uint256_exports.bnToUint256(bal.toString()));
+        const item = {
+          pool_id: p.pool_id,
+          pool_name: vesuPosition?.pool.name,
+          max_weight: p.max_weight,
+          current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
+          v_token: p.v_token,
+          amount: Web3Number.fromWei(assets.toString(), this.decimals()),
+          usdValue: isErrorPositionsAPI || !vesuPosition ? Web3Number.fromWei("0", this.decimals()) : Web3Number.fromWei(vesuPosition.collateral.usdPrice.value, vesuPosition.collateral.usdPrice.decimals),
+          APY: isErrorPoolsAPI || !assetInfo ? {
+            baseApy: 0,
+            defiSpringApy: 0,
+            netApy: 0
+          } : {
+            baseApy: Number(Web3Number.fromWei(assetInfo.stats.supplyApy.value, assetInfo.stats.supplyApy.decimals).toFixed(6)),
+            defiSpringApy: Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)),
+            netApy: 0
+          },
+          currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.stats.currentUtilization.value, assetInfo.stats.currentUtilization.decimals).toFixed(6)),
+          maxUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.config.maxUtilization.value, assetInfo.config.maxUtilization.decimals).toFixed(6))
+        };
+        item.APY.netApy = item.APY.baseApy + item.APY.defiSpringApy;
+        return item;
+      });
+      const data = await Promise.all(info);
+      return {
+        data,
+        isErrorPositionsAPI,
+        isErrorPoolsAPI,
+        isError: isErrorPositionsAPI || isErrorPoolsAPI
+      };
+    }
+    /**
+     * Calculates the weighted average APY across all pools based on USD value.
+     * @returns {Promise<number>} The weighted average APY across all pools
+     */
+    async netAPY() {
+      const { data: pools } = await this.getPools();
+      return this.netAPYGivenPools(pools);
+    }
+    /**
+     * Calculates the weighted average APY across all pools based on USD value.
+     * @returns {Promise<number>} The weighted average APY across all pools
+     */
+    netAPYGivenPools(pools) {
+      const weightedApy = pools.reduce((acc, curr) => {
+        const weight = curr.current_weight;
+        return acc + curr.APY.netApy * weight;
+      }, 0);
+      return weightedApy;
+    }
+    /**
+     * Calculates optimal position changes to maximize APY while respecting max weights.
+     * The algorithm:
+     * 1. Sorts pools by APY (highest first)
+     * 2. Calculates target amounts based on max weights
+     * 3. For each pool that needs more funds:
+     *    - Takes funds from lowest APY pools that are over their target
+     * 4. Validates that total assets remain constant
+     * 
+     * @returns {Promise<{  
+     *   changes: Change[],
+     *   finalPools: PoolInfoFull[],
+     *   isAnyPoolOverMaxWeight: boolean
+     * }>} Object containing:
+     *   - changes: Array of position changes
+     *   - finalPools: Array of pool information after rebalance
+     * @throws Error if rebalance is not possible while maintaining constraints
+     */
+    async getRebalancedPositions() {
+      const { data: pools } = await this.getPools();
+      const totalAssets = (await this.getTVL()).amount;
+      if (totalAssets.eq(0)) return {
+        changes: [],
+        finalPools: []
+      };
+      const sumPools = pools.reduce((acc, curr) => acc.plus(curr.amount.toString()), Web3Number.fromWei("0", this.decimals()));
+      assert2(sumPools.lte(totalAssets), "Sum of pools.amount must be less than or equal to totalAssets");
+      const sortedPools = [...pools].sort((a, b) => b.APY.netApy - a.APY.netApy);
+      const targetAmounts = {};
+      let remainingAssets = totalAssets;
+      let isAnyPoolOverMaxWeight = false;
+      for (const pool of sortedPools) {
+        const maxAmount = totalAssets.multipliedBy(pool.max_weight * 0.9);
+        const targetAmount = remainingAssets.gte(maxAmount) ? maxAmount : remainingAssets;
+        targetAmounts[pool.pool_id.address.toString()] = targetAmount;
+        remainingAssets = remainingAssets.minus(targetAmount.toString());
+        if (pool.current_weight > pool.max_weight) {
+          isAnyPoolOverMaxWeight = true;
+        }
+      }
+      assert2(remainingAssets.lt(1e-5), "Remaining assets must be 0");
+      const changes = sortedPools.map((pool) => {
+        const target = targetAmounts[pool.pool_id.address.toString()] || Web3Number.fromWei("0", this.decimals());
+        const change = Web3Number.fromWei(target.minus(pool.amount.toString()).toWei(), this.decimals());
+        return {
+          pool_id: pool.pool_id,
+          changeAmt: change,
+          finalAmt: target,
+          isDeposit: change.gt(0)
+        };
+      });
+      const sumChanges = changes.reduce((sum, c) => sum.plus(c.changeAmt.toString()), Web3Number.fromWei("0", this.decimals()));
+      const sumFinal = changes.reduce((sum, c) => sum.plus(c.finalAmt.toString()), Web3Number.fromWei("0", this.decimals()));
+      const hasChanges = changes.some((c) => !c.changeAmt.eq(0));
+      if (!sumChanges.eq(0)) throw new Error("Sum of changes must be zero");
+      if (!sumFinal.eq(totalAssets)) throw new Error("Sum of final amounts must equal total assets");
+      if (!hasChanges) throw new Error("No changes required");
+      const finalPools = pools.map((p) => {
+        const target = targetAmounts[p.pool_id.address.toString()] || Web3Number.fromWei("0", this.decimals());
+        return {
+          ...p,
+          amount: target,
+          usdValue: Web3Number.fromWei("0", this.decimals())
+        };
+      });
+      return {
+        changes,
+        finalPools,
+        isAnyPoolOverMaxWeight
+      };
+    }
+    /**
+     * Creates a rebalance Call object for the strategy contract
+     * @param pools - Array of pool information including IDs, weights, amounts, APYs and utilization
+     * @returns Populated contract call for rebalance
+     */
+    async getRebalanceCall(pools, isOverWeightAdjustment) {
+      const actions = [];
+      pools.sort((a, b) => b.isDeposit ? -1 : 1);
+      console.log("pools", pools);
+      pools.forEach((p) => {
+        if (p.changeAmt.eq(0)) return null;
+        actions.push({
+          pool_id: p.pool_id.address,
+          feature: new CairoCustomEnum(p.isDeposit ? { DEPOSIT: {} } : { WITHDRAW: {} }),
+          token: this.asset().address,
+          amount: uint256_exports.bnToUint256(p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei())
+        });
+      });
+      if (actions.length === 0) return null;
+      if (isOverWeightAdjustment) {
+        return this.contract.populate("rebalance_weights", [actions]);
+      }
+      return this.contract.populate("rebalance", [actions]);
+    }
+  };
+  var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
+  var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+  var VesuRebalanceStrategies = [{
+    name: "Vesu STRK",
+    description: _description.replace("{{TOKEN}}", "STRK"),
+    address: ContractAddr.from("0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1"),
+    type: "ERC4626",
+    depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
+    protocols: [_protocol]
+  }];
   return __toCommonJS(index_browser_exports);
 })();
 /*! Bundled license information:

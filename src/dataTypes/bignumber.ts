@@ -25,11 +25,13 @@ export class Web3Number extends BigNumber {
     }
 
     multipliedBy(value: string | number) {
-        return new Web3Number(this.mul(value).toString(), this.decimals);
+        let _value = Number(value).toFixed(6);
+        return new Web3Number(this.mul(_value).toString(), this.decimals);
     }
 
     dividedBy(value: string | number) {
-        return new Web3Number(this.div(value).toString(), this.decimals);
+        let _value = Number(value).toFixed(6);
+        return new Web3Number(this.div(_value).toString(), this.decimals);
     }
 
     plus(value: string | number) {

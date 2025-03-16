@@ -45,7 +45,13 @@ export class FatalError extends Error {
     }
 }
 
-const tokens: TokenInfo[] = [];
+const tokens: TokenInfo[] = [{
+    name: 'Starknet',
+    symbol: 'STRK',
+    address: '0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
+    decimals: 18,
+    coingeckId: 'starknet'
+}];
 
 /** Contains globally useful functions. 
  * - fatalError: Things to do when a fatal error occurs
@@ -62,6 +68,10 @@ export class Global {
     static httpError(url: string, err: Error, message?: string) {
         logger.error(`${url}: ${message}`);
         console.error(err);
+    }
+
+    static getDefaultTokens() {
+        return tokens;
     }
 
     static async getTokens(): Promise<TokenInfo[]> {

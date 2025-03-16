@@ -7,3 +7,6 @@ export * from './strategies';
 export * from './notifs';
 export * from './utils';
 export * from './node';
+
+export * from './utils/store';
+export * from './utils/encrypt';

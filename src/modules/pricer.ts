@@ -9,7 +9,14 @@ export interface PriceInfo {
     price: number,
     timestamp: Date
 }
-export class Pricer {
+
+export abstract class PricerBase {
+    async getPrice(tokenSymbol: string): Promise<PriceInfo> {
+        throw new Error('Method not implemented');
+    }
+}
+
+export class Pricer implements PricerBase{
     readonly config: IConfig;
     readonly tokens: TokenInfo[] = [];
     protected prices: {
@@ -80,10 +87,10 @@ export class Pricer {
         Global.assert(!this.isStale(timestamp, tokenName), `Price of ${tokenName} is stale`);
 
     }
-    async getPrice(tokenName: string) {
-        Global.assert(this.prices[tokenName], `Price of ${tokenName} not found`);
-       this.assertNotStale(this.prices[tokenName].timestamp, tokenName);
-        return this.prices[tokenName];
+    async getPrice(tokenSymbol: string) {
+        Global.assert(this.prices[tokenSymbol], `Price of ${tokenSymbol} not found`);
+       this.assertNotStale(this.prices[tokenSymbol].timestamp, tokenSymbol);
+        return this.prices[tokenSymbol];
     }
 
     protected _loadPrices(onUpdate: (tokenSymbol: string) => void = () => {}) {

@@ -84,7 +84,13 @@ var FatalError = class extends Error {
     this.name = "FatalError";
   }
 };
-var tokens = [];
+var tokens = [{
+  name: "Starknet",
+  symbol: "STRK",
+  address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+  decimals: 18,
+  coingeckId: "starknet"
+}];
 var Global = class {
   static fatalError(message, err) {
     logger.error(message);
@@ -96,6 +102,9 @@ var Global = class {
   static httpError(url, err, message) {
     logger.error(`${url}: ${message}`);
     console.error(err);
+  }
+  static getDefaultTokens() {
+    return tokens;
   }
   static async getTokens() {
     if (tokens.length) return tokens;
@@ -138,10 +147,12 @@ var Web3Number = class _Web3Number extends BigNumber {
     return this.mul(10 ** this.decimals).toFixed(0);
   }
   multipliedBy(value) {
-    return new _Web3Number(this.mul(value).toString(), this.decimals);
+    let _value = Number(value).toFixed(6);
+    return new _Web3Number(this.mul(_value).toString(), this.decimals);
   }
   dividedBy(value) {
-    return new _Web3Number(this.div(value).toString(), this.decimals);
+    let _value = Number(value).toFixed(6);
+    return new _Web3Number(this.div(_value).toString(), this.decimals);
   }
   plus(value) {
     return new _Web3Number(this.add(value).toString(), this.decimals);
@@ -161,6 +172,31 @@ Web3Number.config({ DECIMAL_PLACES: 18 });
 
 // src/dataTypes/address.ts
 import { num } from "starknet";
+var ContractAddr = class _ContractAddr {
+  constructor(address) {
+    this.address = _ContractAddr.standardise(address);
+  }
+  static from(address) {
+    return new _ContractAddr(address);
+  }
+  eq(other) {
+    return this.address === other.address;
+  }
+  eqString(other) {
+    return this.address === _ContractAddr.standardise(other);
+  }
+  static standardise(address) {
+    let _a = address;
+    if (!address) {
+      _a = "0";
+    }
+    const a = num.getHexString(num.getDecimalString(_a.toString()));
+    return a;
+  }
+  static eqString(a, b) {
+    return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
+  }
+};
 
 // src/modules/pricer.ts
 var CoinMarketCap = __require("coinmarketcap-api");
@@ -335,6 +371,20 @@ import { RpcProvider as RpcProvider2 } from "starknet";
 
 // src/strategies/autoCompounderStrk.ts
 import { Contract as Contract2, uint256 } from "starknet";
+
+// src/strategies/vesu-rebalance.ts
+import { CairoCustomEnum, Contract as Contract3, num as num2, uint256 as uint2562 } from "starknet";
+import axios4 from "axios";
+var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
+var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+var VesuRebalanceStrategies = [{
+  name: "Vesu STRK",
+  description: _description.replace("{{TOKEN}}", "STRK"),
+  address: ContractAddr.from("0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1"),
+  type: "ERC4626",
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
+  protocols: [_protocol]
+}];
 
 // src/notifs/telegram.ts
 import TelegramBot from "node-telegram-bot-api";

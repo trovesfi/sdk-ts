@@ -29,7 +29,7 @@ var import_inquirer = __toESM(require("inquirer"));
 
 // src/utils/store.ts
 var import_fs = __toESM(require("fs"));
-var import_starknet5 = require("starknet");
+var import_starknet6 = require("starknet");
 var crypto2 = __toESM(require("crypto"));
 
 // src/utils/encrypt.ts
@@ -101,7 +101,13 @@ var FatalError = class extends Error {
     this.name = "FatalError";
   }
 };
-var tokens = [];
+var tokens = [{
+  name: "Starknet",
+  symbol: "STRK",
+  address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+  decimals: 18,
+  coingeckId: "starknet"
+}];
 var Global = class {
   static fatalError(message, err) {
     logger.error(message);
@@ -113,6 +119,9 @@ var Global = class {
   static httpError(url, err, message) {
     logger.error(`${url}: ${message}`);
     console.error(err);
+  }
+  static getDefaultTokens() {
+    return tokens;
   }
   static async getTokens() {
     if (tokens.length) return tokens;
@@ -155,10 +164,12 @@ var Web3Number = class _Web3Number extends import_bignumber.default {
     return this.mul(10 ** this.decimals).toFixed(0);
   }
   multipliedBy(value) {
-    return new _Web3Number(this.mul(value).toString(), this.decimals);
+    let _value = Number(value).toFixed(6);
+    return new _Web3Number(this.mul(_value).toString(), this.decimals);
   }
   dividedBy(value) {
-    return new _Web3Number(this.div(value).toString(), this.decimals);
+    let _value = Number(value).toFixed(6);
+    return new _Web3Number(this.div(_value).toString(), this.decimals);
   }
   plus(value) {
     return new _Web3Number(this.add(value).toString(), this.decimals);
@@ -178,6 +189,31 @@ Web3Number.config({ DECIMAL_PLACES: 18 });
 
 // src/dataTypes/address.ts
 var import_starknet = require("starknet");
+var ContractAddr = class _ContractAddr {
+  constructor(address) {
+    this.address = _ContractAddr.standardise(address);
+  }
+  static from(address) {
+    return new _ContractAddr(address);
+  }
+  eq(other) {
+    return this.address === other.address;
+  }
+  eqString(other) {
+    return this.address === _ContractAddr.standardise(other);
+  }
+  static standardise(address) {
+    let _a = address;
+    if (!address) {
+      _a = "0";
+    }
+    const a = import_starknet.num.getHexString(import_starknet.num.getDecimalString(_a.toString()));
+    return a;
+  }
+  static eqString(a, b) {
+    return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
+  }
+};
 
 // src/modules/pricer.ts
 var CoinMarketCap = require("coinmarketcap-api");
@@ -353,6 +389,20 @@ var import_starknet3 = require("starknet");
 // src/strategies/autoCompounderStrk.ts
 var import_starknet4 = require("starknet");
 
+// src/strategies/vesu-rebalance.ts
+var import_starknet5 = require("starknet");
+var import_axios4 = __toESM(require("axios"));
+var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
+var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+var VesuRebalanceStrategies = [{
+  name: "Vesu STRK",
+  description: _description.replace("{{TOKEN}}", "STRK"),
+  address: ContractAddr.from("0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1"),
+  type: "ERC4626",
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
+  protocols: [_protocol]
+}];
+
 // src/notifs/telegram.ts
 var import_node_telegram_bot_api = __toESM(require("node-telegram-bot-api"));
 
@@ -392,7 +442,7 @@ var Store = class _Store {
     logger.warn(`This not stored anywhere, please you backup this password for future use`);
     logger.warn(`\u26A0\uFE0F=========================================\u26A0\uFE0F`);
   }
-  getAccount(accountKey, txVersion = import_starknet5.constants.TRANSACTION_VERSION.V2) {
+  getAccount(accountKey, txVersion = import_starknet6.constants.TRANSACTION_VERSION.V2) {
     const accounts = this.loadAccounts();
     logger.verbose(`nAccounts loaded for network: ${Object.keys(accounts).length}`);
     const data = accounts[accountKey];
@@ -401,7 +451,7 @@ var Store = class _Store {
     }
     logger.verbose(`Account loaded: ${accountKey} from network: ${this.config.network}`);
     logger.verbose(`Address: ${data.address}`);
-    const acc = new import_starknet5.Account(this.config.provider, data.address, data.pk, void 0, txVersion);
+    const acc = new import_starknet6.Account(this.config.provider, data.address, data.pk, void 0, txVersion);
     return acc;
   }
   addAccount(accountKey, address, pk) {
@@ -465,11 +515,11 @@ var Store = class _Store {
 
 // src/cli.ts
 var import_chalk = __toESM(require("chalk"));
-var import_starknet6 = require("starknet");
+var import_starknet7 = require("starknet");
 var program = new import_commander.Command();
 var getConfig = (network) => {
   return {
-    provider: new import_starknet6.RpcProvider({
+    provider: new import_starknet7.RpcProvider({
       nodeUrl: "https://starknet-mainnet.public.blastapi.io"
     }),
     network,

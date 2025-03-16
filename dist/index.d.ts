@@ -1,27 +1,8 @@
+import * as starknet from 'starknet';
 import { RpcProvider, BlockIdentifier, Contract, Account } from 'starknet';
 import BigNumber from 'bignumber.js';
 import * as util from 'util';
 import TelegramBot from 'node-telegram-bot-api';
-
-interface TokenInfo {
-    name: string;
-    symbol: string;
-    address: string;
-    decimals: number;
-    coingeckId?: string;
-}
-declare enum Network {
-    mainnet = "mainnet",
-    sepolia = "sepolia",
-    devnet = "devnet"
-}
-interface IConfig {
-    provider: RpcProvider;
-    network: Network;
-    stage: 'production' | 'staging';
-    heartbeatUrl?: string;
-}
-declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
 
 declare class Web3Number extends BigNumber {
     decimals: number;
@@ -49,11 +30,46 @@ declare class ContractAddr {
     static eqString(a: string, b: string): boolean;
 }
 
+interface TokenInfo {
+    name: string;
+    symbol: string;
+    address: string;
+    decimals: number;
+    coingeckId?: string;
+}
+declare enum Network {
+    mainnet = "mainnet",
+    sepolia = "sepolia",
+    devnet = "devnet"
+}
+interface IConfig {
+    provider: RpcProvider;
+    network: Network;
+    stage: 'production' | 'staging';
+    heartbeatUrl?: string;
+}
+interface IProtocol {
+    name: string;
+    logo: string;
+}
+interface IStrategyMetadata {
+    name: string;
+    description: string;
+    address: ContractAddr;
+    type: 'ERC4626' | 'ERC721' | 'Other';
+    depositTokens: TokenInfo[];
+    protocols: IProtocol[];
+}
+declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
+
 interface PriceInfo {
     price: number;
     timestamp: Date;
 }
-declare class Pricer {
+declare abstract class PricerBase {
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
+}
+declare class Pricer implements PricerBase {
     readonly config: IConfig;
     readonly tokens: TokenInfo[];
     protected prices: {
@@ -72,7 +88,7 @@ declare class Pricer {
     start(): void;
     isStale(timestamp: Date, tokenName: string): boolean;
     assertNotStale(timestamp: Date, tokenName: string): void;
-    getPrice(tokenName: string): Promise<PriceInfo>;
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
     protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
     _getPrice(token: TokenInfo, defaultMethod?: string): Promise<number>;
     _getPriceCoinbase(token: TokenInfo): Promise<number>;
@@ -225,6 +241,7 @@ declare class FatalError extends Error {
 declare class Global {
     static fatalError(message: string, err?: Error): void;
     static httpError(url: string, err: Error, message?: string): void;
+    static getDefaultTokens(): TokenInfo[];
     static getTokens(): Promise<TokenInfo[]>;
     static assert(condition: any, message: string): void;
 }
@@ -258,12 +275,205 @@ declare class AutoCompounderSTRK {
     }>;
 }
 
+interface Change {
+    pool_id: ContractAddr;
+    changeAmt: Web3Number;
+    finalAmt: Web3Number;
+    isDeposit: boolean;
+}
+interface PoolInfoFull {
+    pool_id: ContractAddr;
+    pool_name: string | undefined;
+    max_weight: number;
+    current_weight: number;
+    v_token: ContractAddr;
+    amount: Web3Number;
+    usdValue: Web3Number;
+    APY: {
+        baseApy: number;
+        defiSpringApy: number;
+        netApy: number;
+    };
+    currentUtilization: number;
+    maxUtilization: number;
+}
+/**
+ * Represents a VesuRebalance strategy.
+ * This class implements an automated rebalancing strategy for Vesu pools,
+ * managing deposits and withdrawals while optimizing yield through STRK rewards.
+ */
+declare class VesuRebalance {
+    /** Configuration object for the strategy */
+    readonly config: IConfig;
+    /** Contract address of the strategy */
+    readonly address: ContractAddr;
+    /** Pricer instance for token price calculations */
+    readonly pricer: PricerBase;
+    /** Metadata containing strategy information */
+    readonly metadata: IStrategyMetadata;
+    /** Contract instance for interacting with the strategy */
+    readonly contract: Contract;
+    readonly BASE_WEIGHT = 10000;
+    /**
+     * Creates a new VesuRebalance strategy instance.
+     * @param config - Configuration object containing provider and other settings
+     * @param pricer - Pricer instance for token price calculations
+     * @param metadata - Strategy metadata including deposit tokens and address
+     * @throws {Error} If more than one deposit token is specified
+     */
+    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata);
+    /**
+     * Creates a deposit call to the strategy contract.
+     * @param assets - Amount of assets to deposit
+     * @param receiver - Address that will receive the strategy tokens
+     * @returns Populated contract call for deposit
+     */
+    depositCall(assets: Web3Number, receiver: ContractAddr): starknet.Call[];
+    /**
+     * Creates a withdrawal call to the strategy contract.
+     * @param assets - Amount of assets to withdraw
+     * @param receiver - Address that will receive the withdrawn assets
+     * @param owner - Address that owns the strategy tokens
+     * @returns Populated contract call for withdrawal
+     */
+    withdrawCall(assets: Web3Number, receiver: ContractAddr, owner: ContractAddr): starknet.Call[];
+    /**
+     * Returns the underlying asset token of the strategy.
+     * @returns The deposit token supported by this strategy
+     */
+    asset(): TokenInfo;
+    /**
+     * Returns the number of decimals used by the strategy token.
+     * @returns Number of decimals (same as the underlying token)
+     */
+    decimals(): number;
+    /**
+     * Calculates the Total Value Locked (TVL) for a specific user.
+     * @param user - Address of the user
+     * @returns Object containing the amount in token units and USD value
+     */
+    getUserTVL(user: ContractAddr): Promise<{
+        amount: Web3Number;
+        usdValue: number;
+    }>;
+    /**
+     * Calculates the total TVL of the strategy.
+     * @returns Object containing the total amount in token units and USD value
+     */
+    getTVL(): Promise<{
+        amount: Web3Number;
+        usdValue: number;
+    }>;
+    /**
+     * Retrieves the list of allowed pools and their detailed information from multiple sources:
+     * 1. Contract's allowed pools
+     * 2. Vesu positions API for current positions
+     * 3. Vesu pools API for APY and utilization data
+     *
+     * @returns {Promise<{
+     *   data: Array<PoolInfoFull>,
+     *   isErrorPositionsAPI: boolean
+     * }>} Object containing:
+     *   - data: Array of pool information including IDs, weights, amounts, APYs and utilization
+     *   - isErrorPositionsAPI: Boolean indicating if there was an error fetching position data
+     */
+    getPools(): Promise<{
+        data: {
+            pool_id: ContractAddr;
+            pool_name: any;
+            max_weight: number;
+            current_weight: number;
+            v_token: ContractAddr;
+            amount: Web3Number;
+            usdValue: Web3Number;
+            APY: {
+                baseApy: number;
+                defiSpringApy: number;
+                netApy: number;
+            };
+            currentUtilization: number;
+            maxUtilization: number;
+        }[];
+        isErrorPositionsAPI: boolean;
+        isErrorPoolsAPI: boolean;
+        isError: boolean;
+    }>;
+    /**
+     * Calculates the weighted average APY across all pools based on USD value.
+     * @returns {Promise<number>} The weighted average APY across all pools
+     */
+    netAPY(): Promise<number>;
+    /**
+     * Calculates the weighted average APY across all pools based on USD value.
+     * @returns {Promise<number>} The weighted average APY across all pools
+     */
+    netAPYGivenPools(pools: PoolInfoFull[]): number;
+    /**
+     * Calculates optimal position changes to maximize APY while respecting max weights.
+     * The algorithm:
+     * 1. Sorts pools by APY (highest first)
+     * 2. Calculates target amounts based on max weights
+     * 3. For each pool that needs more funds:
+     *    - Takes funds from lowest APY pools that are over their target
+     * 4. Validates that total assets remain constant
+     *
+     * @returns {Promise<{
+     *   changes: Change[],
+     *   finalPools: PoolInfoFull[],
+     *   isAnyPoolOverMaxWeight: boolean
+     * }>} Object containing:
+     *   - changes: Array of position changes
+     *   - finalPools: Array of pool information after rebalance
+     * @throws Error if rebalance is not possible while maintaining constraints
+     */
+    getRebalancedPositions(): Promise<{
+        changes: never[];
+        finalPools: never[];
+        isAnyPoolOverMaxWeight?: undefined;
+    } | {
+        changes: Change[];
+        finalPools: PoolInfoFull[];
+        isAnyPoolOverMaxWeight: boolean;
+    }>;
+    /**
+     * Creates a rebalance Call object for the strategy contract
+     * @param pools - Array of pool information including IDs, weights, amounts, APYs and utilization
+     * @returns Populated contract call for rebalance
+     */
+    getRebalanceCall(pools: Awaited<ReturnType<typeof this.getRebalancedPositions>>['changes'], isOverWeightAdjustment: boolean): Promise<starknet.Call | null>;
+}
+/**
+ * Represents the Vesu Rebalance Strategies.
+ */
+declare const VesuRebalanceStrategies: IStrategyMetadata[];
+
 declare class TelegramNotif {
     private subscribers;
     readonly bot: TelegramBot;
     constructor(token: string, shouldPoll: boolean);
     activateChatBot(): void;
     sendMessage(msg: string): void;
+}
+
+type RequiredFields<T> = {
+    [K in keyof T]-?: T[K];
+};
+type RequiredKeys<T> = {
+    [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
+}[keyof T];
+declare function assert(condition: boolean, message: string): void;
+
+declare class PricerRedis extends Pricer {
+    private redisClient;
+    constructor(config: IConfig, tokens: TokenInfo[]);
+    /** Reads prices from Pricer._loadPrices and uses a callback to set prices in redis */
+    startWithRedis(redisUrl: string): Promise<void>;
+    close(): Promise<void>;
+    initRedis(redisUrl: string): Promise<void>;
+    /** sets current local price in redis */
+    private _setRedisPrices;
+    /** Returns price from redis */
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
 }
 
 /**
@@ -344,24 +554,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-type RequiredFields<T> = {
-    [K in keyof T]-?: T[K];
-};
-type RequiredKeys<T> = {
-    [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
-}[keyof T];
-
-declare class PricerRedis extends Pricer {
-    private redisClient;
-    constructor(config: IConfig, tokens: TokenInfo[]);
-    /** Reads prices from Pricer._loadPrices and uses a callback to set prices in redis */
-    startWithRedis(redisUrl: string): Promise<void>;
-    close(): Promise<void>;
-    initRedis(redisUrl: string): Promise<void>;
-    /** sets current local price in redis */
-    private _setRedisPrices;
-    /** Returns price from redis */
-    getPrice(tokenSymbol: string): Promise<PriceInfo>;
-}
-
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, ILending, type ILendingMetadata, type ILendingPosition, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, Store, type StoreConfig, TelegramNotif, type TokenInfo, Web3Number, ZkLend, getDefaultStoreConfig, getMainnetConfig, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerBase, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, logger };
