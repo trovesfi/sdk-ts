@@ -104,6 +104,7 @@ var FatalError = class extends Error {
 var tokens = [{
   name: "Starknet",
   symbol: "STRK",
+  logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
   address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
   decimals: 18,
   coingeckId: "starknet"
@@ -136,6 +137,7 @@ var Global = class {
         symbol: token.symbol,
         address: token.address,
         decimals: token.decimals,
+        logo: token.logoUri,
         coingeckId: token.extensions.coingeckoId
       });
     });
@@ -215,9 +217,6 @@ var ContractAddr = class _ContractAddr {
   }
 };
 
-// src/modules/pricer.ts
-var CoinMarketCap = require("coinmarketcap-api");
-
 // src/modules/pragma.ts
 var import_starknet2 = require("starknet");
 
@@ -274,6 +273,7 @@ var _ZkLend = class _ZkLend extends ILending {
           name: pool.token.name,
           symbol: pool.token.symbol,
           address: savedTokenInfo?.address || "",
+          logo: "",
           decimals: pool.token.decimals,
           borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
           collareralFactor
@@ -383,6 +383,9 @@ var _ZkLend = class _ZkLend extends ILending {
 _ZkLend.POOLS_URL = "https://app.zklend.com/api/pools";
 var ZkLend = _ZkLend;
 
+// src/modules/pricer-from-api.ts
+var import_axios4 = __toESM(require("axios"));
+
 // src/interfaces/common.ts
 var import_starknet3 = require("starknet");
 
@@ -391,16 +394,26 @@ var import_starknet4 = require("starknet");
 
 // src/strategies/vesu-rebalance.ts
 var import_starknet5 = require("starknet");
-var import_axios4 = __toESM(require("axios"));
+var import_axios5 = __toESM(require("axios"));
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+var _riskFactor = [
+  { type: "SMART_CONTRACT_RISK" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+  { type: "TECHNICAL_RISK" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
+  { type: "COUNTERPARTY_RISK" /* COUNTERPARTY_RISK */, value: 1, weight: 50 }
+];
 var VesuRebalanceStrategies = [{
   name: "Vesu STRK",
   description: _description.replace("{{TOKEN}}", "STRK"),
   address: ContractAddr.from("0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1"),
   type: "ERC4626",
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
-  protocols: [_protocol]
+  protocols: [_protocol],
+  maxTVL: Web3Number.fromWei("0", 18),
+  risk: {
+    riskFactor: _riskFactor,
+    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100
+  }
 }];
 
 // src/notifs/telegram.ts

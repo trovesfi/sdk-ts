@@ -1,6 +1,6 @@
+import BigNumber from 'bignumber.js';
 import * as starknet from 'starknet';
 import { RpcProvider, BlockIdentifier, Contract, Account } from 'starknet';
-import BigNumber from 'bignumber.js';
 import * as util from 'util';
 import TelegramBot from 'node-telegram-bot-api';
 
@@ -30,11 +30,25 @@ declare class ContractAddr {
     static eqString(a: string, b: string): boolean;
 }
 
+declare enum RiskType {
+    MARKET_RISK = "MARKET_RISK",
+    IMPERMANENT_LOSS = "IMPERMANENT_LOSS",
+    LIQUIDITY_RISK = "LIQUIDITY_RISK",
+    SMART_CONTRACT_RISK = "SMART_CONTRACT_RISK",
+    TECHNICAL_RISK = "TECHNICAL_RISK",
+    COUNTERPARTY_RISK = "COUNTERPARTY_RISK"
+}
+interface RiskFactor {
+    type: RiskType;
+    value: number;
+    weight: number;
+}
 interface TokenInfo {
     name: string;
     symbol: string;
     address: string;
     decimals: number;
+    logo: string;
     coingeckId?: string;
 }
 declare enum Network {
@@ -52,6 +66,10 @@ interface IProtocol {
     name: string;
     logo: string;
 }
+/**
+ * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.
+ * @property risk.riskFactor.factor - The value of the risk factor from 0 to 10, 0 being the lowest and 10 being the highest.
+ */
 interface IStrategyMetadata {
     name: string;
     description: string;
@@ -59,49 +77,19 @@ interface IStrategyMetadata {
     type: 'ERC4626' | 'ERC721' | 'Other';
     depositTokens: TokenInfo[];
     protocols: IProtocol[];
+    auditUrl?: string;
+    maxTVL: Web3Number;
+    risk: {
+        riskFactor: RiskFactor[];
+        netRisk: number;
+    };
+}
+interface IInvestmentFlow {
+    title: string;
+    subItems: string[];
+    linkedFlows: IInvestmentFlow[];
 }
 declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
-
-interface PriceInfo {
-    price: number;
-    timestamp: Date;
-}
-declare abstract class PricerBase {
-    getPrice(tokenSymbol: string): Promise<PriceInfo>;
-}
-declare class Pricer implements PricerBase {
-    readonly config: IConfig;
-    readonly tokens: TokenInfo[];
-    protected prices: {
-        [key: string]: PriceInfo;
-    };
-    private methodToUse;
-    /**
-     * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
-     */
-    protected PRICE_API: string;
-    protected EKUBO_API: string;
-    protected client: any;
-    constructor(config: IConfig, tokens: TokenInfo[]);
-    isReady(): boolean;
-    waitTillReady(): Promise<void>;
-    start(): void;
-    isStale(timestamp: Date, tokenName: string): boolean;
-    assertNotStale(timestamp: Date, tokenName: string): void;
-    getPrice(tokenSymbol: string): Promise<PriceInfo>;
-    protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
-    _getPrice(token: TokenInfo, defaultMethod?: string): Promise<number>;
-    _getPriceCoinbase(token: TokenInfo): Promise<number>;
-    _getPriceCoinMarketCap(token: TokenInfo): Promise<number>;
-    _getPriceEkubo(token: TokenInfo, amountIn?: Web3Number, retry?: number): Promise<number>;
-}
-
-declare class Pragma {
-    contractAddr: string;
-    readonly contract: Contract;
-    constructor(provider: RpcProvider);
-    getPrice(tokenAddr: string): Promise<number>;
-}
 
 interface ILendingMetadata {
     name: string;
@@ -155,6 +143,48 @@ declare abstract class Initializable {
     waitForInitilisation(): Promise<void>;
 }
 
+declare abstract class PricerBase {
+    readonly config: IConfig;
+    readonly tokens: TokenInfo[];
+    constructor(config: IConfig, tokens: TokenInfo[]);
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
+}
+
+interface PriceInfo {
+    price: number;
+    timestamp: Date;
+}
+declare class Pricer extends PricerBase {
+    protected prices: {
+        [key: string]: PriceInfo;
+    };
+    private methodToUse;
+    /**
+     * TOKENA and TOKENB are the two token names to get price of TokenA in terms of TokenB
+     */
+    protected PRICE_API: string;
+    protected EKUBO_API: string;
+    constructor(config: IConfig, tokens: TokenInfo[]);
+    isReady(): boolean;
+    waitTillReady(): Promise<void>;
+    start(): void;
+    isStale(timestamp: Date, tokenName: string): boolean;
+    assertNotStale(timestamp: Date, tokenName: string): void;
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
+    protected _loadPrices(onUpdate?: (tokenSymbol: string) => void): void;
+    _getPrice(token: TokenInfo, defaultMethod?: string): Promise<number>;
+    _getPriceCoinbase(token: TokenInfo): Promise<number>;
+    _getPriceCoinMarketCap(token: TokenInfo): Promise<number>;
+    _getPriceEkubo(token: TokenInfo, amountIn?: Web3Number, retry?: number): Promise<number>;
+}
+
+declare class Pragma {
+    contractAddr: string;
+    readonly contract: Contract;
+    constructor(provider: RpcProvider);
+    getPrice(tokenAddr: string): Promise<number>;
+}
+
 declare class ZkLend extends ILending implements ILending {
     readonly pricer: Pricer;
     static readonly POOLS_URL = "https://app.zklend.com/api/pools";
@@ -184,6 +214,15 @@ declare class ZkLend extends ILending implements ILending {
      * @returns Promise<ILendingPosition[]>
      */
     getPositions(user: ContractAddr): Promise<ILendingPosition[]>;
+}
+
+declare class PricerFromApi extends PricerBase {
+    constructor(config: IConfig, tokens: TokenInfo[]);
+    getPrice(tokenSymbol: string): Promise<PriceInfo>;
+    getPriceFromMyAPI(tokenSymbol: string): Promise<{
+        price: number;
+        timestamp: Date;
+    }>;
 }
 
 declare const logger: {
@@ -441,6 +480,7 @@ declare class VesuRebalance {
      * @returns Populated contract call for rebalance
      */
     getRebalanceCall(pools: Awaited<ReturnType<typeof this.getRebalancedPositions>>['changes'], isOverWeightAdjustment: boolean): Promise<starknet.Call | null>;
+    getInvestmentFlows(pools: PoolInfoFull[]): Promise<IInvestmentFlow[]>;
 }
 /**
  * Represents the Vesu Rebalance Strategies.
@@ -554,4 +594,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerBase, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, logger };

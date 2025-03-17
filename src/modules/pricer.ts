@@ -3,22 +3,14 @@ import { FatalError, Global, logger } from "@/global";
 import { TokenInfo } from "@/interfaces/common";
 import { IConfig } from "@/interfaces/common";
 import { Web3Number } from "@/dataTypes";
-const CoinMarketCap = require('coinmarketcap-api')
+import { PricerBase } from "./pricerBase";
 
 export interface PriceInfo {
     price: number,
     timestamp: Date
 }
 
-export abstract class PricerBase {
-    async getPrice(tokenSymbol: string): Promise<PriceInfo> {
-        throw new Error('Method not implemented');
-    }
-}
-
-export class Pricer implements PricerBase{
-    readonly config: IConfig;
-    readonly tokens: TokenInfo[] = [];
+export class Pricer extends PricerBase {
     protected prices: {
         [key: string]: PriceInfo
     } = {}
@@ -33,12 +25,8 @@ export class Pricer implements PricerBase{
     protected PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
     protected EKUBO_API = 'https://quoter-mainnet-api.ekubo.org/{{AMOUNT}}/{{TOKEN_ADDRESS}}/0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8'; // e.g. ETH/USDC
 
-    // backup oracle001
-    protected client = new CoinMarketCap(process.env.COINMARKETCAP_KEY!);
-    
     constructor(config: IConfig, tokens: TokenInfo[]) {
-        this.config = config;
-        this.tokens = tokens;
+        super(config, tokens);
     }
 
     isReady() {
@@ -187,11 +175,11 @@ export class Pricer implements PricerBase{
     }
 
     async _getPriceCoinMarketCap(token: TokenInfo): Promise<number> {
-        const result = await this.client.getQuotes({symbol: token.symbol});
-        if (result.data)
-            return result.data[token.symbol].quote.USD.price as number
+        // const result = await this.client.getQuotes({symbol: token.symbol});
+        // if (result.data)
+        //     return result.data[token.symbol].quote.USD.price as number
 
-        throw new Error(result);
+        throw new Error("Not implemented");
     }
 
     async _getPriceEkubo(token: TokenInfo, amountIn = new Web3Number(1, token.decimals), retry = 0): Promise<number> {

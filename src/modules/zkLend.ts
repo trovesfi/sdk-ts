@@ -37,6 +37,7 @@ export class ZkLend extends ILending implements ILending {
                     name: pool.token.name,
                     symbol: pool.token.symbol,
                     address: savedTokenInfo?.address || '',
+                    logo: '',
                     decimals: pool.token.decimals,
                     borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
                     collareralFactor

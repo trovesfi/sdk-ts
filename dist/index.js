@@ -41,8 +41,9 @@ __export(src_exports, {
   PasswordJsonCryptoUtil: () => PasswordJsonCryptoUtil,
   Pragma: () => Pragma,
   Pricer: () => Pricer,
-  PricerBase: () => PricerBase,
+  PricerFromApi: () => PricerFromApi,
   PricerRedis: () => PricerRedis,
+  RiskType: () => RiskType,
   Store: () => Store,
   TelegramNotif: () => TelegramNotif,
   VesuRebalance: () => VesuRebalance,
@@ -79,6 +80,7 @@ var FatalError = class extends Error {
 var tokens = [{
   name: "Starknet",
   symbol: "STRK",
+  logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
   address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
   decimals: 18,
   coingeckId: "starknet"
@@ -111,6 +113,7 @@ var Global = class {
         symbol: token.symbol,
         address: token.address,
         decimals: token.decimals,
+        logo: token.logoUri,
         coingeckId: token.extensions.coingeckoId
       });
     });
@@ -190,16 +193,22 @@ var ContractAddr = class _ContractAddr {
   }
 };
 
-// src/modules/pricer.ts
-var CoinMarketCap = require("coinmarketcap-api");
+// src/modules/pricerBase.ts
 var PricerBase = class {
+  constructor(config, tokens2) {
+    this.config = config;
+    this.tokens = tokens2;
+  }
   async getPrice(tokenSymbol) {
     throw new Error("Method not implemented");
   }
 };
-var Pricer = class {
+
+// src/modules/pricer.ts
+var Pricer = class extends PricerBase {
+  // e.g. ETH/USDC
   constructor(config, tokens2) {
-    this.tokens = [];
+    super(config, tokens2);
     this.prices = {};
     // code populates this map during runtime to determine which method to use for a given token
     // The method set will be the first one to try after first attempt
@@ -209,11 +218,6 @@ var Pricer = class {
      */
     this.PRICE_API = `https://api.coinbase.com/v2/prices/{{PRICER_KEY}}/buy`;
     this.EKUBO_API = "https://quoter-mainnet-api.ekubo.org/{{AMOUNT}}/{{TOKEN_ADDRESS}}/0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8";
-    // e.g. ETH/USDC
-    // backup oracle001
-    this.client = new CoinMarketCap(process.env.COINMARKETCAP_KEY);
-    this.config = config;
-    this.tokens = tokens2;
   }
   isReady() {
     const allPricesExist = Object.keys(this.prices).length === this.tokens.length;
@@ -345,10 +349,7 @@ var Pricer = class {
     return Number(data.data.amount);
   }
   async _getPriceCoinMarketCap(token) {
-    const result = await this.client.getQuotes({ symbol: token.symbol });
-    if (result.data)
-      return result.data[token.symbol].quote.USD.price;
-    throw new Error(result);
+    throw new Error("Not implemented");
   }
   async _getPriceEkubo(token, amountIn = new Web3Number(1, token.decimals), retry = 0) {
     const url = this.EKUBO_API.replace("{{TOKEN_ADDRESS}}", token.address).replace("{{AMOUNT}}", amountIn.toWei());
@@ -542,6 +543,7 @@ var _ZkLend = class _ZkLend extends ILending {
           name: pool.token.name,
           symbol: pool.token.symbol,
           address: savedTokenInfo?.address || "",
+          logo: "",
           decimals: pool.token.decimals,
           borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
           collareralFactor
@@ -651,8 +653,72 @@ var _ZkLend = class _ZkLend extends ILending {
 _ZkLend.POOLS_URL = "https://app.zklend.com/api/pools";
 var ZkLend = _ZkLend;
 
+// src/modules/pricer-from-api.ts
+var import_axios4 = __toESM(require("axios"));
+var PricerFromApi = class extends PricerBase {
+  constructor(config, tokens2) {
+    super(config, tokens2);
+  }
+  async getPrice(tokenSymbol) {
+    try {
+      return await this.getPriceFromMyAPI(tokenSymbol);
+    } catch (e) {
+      logger.warn("getPriceFromMyAPI error", e);
+    }
+    logger.log("getPrice coinbase", tokenSymbol);
+    let retry = 0;
+    const MAX_RETRIES = 5;
+    for (retry = 1; retry < MAX_RETRIES + 1; retry++) {
+      try {
+        const priceInfo = await import_axios4.default.get(
+          `https://api.coinbase.com/v2/prices/${tokenSymbol}-USDT/spot`
+        );
+        if (!priceInfo) {
+          throw new Error("Failed to fetch price");
+        }
+        const data = await priceInfo.data;
+        const price = Number(data.data.amount);
+        return {
+          price,
+          timestamp: /* @__PURE__ */ new Date()
+        };
+      } catch (e) {
+        logger.warn("getPrice coinbase error", e, retry);
+        await new Promise((resolve) => setTimeout(resolve, retry * 1e3));
+      }
+    }
+    throw new Error(`Failed to fetch price for ${tokenSymbol}`);
+  }
+  async getPriceFromMyAPI(tokenSymbol) {
+    logger.verbose(`getPrice from redis: ${tokenSymbol}`);
+    const endpoint = "https://app.strkfarm.com";
+    const url = `${endpoint}/api/price/${tokenSymbol}`;
+    const priceInfoRes = await fetch(url);
+    const priceInfo = await priceInfoRes.json();
+    const now = /* @__PURE__ */ new Date();
+    const priceTime = new Date(priceInfo.timestamp);
+    if (now.getTime() - priceTime.getTime() > 9e5) {
+      throw new Error("Price is stale");
+    }
+    const price = Number(priceInfo.price);
+    return {
+      price,
+      timestamp: new Date(priceInfo.timestamp)
+    };
+  }
+};
+
 // src/interfaces/common.ts
 var import_starknet3 = require("starknet");
+var RiskType = /* @__PURE__ */ ((RiskType2) => {
+  RiskType2["MARKET_RISK"] = "MARKET_RISK";
+  RiskType2["IMPERMANENT_LOSS"] = "IMPERMANENT_LOSS";
+  RiskType2["LIQUIDITY_RISK"] = "LIQUIDITY_RISK";
+  RiskType2["SMART_CONTRACT_RISK"] = "SMART_CONTRACT_RISK";
+  RiskType2["TECHNICAL_RISK"] = "TECHNICAL_RISK";
+  RiskType2["COUNTERPARTY_RISK"] = "COUNTERPARTY_RISK";
+  return RiskType2;
+})(RiskType || {});
 var Network = /* @__PURE__ */ ((Network2) => {
   Network2["mainnet"] = "mainnet";
   Network2["sepolia"] = "sepolia";
@@ -2234,7 +2300,7 @@ function assert(condition, message) {
 }
 
 // src/strategies/vesu-rebalance.ts
-var import_axios4 = __toESM(require("axios"));
+var import_axios5 = __toESM(require("axios"));
 var VesuRebalance = class _VesuRebalance {
   // 10000 bps = 100%
   /**
@@ -2341,7 +2407,7 @@ var VesuRebalance = class _VesuRebalance {
     let isErrorPositionsAPI = false;
     let vesuPositions = [];
     try {
-      const res = await import_axios4.default.get(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`);
+      const res = await import_axios5.default.get(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`);
       const data2 = await res.data;
       vesuPositions = data2.data;
     } catch (e) {
@@ -2351,7 +2417,7 @@ var VesuRebalance = class _VesuRebalance {
     let isErrorPoolsAPI = false;
     let pools = [];
     try {
-      const res = await import_axios4.default.get(`https://api.vesu.xyz/pools`);
+      const res = await import_axios5.default.get(`https://api.vesu.xyz/pools`);
       const data2 = await res.data;
       pools = data2.data;
     } catch (e) {
@@ -2511,16 +2577,47 @@ var VesuRebalance = class _VesuRebalance {
     }
     return this.contract.populate("rebalance", [actions]);
   }
+  async getInvestmentFlows(pools) {
+    const netYield = this.netAPYGivenPools(pools);
+    const baseFlow = {
+      title: "Deposit $1000",
+      subItems: [`Net yield: ${(netYield * 100).toFixed(2)}%`],
+      linkedFlows: []
+    };
+    pools.forEach((p) => {
+      if (p.amount.eq(0)) return;
+      const flow = {
+        title: `${p.pool_name} - $${(p.current_weight * 1e3).toFixed(2)}`,
+        subItems: [
+          `APY: ${(p.APY.netApy * 100).toFixed(2)}%`,
+          `Weight: ${(p.current_weight * 100).toFixed(2)}% / ${(p.max_weight * 100).toFixed(2)}%`
+        ],
+        linkedFlows: []
+      };
+      baseFlow.linkedFlows.push(flow);
+    });
+    return [baseFlow];
+  }
 };
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+var _riskFactor = [
+  { type: "SMART_CONTRACT_RISK" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+  { type: "TECHNICAL_RISK" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
+  { type: "COUNTERPARTY_RISK" /* COUNTERPARTY_RISK */, value: 1, weight: 50 }
+];
 var VesuRebalanceStrategies = [{
   name: "Vesu STRK",
   description: _description.replace("{{TOKEN}}", "STRK"),
   address: ContractAddr.from("0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1"),
   type: "ERC4626",
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
-  protocols: [_protocol]
+  protocols: [_protocol],
+  maxTVL: Web3Number.fromWei("0", 18),
+  risk: {
+    riskFactor: _riskFactor,
+    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100
+  }
 }];
 
 // src/notifs/telegram.ts
@@ -2797,8 +2894,9 @@ var Store = class _Store {
   PasswordJsonCryptoUtil,
   Pragma,
   Pricer,
-  PricerBase,
+  PricerFromApi,
   PricerRedis,
+  RiskType,
   Store,
   TelegramNotif,
   VesuRebalance,

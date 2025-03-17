@@ -20,9 +20,6 @@ importers:
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
-      coinmarketcap-api:
-        specifier: ^3.1.1
-        version: 3.1.1
       commander:
         specifier: ^12.1.0
         version: 12.1.0
@@ -32,6 +29,9 @@ importers:
       node-telegram-bot-api:
         specifier: ^0.66.0
         version: 0.66.0(request@2.88.2)
+      proxy-from-env:
+        specifier: ^1.1.0
+        version: 1.1.0
       redis:
         specifier: ^4.7.0
         version: 4.7.0
@@ -1060,9 +1060,6 @@ packages:
   co@4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
-
-  coinmarketcap-api@3.1.1:
-    resolution: {integrity: sha512-fXTJq3YyiI54m9W0T5CwxQAKEpZqXRZdKbb10Zld/vINfdM83Y8so+m6RVWoJktl8tMIAxCtkVVC5aGwSs1keQ==}
 
   collect-v8-coverage@1.0.2:
     resolution: {integrity: sha512-lHl4d5/ONEbLlJvaJNtsF/Lz+WvB07u2ycqTYbdrq7UypDXailES4valYb2eWiJFxZlVmpGekfqoxQhzyFdT4Q==}
@@ -4004,13 +4001,6 @@ snapshots:
   cluster-key-slot@1.1.2: {}
 
   co@4.6.0: {}
-
-  coinmarketcap-api@3.1.1:
-    dependencies:
-      node-fetch: 2.7.0
-      qs: 6.10.4
-    transitivePeerDependencies:
-      - encoding
 
   collect-v8-coverage@1.0.2: {}
 

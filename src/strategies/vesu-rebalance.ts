@@ -1,11 +1,12 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
-import { IConfig, IProtocol, IStrategyMetadata } from "@/interfaces";
-import { Pricer, PricerBase } from "@/modules";
+import { IConfig, IInvestmentFlow, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
+import { Pricer } from "@/modules";
 import { CairoCustomEnum, Contract, num, uint256 } from "starknet";
 import VesuRebalanceAbi from '@/data/vesu-rebalance.abi.json';
 import { Global } from "@/global";
 import { assert } from "@/utils";
 import axios from "axios";
+import { PricerBase } from "@/modules/pricerBase";
 
 interface PoolProps {
     pool_id: ContractAddr;
@@ -412,10 +413,41 @@ export class VesuRebalance {
         }
         return this.contract.populate('rebalance', [actions]);
     }
+
+    async getInvestmentFlows(pools: PoolInfoFull[]) {
+        const netYield = this.netAPYGivenPools(pools);
+       
+        const baseFlow: IInvestmentFlow = {
+            title: "Deposit $1000",
+            subItems: [`Net yield: ${(netYield * 100).toFixed(2)}%`],
+            linkedFlows: [],
+        };
+
+        pools.forEach((p) => {
+            if (p.amount.eq(0)) return;
+            const flow: IInvestmentFlow = {
+                title: `${p.pool_name} - $${(p.current_weight * 1000).toFixed(2)}`,
+                subItems: [
+                    `APY: ${(p.APY.netApy * 100).toFixed(2)}%`,
+                    `Weight: ${(p.current_weight * 100).toFixed(2)}% / ${(p.max_weight * 100).toFixed(2)}%`,
+                ],
+                linkedFlows: [],
+            };
+            baseFlow.linkedFlows.push(flow);
+        });
+
+        return [baseFlow];
+    }
 }
 
 const _description = 'Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.'
 const _protocol: IProtocol = {name: 'Vesu', logo: 'https://static-assets-8zct.onrender.com/integrations/vesu/logo.png'}
+// need to fine tune better
+const _riskFactor: RiskFactor[] = [
+    {type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25},
+    {type: RiskType.TECHNICAL_RISK, value: 0.5, weight: 25},
+    {type: RiskType.COUNTERPARTY_RISK, value: 1, weight: 50},
+]
 /**
  * Represents the Vesu Rebalance Strategies.
  */
@@ -425,5 +457,10 @@ export const VesuRebalanceStrategies: IStrategyMetadata[] = [{
     address: ContractAddr.from('0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1'),
     type: 'ERC4626',
     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'STRK')!],
-    protocols: [_protocol]
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei('0', 18),
+    risk: {
+        riskFactor: _riskFactor,
+        netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100,
+    }
 }]

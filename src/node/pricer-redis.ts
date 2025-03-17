@@ -6,6 +6,7 @@ import type { RedisClientType } from 'redis'
 
 export class PricerRedis extends Pricer {
     private redisClient: RedisClientType | null = null;
+    
     constructor(config: IConfig, tokens: TokenInfo[]) {
         super(config, tokens)
     }
