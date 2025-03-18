@@ -1,5 +1,5 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
-import { IConfig, IInvestmentFlow, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
+import { FlowChartColors, IConfig, IInvestmentFlow, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
 import { Pricer } from "@/modules";
 import { CairoCustomEnum, Contract, num, uint256 } from "starknet";
 import VesuRebalanceAbi from '@/data/vesu-rebalance.abi.json';
@@ -248,7 +248,7 @@ export class VesuRebalance {
             const assets = await vTokenContract.convert_to_assets(uint256.bnToUint256(bal.toString()));
             const item = {
                 pool_id: p.pool_id,
-                pool_name: vesuPosition?.pool.name,
+                pool_name: pool.name,
                 max_weight: p.max_weight,
                 current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
                 v_token: p.v_token,
@@ -418,24 +418,26 @@ export class VesuRebalance {
         const netYield = this.netAPYGivenPools(pools);
        
         const baseFlow: IInvestmentFlow = {
-            title: "Deposit $1000",
-            subItems: [`Net yield: ${(netYield * 100).toFixed(2)}%`],
+            title: "Your Deposit",
+            subItems: [{key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%`}],
             linkedFlows: [],
+            style: {backgroundColor: FlowChartColors.Purple.valueOf()},
         };
 
-        pools.forEach((p) => {
-            if (p.amount.eq(0)) return;
+        let _pools = [...pools];
+        _pools = _pools.sort((a, b) => Number(b.amount.toString()) - Number(a.amount.toString()));
+        _pools.forEach((p) => {
             const flow: IInvestmentFlow = {
-                title: `${p.pool_name} - $${(p.current_weight * 1000).toFixed(2)}`,
+                title: `Pool name: ${p.pool_name}`,
                 subItems: [
-                    `APY: ${(p.APY.netApy * 100).toFixed(2)}%`,
-                    `Weight: ${(p.current_weight * 100).toFixed(2)}% / ${(p.max_weight * 100).toFixed(2)}%`,
+                    {key: `APY`, value: `${(p.APY.netApy * 100).toFixed(2)}%`},
+                    {key: 'Weight', value: `${(p.current_weight * 100).toFixed(2)} / ${(p.max_weight * 100).toFixed(2)}%`}
                 ],
                 linkedFlows: [],
+                style: p.amount.greaterThan(0) ? {backgroundColor: FlowChartColors.Blue.valueOf()} : {color: 'gray'},
             };
             baseFlow.linkedFlows.push(flow);
         });
-
         return [baseFlow];
     }
 }

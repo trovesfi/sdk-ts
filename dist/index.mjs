@@ -666,6 +666,12 @@ var Network = /* @__PURE__ */ ((Network2) => {
   Network2["devnet"] = "devnet";
   return Network2;
 })(Network || {});
+var FlowChartColors = /* @__PURE__ */ ((FlowChartColors2) => {
+  FlowChartColors2["Green"] = "purple";
+  FlowChartColors2["Blue"] = "#35484f";
+  FlowChartColors2["Purple"] = "#6e53dc";
+  return FlowChartColors2;
+})(FlowChartColors || {});
 function getMainnetConfig(rpcUrl = "https://starknet-mainnet.public.blastapi.io", blockIdentifier = "pending") {
   return {
     provider: new RpcProvider2({
@@ -2375,7 +2381,7 @@ var VesuRebalance = class _VesuRebalance {
       const assets = await vTokenContract.convert_to_assets(uint2562.bnToUint256(bal.toString()));
       const item = {
         pool_id: p.pool_id,
-        pool_name: vesuPosition?.pool.name,
+        pool_name: pool.name,
         max_weight: p.max_weight,
         current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
         v_token: p.v_token,
@@ -2521,19 +2527,22 @@ var VesuRebalance = class _VesuRebalance {
   async getInvestmentFlows(pools) {
     const netYield = this.netAPYGivenPools(pools);
     const baseFlow = {
-      title: "Deposit $1000",
-      subItems: [`Net yield: ${(netYield * 100).toFixed(2)}%`],
-      linkedFlows: []
+      title: "Your Deposit",
+      subItems: [{ key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%` }],
+      linkedFlows: [],
+      style: { backgroundColor: "#6e53dc" /* Purple */.valueOf() }
     };
-    pools.forEach((p) => {
-      if (p.amount.eq(0)) return;
+    let _pools = [...pools];
+    _pools = _pools.sort((a, b) => Number(b.amount.toString()) - Number(a.amount.toString()));
+    _pools.forEach((p) => {
       const flow = {
-        title: `${p.pool_name} - $${(p.current_weight * 1e3).toFixed(2)}`,
+        title: `Pool name: ${p.pool_name}`,
         subItems: [
-          `APY: ${(p.APY.netApy * 100).toFixed(2)}%`,
-          `Weight: ${(p.current_weight * 100).toFixed(2)}% / ${(p.max_weight * 100).toFixed(2)}%`
+          { key: `APY`, value: `${(p.APY.netApy * 100).toFixed(2)}%` },
+          { key: "Weight", value: `${(p.current_weight * 100).toFixed(2)} / ${(p.max_weight * 100).toFixed(2)}%` }
         ],
-        linkedFlows: []
+        linkedFlows: [],
+        style: p.amount.greaterThan(0) ? { backgroundColor: "#35484f" /* Blue */.valueOf() } : { color: "gray" }
       };
       baseFlow.linkedFlows.push(flow);
     });
@@ -2826,6 +2835,7 @@ export {
   AutoCompounderSTRK,
   ContractAddr,
   FatalError,
+  FlowChartColors,
   Global,
   ILending,
   Initializable,

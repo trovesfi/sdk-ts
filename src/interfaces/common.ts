@@ -43,6 +43,12 @@ export interface IProtocol {
     logo: string,
 }
 
+export enum FlowChartColors {
+    Green = 'purple',
+    Blue = '#35484f',
+    Purple = '#6e53dc',
+}
+
 /**
  * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.
  * @property risk.riskFactor.factor - The value of the risk factor from 0 to 10, 0 being the lowest and 10 being the highest.
@@ -64,8 +70,9 @@ export interface IStrategyMetadata {
 
 export interface IInvestmentFlow {
     title: string,
-    subItems: string[],
+    subItems: {key: string, value: string}[],
     linkedFlows: IInvestmentFlow[],
+    style?: any
 }
 
 export function getMainnetConfig(rpcUrl = "https://starknet-mainnet.public.blastapi.io", blockIdentifier: BlockIdentifier = 'pending'): IConfig {

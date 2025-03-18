@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es2020",                                 
     "module": "commonjs",                               
-    "baseUrl": "./",                                  
+    "baseUrl": "./",        
+    "jsx": "react-jsx",                        
     "paths": {
       "@/*": ["./src/*"],
       "@node/*": ["./node/*"],

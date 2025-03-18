@@ -66,6 +66,11 @@ interface IProtocol {
     name: string;
     logo: string;
 }
+declare enum FlowChartColors {
+    Green = "purple",
+    Blue = "#35484f",
+    Purple = "#6e53dc"
+}
 /**
  * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.
  * @property risk.riskFactor.factor - The value of the risk factor from 0 to 10, 0 being the lowest and 10 being the highest.
@@ -86,8 +91,12 @@ interface IStrategyMetadata {
 }
 interface IInvestmentFlow {
     title: string;
-    subItems: string[];
+    subItems: {
+        key: string;
+        value: string;
+    }[];
     linkedFlows: IInvestmentFlow[];
+    style?: any;
 }
 declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
 
@@ -594,4 +603,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, logger };
