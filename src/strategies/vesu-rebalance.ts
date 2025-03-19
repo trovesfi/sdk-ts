@@ -449,6 +449,7 @@ const _riskFactor: RiskFactor[] = [
     {type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25},
     {type: RiskType.TECHNICAL_RISK, value: 0.5, weight: 25},
     {type: RiskType.COUNTERPARTY_RISK, value: 1, weight: 50},
+    {type: RiskType.ORACLE_RISK, value: 0.5, weight: 25},
 ]
 /**
  * Represents the Vesu Rebalance Strategies.

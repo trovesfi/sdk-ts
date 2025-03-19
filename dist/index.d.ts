@@ -31,12 +31,14 @@ declare class ContractAddr {
 }
 
 declare enum RiskType {
-    MARKET_RISK = "MARKET_RISK",
-    IMPERMANENT_LOSS = "IMPERMANENT_LOSS",
-    LIQUIDITY_RISK = "LIQUIDITY_RISK",
-    SMART_CONTRACT_RISK = "SMART_CONTRACT_RISK",
-    TECHNICAL_RISK = "TECHNICAL_RISK",
-    COUNTERPARTY_RISK = "COUNTERPARTY_RISK"
+    MARKET_RISK = "Market Risk",
+    IMPERMANENT_LOSS = "Impermanent Loss Risk",
+    LIQUIDATION_RISK = "Liquidation Risk",
+    LOW_LIQUIDITY_RISK = "Low Liquidity Risk",
+    SMART_CONTRACT_RISK = "Smart Contract Risk",
+    ORACLE_RISK = "Oracle Risk",
+    TECHNICAL_RISK = "Technical Risk",
+    COUNTERPARTY_RISK = "Counterparty Risk"
 }
 interface RiskFactor {
     type: RiskType;
@@ -99,6 +101,9 @@ interface IInvestmentFlow {
     style?: any;
 }
 declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
+declare const getRiskExplaination: (riskType: RiskType) => "The risk of the market moving against the position." | "The temporary loss of value experienced by liquidity providers in AMMs when asset prices diverge compared to simply holding them." | "The risk of losing funds due to the position being liquidated." | "The risk of low liquidity in the pool, which can lead to high slippages or reduced in-abilities to quickly exit the position." | "The risk of the oracle being manipulated or incorrect." | "The risk of the smart contract being vulnerable to attacks." | "The risk of technical issues e.g. backend failure." | "The risk of the counterparty defaulting e.g. bad debt on lending platforms.";
+declare const getRiskColor: (risk: RiskFactor) => "green" | "yellow" | "red";
+declare const getNoRiskTags: (risks: RiskFactor[]) => string[];
 
 interface ILendingMetadata {
     name: string;
@@ -603,4 +608,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };

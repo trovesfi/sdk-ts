@@ -54,6 +54,9 @@ __export(src_exports, {
   assert: () => assert,
   getDefaultStoreConfig: () => getDefaultStoreConfig,
   getMainnetConfig: () => getMainnetConfig,
+  getNoRiskTags: () => getNoRiskTags,
+  getRiskColor: () => getRiskColor,
+  getRiskExplaination: () => getRiskExplaination,
   logger: () => logger
 });
 module.exports = __toCommonJS(src_exports);
@@ -712,12 +715,14 @@ var PricerFromApi = class extends PricerBase {
 // src/interfaces/common.ts
 var import_starknet3 = require("starknet");
 var RiskType = /* @__PURE__ */ ((RiskType2) => {
-  RiskType2["MARKET_RISK"] = "MARKET_RISK";
-  RiskType2["IMPERMANENT_LOSS"] = "IMPERMANENT_LOSS";
-  RiskType2["LIQUIDITY_RISK"] = "LIQUIDITY_RISK";
-  RiskType2["SMART_CONTRACT_RISK"] = "SMART_CONTRACT_RISK";
-  RiskType2["TECHNICAL_RISK"] = "TECHNICAL_RISK";
-  RiskType2["COUNTERPARTY_RISK"] = "COUNTERPARTY_RISK";
+  RiskType2["MARKET_RISK"] = "Market Risk";
+  RiskType2["IMPERMANENT_LOSS"] = "Impermanent Loss Risk";
+  RiskType2["LIQUIDATION_RISK"] = "Liquidation Risk";
+  RiskType2["LOW_LIQUIDITY_RISK"] = "Low Liquidity Risk";
+  RiskType2["SMART_CONTRACT_RISK"] = "Smart Contract Risk";
+  RiskType2["ORACLE_RISK"] = "Oracle Risk";
+  RiskType2["TECHNICAL_RISK"] = "Technical Risk";
+  RiskType2["COUNTERPARTY_RISK"] = "Counterparty Risk";
   return RiskType2;
 })(RiskType || {});
 var Network = /* @__PURE__ */ ((Network2) => {
@@ -742,6 +747,38 @@ function getMainnetConfig(rpcUrl = "https://starknet-mainnet.public.blastapi.io"
     network: "mainnet" /* mainnet */
   };
 }
+var getRiskExplaination = (riskType) => {
+  switch (riskType) {
+    case "Market Risk" /* MARKET_RISK */:
+      return "The risk of the market moving against the position.";
+    case "Impermanent Loss Risk" /* IMPERMANENT_LOSS */:
+      return "The temporary loss of value experienced by liquidity providers in AMMs when asset prices diverge compared to simply holding them.";
+    case "Liquidation Risk" /* LIQUIDATION_RISK */:
+      return "The risk of losing funds due to the position being liquidated.";
+    case "Low Liquidity Risk" /* LOW_LIQUIDITY_RISK */:
+      return "The risk of low liquidity in the pool, which can lead to high slippages or reduced in-abilities to quickly exit the position.";
+    case "Oracle Risk" /* ORACLE_RISK */:
+      return "The risk of the oracle being manipulated or incorrect.";
+    case "Smart Contract Risk" /* SMART_CONTRACT_RISK */:
+      return "The risk of the smart contract being vulnerable to attacks.";
+    case "Technical Risk" /* TECHNICAL_RISK */:
+      return "The risk of technical issues e.g. backend failure.";
+    case "Counterparty Risk" /* COUNTERPARTY_RISK */:
+      return "The risk of the counterparty defaulting e.g. bad debt on lending platforms.";
+  }
+};
+var getRiskColor = (risk) => {
+  const value = risk.value;
+  if (value === 0) return "green";
+  if (value < 2.5) return "yellow";
+  return "red";
+};
+var getNoRiskTags = (risks) => {
+  const noRisks1 = risks.filter((risk) => risk.value === 0).map((risk) => risk.type);
+  const noRisks2 = Object.values(RiskType).filter((risk) => !risks.map((risk2) => risk2.type).includes(risk));
+  const mergedUnique = [.../* @__PURE__ */ new Set([...noRisks1, ...noRisks2])];
+  return mergedUnique.map((risk) => `No ${risk}`);
+};
 
 // src/interfaces/initializable.ts
 var Initializable = class {
@@ -2612,9 +2649,10 @@ var VesuRebalance = class _VesuRebalance {
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
 var _riskFactor = [
-  { type: "SMART_CONTRACT_RISK" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-  { type: "TECHNICAL_RISK" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
-  { type: "COUNTERPARTY_RISK" /* COUNTERPARTY_RISK */, value: 1, weight: 50 }
+  { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+  { type: "Technical Risk" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
+  { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
+  { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var VesuRebalanceStrategies = [{
   name: "Vesu STRK",
@@ -2917,5 +2955,8 @@ var Store = class _Store {
   assert,
   getDefaultStoreConfig,
   getMainnetConfig,
+  getNoRiskTags,
+  getRiskColor,
+  getRiskExplaination,
   logger
 });

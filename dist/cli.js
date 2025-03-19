@@ -398,9 +398,10 @@ var import_axios5 = __toESM(require("axios"));
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
 var _riskFactor = [
-  { type: "SMART_CONTRACT_RISK" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-  { type: "TECHNICAL_RISK" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
-  { type: "COUNTERPARTY_RISK" /* COUNTERPARTY_RISK */, value: 1, weight: 50 }
+  { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+  { type: "Technical Risk" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
+  { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
+  { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var VesuRebalanceStrategies = [{
   name: "Vesu STRK",

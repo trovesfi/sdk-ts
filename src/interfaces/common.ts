@@ -2,12 +2,14 @@ import { ContractAddr, Web3Number } from "@/dataTypes"
 import { BlockIdentifier, RpcProvider } from "starknet"
 
 export enum RiskType {
-    MARKET_RISK = 'MARKET_RISK',
-    IMPERMANENT_LOSS = 'IMPERMANENT_LOSS',
-    LIQUIDITY_RISK = 'LIQUIDITY_RISK',
-    SMART_CONTRACT_RISK = 'SMART_CONTRACT_RISK',
-    TECHNICAL_RISK = 'TECHNICAL_RISK',
-    COUNTERPARTY_RISK = 'COUNTERPARTY_RISK', // e.g. bad debt
+    MARKET_RISK = 'Market Risk',
+    IMPERMANENT_LOSS = 'Impermanent Loss Risk',
+    LIQUIDATION_RISK = 'Liquidation Risk',
+    LOW_LIQUIDITY_RISK = 'Low Liquidity Risk',
+    SMART_CONTRACT_RISK = 'Smart Contract Risk',
+    ORACLE_RISK = 'Oracle Risk',
+    TECHNICAL_RISK = 'Technical Risk',
+    COUNTERPARTY_RISK = 'Counterparty Risk', // e.g. bad debt
 }
 
 export interface RiskFactor {
@@ -84,4 +86,44 @@ export function getMainnetConfig(rpcUrl = "https://starknet-mainnet.public.blast
         stage: "production",
         network: Network.mainnet
     }
+}
+
+export const getRiskExplaination = (riskType: RiskType) => {
+    switch (riskType) {
+        case RiskType.MARKET_RISK:
+            return "The risk of the market moving against the position."
+        case RiskType.IMPERMANENT_LOSS:
+            return "The temporary loss of value experienced by liquidity providers in AMMs when asset prices diverge compared to simply holding them."
+        case RiskType.LIQUIDATION_RISK:
+            return "The risk of losing funds due to the position being liquidated."
+        case RiskType.LOW_LIQUIDITY_RISK:
+            return "The risk of low liquidity in the pool, which can lead to high slippages or reduced in-abilities to quickly exit the position."
+        case RiskType.ORACLE_RISK:
+            return "The risk of the oracle being manipulated or incorrect."
+        case RiskType.SMART_CONTRACT_RISK:
+            return "The risk of the smart contract being vulnerable to attacks."
+        case RiskType.TECHNICAL_RISK:
+            return "The risk of technical issues e.g. backend failure."
+        case RiskType.COUNTERPARTY_RISK:
+            return "The risk of the counterparty defaulting e.g. bad debt on lending platforms."
+    }
+}  
+
+export const getRiskColor = (risk: RiskFactor) => {
+    const value = risk.value;
+    if (value === 0) return 'green';
+    if (value < 2.5) return 'yellow';
+    return 'red';
+}
+
+export const getNoRiskTags = (risks: RiskFactor[]) => {
+    const noRisks1 = risks.filter(risk => risk.value === 0).map(risk => risk.type);
+
+    // const risks not present
+    const noRisks2 = Object.values(RiskType).filter(risk => !risks.map(risk => risk.type).includes(risk));
+
+    const mergedUnique = [...new Set([...noRisks1, ...noRisks2])];
+    
+    // add `No` to the start of each risk
+    return mergedUnique.map(risk => `No ${risk}`);
 }
