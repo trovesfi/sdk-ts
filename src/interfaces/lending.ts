@@ -4,7 +4,7 @@ import { ContractAddr } from "@/dataTypes/address";
 import { loggers } from "winston";
 import { logger } from "@/global";
 import { log } from "console";
-import { Web3Number } from "@/dataTypes/bignumber";
+import { Web3Number } from "@/dataTypes";
 
 export interface ILendingMetadata {
     name: string;

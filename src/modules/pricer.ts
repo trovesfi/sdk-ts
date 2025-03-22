@@ -183,7 +183,7 @@ export class Pricer extends PricerBase {
     }
 
     async _getPriceEkubo(token: TokenInfo, amountIn = new Web3Number(1, token.decimals), retry = 0): Promise<number> {
-        const url = this.EKUBO_API.replace("{{TOKEN_ADDRESS}}", token.address).replace("{{AMOUNT}}", amountIn.toWei());
+        const url = this.EKUBO_API.replace("{{TOKEN_ADDRESS}}", token.address.toString()).replace("{{AMOUNT}}", amountIn.toWei());
         const result = await axios.get(url);
         const data: any = result.data;
         const outputUSDC = Number(Web3Number.fromWei(data.total_calculated, 6).toFixed(6));

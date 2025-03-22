@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { TokenInfo } from './interfaces';
+import { ContractAddr } from './dataTypes';
 
 const colors = {
     error: 'red',
@@ -45,14 +46,22 @@ export class FatalError extends Error {
     }
 }
 
-const tokens: TokenInfo[] = [{
+const defaultTokens: TokenInfo[] = [{
     name: 'Starknet',
     symbol: 'STRK',
     logo: 'https://assets.coingecko.com/coins/images/26433/small/starknet.png',
-    address: '0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
+    address: ContractAddr.from('0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d'),
     decimals: 18,
     coingeckId: 'starknet'
-}];
+}, {
+    name: 'xSTRK',
+    symbol: 'xSTRK',
+    logo: 'https://dashboard.endur.fi/endur-fi.svg',
+    address: ContractAddr.from('0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a'),
+    decimals: 18,
+    coingeckId: undefined
+}]
+const tokens: TokenInfo[] = defaultTokens;
 
 /** Contains globally useful functions. 
  * - fatalError: Things to do when a fatal error occurs
@@ -109,7 +118,7 @@ export class Global {
             tokens.push({
                 name: token.name,
                 symbol: token.symbol,
-                address: token.address,
+                address: ContractAddr.from(token.address),
                 decimals: token.decimals,
                 logo: token.logoUri,
                 coingeckId: token.extensions.coingeckoId,
@@ -123,5 +132,18 @@ export class Global {
         if (!condition) {
             throw new FatalError(message);
         }
+    }
+
+    static async getTokenInfoFromAddr(addr: ContractAddr) {
+        // if tokens are not loaded, load them
+        if (tokens.length == defaultTokens.length) {
+            await Global.getTokens();
+        }
+
+        const token = tokens.find((token) => addr.eq(token.address));
+        if (!token) {
+            throw new FatalError(`Token not found: ${addr.address}`);
+        }
+        return token;
     }
 }

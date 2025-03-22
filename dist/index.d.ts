@@ -1,19 +1,26 @@
 import BigNumber from 'bignumber.js';
 import * as starknet from 'starknet';
-import { RpcProvider, BlockIdentifier, Contract, Account } from 'starknet';
+import { RpcProvider, BlockIdentifier, Contract, Uint256, Call, Account } from 'starknet';
+import { Quote } from '@avnu/avnu-sdk';
 import * as util from 'util';
 import TelegramBot from 'node-telegram-bot-api';
 
-declare class Web3Number extends BigNumber {
+declare class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     decimals: number;
     constructor(value: string | number, decimals: number);
-    static fromWei(weiNumber: string | number, decimals: number): Web3Number;
     toWei(): string;
-    multipliedBy(value: string | number): Web3Number;
-    dividedBy(value: string | number): Web3Number;
-    plus(value: string | number): Web3Number;
-    minus(n: number | string, base?: number): Web3Number;
+    multipliedBy(value: string | number | T): T;
+    dividedBy(value: string | number | T): T;
+    plus(value: string | number | T): T;
+    minus(n: number | string | T, base?: number): T;
+    protected construct(value: string | number, decimals: number): T;
     toString(base?: number | undefined): string;
+    toJSON(): string;
+    valueOf(): string;
+}
+
+declare class Web3Number extends _Web3Number<Web3Number> {
+    static fromWei(weiNumber: string | number, decimals: number): Web3Number;
 }
 
 /**
@@ -28,6 +35,7 @@ declare class ContractAddr {
     eqString(other: string): boolean;
     static standardise(address: string | bigint): string;
     static eqString(a: string, b: string): boolean;
+    toString(): string;
 }
 
 declare enum RiskType {
@@ -48,7 +56,7 @@ interface RiskFactor {
 interface TokenInfo {
     name: string;
     symbol: string;
-    address: string;
+    address: ContractAddr;
     decimals: number;
     logo: string;
     coingeckId?: string;
@@ -77,7 +85,7 @@ declare enum FlowChartColors {
  * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.
  * @property risk.riskFactor.factor - The value of the risk factor from 0 to 10, 0 being the lowest and 10 being the highest.
  */
-interface IStrategyMetadata {
+interface IStrategyMetadata<T> {
     name: string;
     description: string;
     address: ContractAddr;
@@ -90,6 +98,7 @@ interface IStrategyMetadata {
         riskFactor: RiskFactor[];
         netRisk: number;
     };
+    additionalInfo: T;
 }
 interface IInvestmentFlow {
     title: string;
@@ -239,6 +248,36 @@ declare class PricerFromApi extends PricerBase {
     }>;
 }
 
+declare class ERC20 {
+    readonly config: IConfig;
+    constructor(config: IConfig);
+    contract(addr: string | ContractAddr): Contract;
+    balanceOf(token: string | ContractAddr, address: string | ContractAddr, tokenDecimals: number): Promise<Web3Number>;
+}
+
+interface Route {
+    token_from: string;
+    token_to: string;
+    exchange_address: string;
+    percent: number;
+    additional_swap_params: string[];
+}
+interface SwapInfo {
+    token_from_address: string;
+    token_from_amount: Uint256;
+    token_to_address: string;
+    token_to_amount: Uint256;
+    token_to_min_amount: Uint256;
+    beneficiary: string;
+    integrator_fee_amount_bps: number;
+    integrator_fee_recipient: string;
+    routes: Route[];
+}
+declare class AvnuWrapper {
+    getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string): Promise<Quote>;
+    getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount: string): Promise<SwapInfo>;
+}
+
 declare const logger: {
     verbose(message: string): void;
     assert(condition?: boolean, ...data: any[]): void;
@@ -297,6 +336,7 @@ declare class Global {
     static getDefaultTokens(): TokenInfo[];
     static getTokens(): Promise<TokenInfo[]>;
     static assert(condition: any, message: string): void;
+    static getTokenInfoFromAddr(addr: ContractAddr): Promise<TokenInfo>;
 }
 
 declare class AutoCompounderSTRK {
@@ -328,6 +368,31 @@ declare class AutoCompounderSTRK {
     }>;
 }
 
+interface SingleActionAmount {
+    tokenInfo: TokenInfo;
+    amount: Web3Number;
+}
+interface SingleTokenInfo extends SingleActionAmount {
+    usdValue: number;
+}
+interface DualActionAmount {
+    token0: SingleActionAmount;
+    token1: SingleActionAmount;
+}
+interface DualTokenInfo {
+    netUsdValue: number;
+    token0: SingleTokenInfo;
+    token1: SingleTokenInfo;
+}
+declare class BaseStrategy<TVLInfo, ActionInfo> {
+    readonly config: IConfig;
+    constructor(config: IConfig);
+    getUserTVL(user: ContractAddr): Promise<TVLInfo>;
+    getTVL(): Promise<TVLInfo>;
+    depositCall(amountInfo: ActionInfo, receiver: ContractAddr): Call[];
+    withdrawCall(amountInfo: ActionInfo, receiver: ContractAddr, owner: ContractAddr): Call[];
+}
+
 interface Change {
     pool_id: ContractAddr;
     changeAmt: Web3Number;
@@ -355,15 +420,13 @@ interface PoolInfoFull {
  * This class implements an automated rebalancing strategy for Vesu pools,
  * managing deposits and withdrawals while optimizing yield through STRK rewards.
  */
-declare class VesuRebalance {
-    /** Configuration object for the strategy */
-    readonly config: IConfig;
+declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmount> {
     /** Contract address of the strategy */
     readonly address: ContractAddr;
     /** Pricer instance for token price calculations */
     readonly pricer: PricerBase;
     /** Metadata containing strategy information */
-    readonly metadata: IStrategyMetadata;
+    readonly metadata: IStrategyMetadata<void>;
     /** Contract instance for interacting with the strategy */
     readonly contract: Contract;
     readonly BASE_WEIGHT = 10000;
@@ -374,14 +437,14 @@ declare class VesuRebalance {
      * @param metadata - Strategy metadata including deposit tokens and address
      * @throws {Error} If more than one deposit token is specified
      */
-    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata);
+    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<void>);
     /**
      * Creates a deposit call to the strategy contract.
      * @param assets - Amount of assets to deposit
      * @param receiver - Address that will receive the strategy tokens
      * @returns Populated contract call for deposit
      */
-    depositCall(assets: Web3Number, receiver: ContractAddr): starknet.Call[];
+    depositCall(amountInfo: SingleActionAmount, receiver: ContractAddr): starknet.Call[];
     /**
      * Creates a withdrawal call to the strategy contract.
      * @param assets - Amount of assets to withdraw
@@ -389,7 +452,7 @@ declare class VesuRebalance {
      * @param owner - Address that owns the strategy tokens
      * @returns Populated contract call for withdrawal
      */
-    withdrawCall(assets: Web3Number, receiver: ContractAddr, owner: ContractAddr): starknet.Call[];
+    withdrawCall(amountInfo: SingleActionAmount, receiver: ContractAddr, owner: ContractAddr): starknet.Call[];
     /**
      * Returns the underlying asset token of the strategy.
      * @returns The deposit token supported by this strategy
@@ -406,6 +469,7 @@ declare class VesuRebalance {
      * @returns Object containing the amount in token units and USD value
      */
     getUserTVL(user: ContractAddr): Promise<{
+        tokenInfo: TokenInfo;
         amount: Web3Number;
         usdValue: number;
     }>;
@@ -414,6 +478,7 @@ declare class VesuRebalance {
      * @returns Object containing the total amount in token units and USD value
      */
     getTVL(): Promise<{
+        tokenInfo: TokenInfo;
         amount: Web3Number;
         usdValue: number;
     }>;
@@ -499,7 +564,108 @@ declare class VesuRebalance {
 /**
  * Represents the Vesu Rebalance Strategies.
  */
-declare const VesuRebalanceStrategies: IStrategyMetadata[];
+declare const VesuRebalanceStrategies: IStrategyMetadata<void>[];
+
+interface EkuboPoolKey {
+    token0: ContractAddr;
+    token1: ContractAddr;
+    fee: string;
+    tick_spacing: string;
+    extension: string;
+}
+interface EkuboBounds {
+    lowerTick: bigint;
+    upperTick: bigint;
+}
+/**
+ * Settings for the CLVaultStrategy
+ *
+ * @property newBounds - The new bounds for the strategy
+ * @property newBounds.lower - relative to the current tick
+ * @property newBounds.upper - relative to the current tick
+ */
+interface CLVaultStrategySettings {
+    newBounds: {
+        lower: number;
+        upper: number;
+    };
+    lstContract: ContractAddr;
+}
+declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> {
+    /** Contract address of the strategy */
+    readonly address: ContractAddr;
+    /** Pricer instance for token price calculations */
+    readonly pricer: PricerBase;
+    /** Metadata containing strategy information */
+    readonly metadata: IStrategyMetadata<CLVaultStrategySettings>;
+    /** Contract instance for interacting with the strategy */
+    readonly contract: Contract;
+    readonly BASE_WEIGHT = 10000;
+    readonly ekuboPositionsContract: Contract;
+    readonly ekuboMathContract: Contract;
+    readonly lstContract: Contract;
+    poolKey: EkuboPoolKey | undefined;
+    readonly avnu: AvnuWrapper;
+    /**
+     * Creates a new VesuRebalance strategy instance.
+     * @param config - Configuration object containing provider and other settings
+     * @param pricer - Pricer instance for token price calculations
+     * @param metadata - Strategy metadata including deposit tokens and address
+     * @throws {Error} If more than one deposit token is specified
+     */
+    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<CLVaultStrategySettings>);
+    depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Call[];
+    withdrawCall(amountInfo: DualActionAmount, receiver: ContractAddr, owner: ContractAddr): Call[];
+    rebalanceCall(newBounds: EkuboBounds, swapParams: SwapInfo): Call[];
+    handleUnusedCall(swapParams: SwapInfo): Call[];
+    handleFeesCall(): Call[];
+    getUserTVL(user: ContractAddr): Promise<DualTokenInfo>;
+    getTVL(): Promise<DualTokenInfo>;
+    getUncollectedFees(): Promise<DualTokenInfo>;
+    getCurrentNFTID(): Promise<number>;
+    truePrice(): Promise<number>;
+    getCurrentPrice(): Promise<{
+        price: number;
+        tick: number;
+    }>;
+    private _getCurrentPrice;
+    getCurrentBounds(): Promise<EkuboBounds>;
+    static div2Power128(num: BigInt): number;
+    static priceToTick(price: number, isRoundDown: boolean, tickSpacing: number): {
+        mag: number;
+        sign: number;
+    };
+    getPoolKey(): Promise<EkuboPoolKey>;
+    getNewBounds(): Promise<EkuboBounds>;
+    /**
+     * Computes the expected amounts to fully utilize amount in
+     * to add liquidity to the pool
+     * @param amount0: amount of token0
+     * @param amount1: amount of token1
+     * @returns {amount0, amount1}
+     */
+    private _getExpectedAmountsForLiquidity;
+    private _solveExpectedAmountsEq;
+    getSwapInfoToHandleUnused(considerRebalance?: boolean): Promise<SwapInfo>;
+    static tickToi129(tick: number): {
+        mag: number;
+        sign: number;
+    };
+    static priceToSqrtRatio(price: number): bigint;
+    static i129ToNumber(i129: {
+        mag: bigint;
+        sign: number;
+    }): bigint;
+    static tickToPrice(tick: bigint): number;
+    getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds): Promise<{
+        amount0: Web3Number;
+        amount1: Web3Number;
+    }>;
+}
+/**
+ * Represents the Vesu Rebalance Strategies.
+ */
+declare const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[];
 
 declare class TelegramNotif {
     private subscribers;
@@ -529,6 +695,8 @@ declare class PricerRedis extends Pricer {
     /** Returns price from redis */
     getPrice(tokenSymbol: string): Promise<PriceInfo>;
 }
+
+declare function getAPIUsingHeadlessBrowser(url: string): Promise<any>;
 
 /**
  * @description Config to manage storage of files on disk
@@ -608,4 +776,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, ContractAddr, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, Store, type StoreConfig, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, type CLVaultStrategySettings, ContractAddr, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };

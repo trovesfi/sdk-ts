@@ -29,7 +29,7 @@ var import_inquirer = __toESM(require("inquirer"));
 
 // src/utils/store.ts
 var import_fs = __toESM(require("fs"));
-var import_starknet6 = require("starknet");
+var import_starknet9 = require("starknet");
 var crypto2 = __toESM(require("crypto"));
 
 // src/utils/encrypt.ts
@@ -86,108 +86,70 @@ var import_axios2 = __toESM(require("axios"));
 
 // src/global.ts
 var import_axios = __toESM(require("axios"));
-var logger = {
-  ...console,
-  verbose(message) {
-    console.log(`[VERBOSE] ${message}`);
-  }
-};
-var FatalError = class extends Error {
-  constructor(message, err) {
-    super(message);
-    logger.error(message);
-    if (err)
-      logger.error(err.message);
-    this.name = "FatalError";
-  }
-};
-var tokens = [{
-  name: "Starknet",
-  symbol: "STRK",
-  logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
-  address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-  decimals: 18,
-  coingeckId: "starknet"
-}];
-var Global = class {
-  static fatalError(message, err) {
-    logger.error(message);
-    console.error(message, err);
-    if (err)
-      console.error(err);
-    process.exit(1);
-  }
-  static httpError(url, err, message) {
-    logger.error(`${url}: ${message}`);
-    console.error(err);
-  }
-  static getDefaultTokens() {
-    return tokens;
-  }
-  static async getTokens() {
-    if (tokens.length) return tokens;
-    const data = await import_axios.default.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
-    const tokensData = data.data.content;
-    tokensData.forEach((token) => {
-      if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
-        return;
-      }
-      tokens.push({
-        name: token.name,
-        symbol: token.symbol,
-        address: token.address,
-        decimals: token.decimals,
-        logo: token.logoUri,
-        coingeckId: token.extensions.coingeckoId
-      });
-    });
-    console.log(tokens);
-    return tokens;
-  }
-  static assert(condition, message) {
-    if (!condition) {
-      throw new FatalError(message);
-    }
-  }
-};
 
-// src/dataTypes/bignumber.ts
+// src/dataTypes/bignumber.node.ts
+var import_util = __toESM(require("util"));
+
+// src/dataTypes/_bignumber.ts
 var import_bignumber = __toESM(require("bignumber.js"));
-var Web3Number = class _Web3Number extends import_bignumber.default {
+var _Web3Number = class extends import_bignumber.default {
   constructor(value, decimals) {
     super(value);
     this.decimals = decimals;
-  }
-  static fromWei(weiNumber, decimals) {
-    const bn = new _Web3Number(weiNumber, decimals).dividedBy(10 ** decimals);
-    return new _Web3Number(bn.toString(), decimals);
   }
   toWei() {
     return this.mul(10 ** this.decimals).toFixed(0);
   }
   multipliedBy(value) {
-    let _value = Number(value).toFixed(6);
-    return new _Web3Number(this.mul(_value).toString(), this.decimals);
+    let _value = Number(value).toFixed(13);
+    return this.construct(this.mul(_value).toString(), this.decimals);
   }
   dividedBy(value) {
-    let _value = Number(value).toFixed(6);
-    return new _Web3Number(this.div(_value).toString(), this.decimals);
+    let _value = Number(value).toFixed(13);
+    return this.construct(this.div(_value).toString(), this.decimals);
   }
   plus(value) {
-    return new _Web3Number(this.add(value).toString(), this.decimals);
+    const _value = Number(value).toFixed(13);
+    return this.construct(this.add(_value).toString(), this.decimals);
   }
   minus(n, base) {
-    return new _Web3Number(super.minus(n, base).toString(), this.decimals);
+    const _value = Number(n).toFixed(13);
+    return this.construct(super.minus(_value, base).toString(), this.decimals);
+  }
+  construct(value, decimals) {
+    return new this.constructor(value, decimals);
   }
   toString(base) {
     return super.toString(base);
   }
-  // [customInspectSymbol](depth: any, inspectOptions: any, inspect: any) {
-  // return this.toString();
-  // }
+  toJSON() {
+    return this.toString();
+  }
+  valueOf() {
+    return this.toString();
+  }
 };
 import_bignumber.default.config({ DECIMAL_PLACES: 18 });
-Web3Number.config({ DECIMAL_PLACES: 18 });
+_Web3Number.config({ DECIMAL_PLACES: 18 });
+
+// src/dataTypes/bignumber.node.ts
+var Web3Number = class _Web3Number2 extends _Web3Number {
+  static fromWei(weiNumber, decimals) {
+    const bn = new _Web3Number2(weiNumber, decimals).dividedBy(10 ** decimals);
+    return new _Web3Number2(bn.toString(), decimals);
+  }
+  [import_util.default.inspect.custom](depth, opts) {
+    return this.toString();
+  }
+  [Symbol.for("nodejs.util.inspect.custom")](depth, inspectOptions, inspect) {
+    return this.toString();
+  }
+  inspect(depth, opts) {
+    return this.toString();
+  }
+};
+var amt = new Web3Number("1.2432", 18);
+console.log(amt, "checking inspect");
 
 // src/dataTypes/address.ts
 var import_starknet = require("starknet");
@@ -215,6 +177,93 @@ var ContractAddr = class _ContractAddr {
   static eqString(a, b) {
     return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
   }
+  toString() {
+    return this.address;
+  }
+};
+
+// src/global.ts
+var logger = {
+  ...console,
+  verbose(message) {
+    console.log(`[VERBOSE] ${message}`);
+  }
+};
+var FatalError = class extends Error {
+  constructor(message, err) {
+    super(message);
+    logger.error(message);
+    if (err)
+      logger.error(err.message);
+    this.name = "FatalError";
+  }
+};
+var defaultTokens = [{
+  name: "Starknet",
+  symbol: "STRK",
+  logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
+  address: ContractAddr.from("0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
+  decimals: 18,
+  coingeckId: "starknet"
+}, {
+  name: "xSTRK",
+  symbol: "xSTRK",
+  logo: "https://dashboard.endur.fi/endur-fi.svg",
+  address: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
+  decimals: 18,
+  coingeckId: void 0
+}];
+var tokens = defaultTokens;
+var Global = class _Global {
+  static fatalError(message, err) {
+    logger.error(message);
+    console.error(message, err);
+    if (err)
+      console.error(err);
+    process.exit(1);
+  }
+  static httpError(url, err, message) {
+    logger.error(`${url}: ${message}`);
+    console.error(err);
+  }
+  static getDefaultTokens() {
+    return tokens;
+  }
+  static async getTokens() {
+    if (tokens.length) return tokens;
+    const data = await import_axios.default.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
+    const tokensData = data.data.content;
+    tokensData.forEach((token) => {
+      if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
+        return;
+      }
+      tokens.push({
+        name: token.name,
+        symbol: token.symbol,
+        address: ContractAddr.from(token.address),
+        decimals: token.decimals,
+        logo: token.logoUri,
+        coingeckId: token.extensions.coingeckoId
+      });
+    });
+    console.log(tokens);
+    return tokens;
+  }
+  static assert(condition, message) {
+    if (!condition) {
+      throw new FatalError(message);
+    }
+  }
+  static async getTokenInfoFromAddr(addr) {
+    if (tokens.length == defaultTokens.length) {
+      await _Global.getTokens();
+    }
+    const token = tokens.find((token2) => addr.eq(token2.address));
+    if (!token) {
+      throw new FatalError(`Token not found: ${addr.address}`);
+    }
+    return token;
+  }
 };
 
 // src/modules/pragma.ts
@@ -222,6 +271,14 @@ var import_starknet2 = require("starknet");
 
 // src/modules/zkLend.ts
 var import_axios3 = __toESM(require("axios"));
+
+// src/dataTypes/bignumber.browser.ts
+var Web3Number2 = class _Web3Number2 extends _Web3Number {
+  static fromWei(weiNumber, decimals) {
+    const bn = new _Web3Number2(weiNumber, decimals).dividedBy(10 ** decimals);
+    return new _Web3Number2(bn.toString(), decimals);
+  }
+};
 
 // src/interfaces/lending.ts
 var ILending = class {
@@ -264,18 +321,18 @@ var _ZkLend = class _ZkLend extends ILending {
       const data = result.data;
       const savedTokens = await Global.getTokens();
       data.forEach((pool) => {
-        let collareralFactor = new Web3Number(0, 0);
+        let collareralFactor = new Web3Number2(0, 0);
         if (pool.collateral_factor) {
-          collareralFactor = Web3Number.fromWei(pool.collateral_factor.value, pool.collateral_factor.decimals);
+          collareralFactor = Web3Number2.fromWei(pool.collateral_factor.value, pool.collateral_factor.decimals);
         }
         const savedTokenInfo = savedTokens.find((t) => t.symbol == pool.token.symbol);
         const token = {
           name: pool.token.name,
           symbol: pool.token.symbol,
-          address: savedTokenInfo?.address || "",
+          address: savedTokenInfo?.address || ContractAddr.from(""),
           logo: "",
           decimals: pool.token.decimals,
-          borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
+          borrowFactor: Web3Number2.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
           collareralFactor
         };
         this.tokens.push(token);
@@ -296,7 +353,7 @@ var _ZkLend = class _ZkLend extends ILending {
   async get_health_factor_tokenwise(lending_tokens, debt_tokens, user) {
     const positions = await this.getPositions(user);
     logger.verbose(`${this.metadata.name}:: Positions: ${JSON.stringify(positions)}`);
-    let effectiveDebt = new Web3Number(0, 6);
+    let effectiveDebt = new Web3Number2(0, 6);
     positions.filter((pos) => {
       return debt_tokens.find((t) => t.symbol === pos.tokenSymbol);
     }).forEach((pos) => {
@@ -310,7 +367,7 @@ var _ZkLend = class _ZkLend extends ILending {
     if (effectiveDebt.isZero()) {
       return Infinity;
     }
-    let effectiveCollateral = new Web3Number(0, 6);
+    let effectiveCollateral = new Web3Number2(0, 6);
     positions.filter((pos) => {
       const exp1 = lending_tokens.find((t) => t.symbol === pos.tokenSymbol);
       const exp2 = pos.marginType === "shared" /* SHARED */;
@@ -363,8 +420,8 @@ var _ZkLend = class _ZkLend extends ILending {
       if (!token) {
         throw new FatalError(`Token ${pool.token_symbol} not found in ${this.metadata.name}`);
       }
-      const debtAmount = Web3Number.fromWei(pool.data.debt_amount, token.decimals);
-      const supplyAmount = Web3Number.fromWei(pool.data.supply_amount, token.decimals);
+      const debtAmount = Web3Number2.fromWei(pool.data.debt_amount, token.decimals);
+      const supplyAmount = Web3Number2.fromWei(pool.data.supply_amount, token.decimals);
       const price = (await this.pricer.getPrice(token.symbol)).price;
       lendingPosition.push({
         tokenName: token.name,
@@ -386,20 +443,30 @@ var ZkLend = _ZkLend;
 // src/modules/pricer-from-api.ts
 var import_axios4 = __toESM(require("axios"));
 
-// src/interfaces/common.ts
+// src/modules/erc20.ts
 var import_starknet3 = require("starknet");
 
-// src/strategies/autoCompounderStrk.ts
+// src/modules/avnu.ts
 var import_starknet4 = require("starknet");
+var import_avnu_sdk = require("@avnu/avnu-sdk");
+
+// src/interfaces/common.ts
+var import_starknet5 = require("starknet");
+
+// src/strategies/autoCompounderStrk.ts
+var import_starknet6 = require("starknet");
 
 // src/strategies/vesu-rebalance.ts
-var import_starknet5 = require("starknet");
+var import_starknet7 = require("starknet");
+
+// src/node/headless.browser.ts
 var import_axios5 = __toESM(require("axios"));
+
+// src/strategies/vesu-rebalance.ts
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
 var _riskFactor = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-  { type: "Technical Risk" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
   { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
@@ -413,7 +480,37 @@ var VesuRebalanceStrategies = [{
   maxTVL: Web3Number.fromWei("0", 18),
   risk: {
     riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100
+    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0)
+  },
+  additionalInfo: void 0
+}];
+
+// src/strategies/ekubo-cl-vault.ts
+var import_starknet8 = require("starknet");
+var _description2 = "Automatically rebalances liquidity near current price to maximize yield while reducing the necessity to manually rebalance positions frequently. Fees earn and Defi spring rewards are automatically re-invested.";
+var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
+var _riskFactor2 = [
+  { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+  { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
+];
+var EkuboCLVaultStrategies = [{
+  name: "Ekubo xSTRK/STRK",
+  description: _description2,
+  address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
+  type: "Other",
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK"), Global.getDefaultTokens().find((t) => t.symbol === "xSTRK")],
+  protocols: [_protocol2],
+  maxTVL: Web3Number.fromWei("0", 18),
+  risk: {
+    riskFactor: _riskFactor2,
+    netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0)
+  },
+  additionalInfo: {
+    newBounds: {
+      lower: -1,
+      upper: 1
+    },
+    lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a")
   }
 }];
 
@@ -456,7 +553,7 @@ var Store = class _Store {
     logger.warn(`This not stored anywhere, please you backup this password for future use`);
     logger.warn(`\u26A0\uFE0F=========================================\u26A0\uFE0F`);
   }
-  getAccount(accountKey, txVersion = import_starknet6.constants.TRANSACTION_VERSION.V2) {
+  getAccount(accountKey, txVersion = import_starknet9.constants.TRANSACTION_VERSION.V2) {
     const accounts = this.loadAccounts();
     logger.verbose(`nAccounts loaded for network: ${Object.keys(accounts).length}`);
     const data = accounts[accountKey];
@@ -465,7 +562,7 @@ var Store = class _Store {
     }
     logger.verbose(`Account loaded: ${accountKey} from network: ${this.config.network}`);
     logger.verbose(`Address: ${data.address}`);
-    const acc = new import_starknet6.Account(this.config.provider, data.address, data.pk, void 0, txVersion);
+    const acc = new import_starknet9.Account(this.config.provider, data.address, data.pk, void 0, txVersion);
     return acc;
   }
   addAccount(accountKey, address, pk) {
@@ -529,11 +626,11 @@ var Store = class _Store {
 
 // src/cli.ts
 var import_chalk = __toESM(require("chalk"));
-var import_starknet7 = require("starknet");
+var import_starknet10 = require("starknet");
 var program = new import_commander.Command();
 var getConfig = (network) => {
   return {
-    provider: new import_starknet7.RpcProvider({
+    provider: new import_starknet10.RpcProvider({
       nodeUrl: "https://starknet-mainnet.public.blastapi.io"
     }),
     network,

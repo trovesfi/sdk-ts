@@ -1,2 +1,2 @@
-export * from './bignumber';
+export * from '@/dataTypes/bignumber';
 export * from './address';

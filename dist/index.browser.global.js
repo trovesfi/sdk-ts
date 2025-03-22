@@ -1671,7 +1671,7 @@ var strkfarm_risk_engine = (() => {
     "node_modules/.pnpm/url-parse@1.5.10/node_modules/url-parse/index.js"(exports, module) {
       "use strict";
       var required = require_requires_port();
-      var qs = require_querystringify();
+      var qs4 = require_querystringify();
       var controlOrWhitespace = /^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/;
       var CRHTLF = /[\n\r\t]/g;
       var slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//;
@@ -1805,7 +1805,7 @@ var strkfarm_risk_engine = (() => {
           parser = location;
           location = null;
         }
-        if (parser && "function" !== typeof parser) parser = qs.parse;
+        if (parser && "function" !== typeof parser) parser = qs4.parse;
         location = lolcation(location);
         extracted = extractProtocol(address || "", location);
         relative = !extracted.protocol && !extracted.slashes;
@@ -1875,7 +1875,7 @@ var strkfarm_risk_engine = (() => {
         switch (part) {
           case "query":
             if ("string" === typeof value && value.length) {
-              value = (fn || qs.parse)(value);
+              value = (fn || qs4.parse)(value);
             }
             url[part] = value;
             break;
@@ -1941,8 +1941,8 @@ var strkfarm_risk_engine = (() => {
         url.href = url.toString();
         return url;
       }
-      function toString4(stringify3) {
-        if (!stringify3 || "function" !== typeof stringify3) stringify3 = qs.stringify;
+      function toString4(stringify4) {
+        if (!stringify4 || "function" !== typeof stringify4) stringify4 = qs4.stringify;
         var query, url = this, host = url.host, protocol = url.protocol;
         if (protocol && protocol.charAt(protocol.length - 1) !== ":") protocol += ":";
         var result = protocol + (url.protocol && url.slashes || isSpecial(url.protocol) ? "//" : "");
@@ -1960,7 +1960,7 @@ var strkfarm_risk_engine = (() => {
           host += ":";
         }
         result += host + url.pathname;
-        query = "object" === typeof url.query ? stringify3(url.query) : url.query;
+        query = "object" === typeof url.query ? stringify4(url.query) : url.query;
         if (query) result += "?" !== query.charAt(0) ? "?" + query : query;
         if (url.hash) result += url.hash;
         return result;
@@ -1969,7 +1969,7 @@ var strkfarm_risk_engine = (() => {
       Url.extractProtocol = extractProtocol;
       Url.location = lolcation;
       Url.trimLeft = trimLeft;
-      Url.qs = qs;
+      Url.qs = qs4;
       module.exports = Url;
     }
   });
@@ -13937,11 +13937,2117 @@ var strkfarm_risk_engine = (() => {
     }
   });
 
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js
+  var require_es_errors = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js"(exports, module) {
+      "use strict";
+      module.exports = Error;
+    }
+  });
+
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js
+  var require_eval = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js"(exports, module) {
+      "use strict";
+      module.exports = EvalError;
+    }
+  });
+
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js
+  var require_range = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js"(exports, module) {
+      "use strict";
+      module.exports = RangeError;
+    }
+  });
+
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js
+  var require_ref = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js"(exports, module) {
+      "use strict";
+      module.exports = ReferenceError;
+    }
+  });
+
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js
+  var require_syntax = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js"(exports, module) {
+      "use strict";
+      module.exports = SyntaxError;
+    }
+  });
+
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js
+  var require_type = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js"(exports, module) {
+      "use strict";
+      module.exports = TypeError;
+    }
+  });
+
+  // node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js
+  var require_uri = __commonJS({
+    "node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js"(exports, module) {
+      "use strict";
+      module.exports = URIError;
+    }
+  });
+
+  // node_modules/.pnpm/has-symbols@1.0.3/node_modules/has-symbols/shams.js
+  var require_shams = __commonJS({
+    "node_modules/.pnpm/has-symbols@1.0.3/node_modules/has-symbols/shams.js"(exports, module) {
+      "use strict";
+      module.exports = function hasSymbols() {
+        if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
+          return false;
+        }
+        if (typeof Symbol.iterator === "symbol") {
+          return true;
+        }
+        var obj = {};
+        var sym = Symbol("test");
+        var symObj = Object(sym);
+        if (typeof sym === "string") {
+          return false;
+        }
+        if (Object.prototype.toString.call(sym) !== "[object Symbol]") {
+          return false;
+        }
+        if (Object.prototype.toString.call(symObj) !== "[object Symbol]") {
+          return false;
+        }
+        var symVal = 42;
+        obj[sym] = symVal;
+        for (sym in obj) {
+          return false;
+        }
+        if (typeof Object.keys === "function" && Object.keys(obj).length !== 0) {
+          return false;
+        }
+        if (typeof Object.getOwnPropertyNames === "function" && Object.getOwnPropertyNames(obj).length !== 0) {
+          return false;
+        }
+        var syms = Object.getOwnPropertySymbols(obj);
+        if (syms.length !== 1 || syms[0] !== sym) {
+          return false;
+        }
+        if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) {
+          return false;
+        }
+        if (typeof Object.getOwnPropertyDescriptor === "function") {
+          var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+          if (descriptor.value !== symVal || descriptor.enumerable !== true) {
+            return false;
+          }
+        }
+        return true;
+      };
+    }
+  });
+
+  // node_modules/.pnpm/has-symbols@1.0.3/node_modules/has-symbols/index.js
+  var require_has_symbols = __commonJS({
+    "node_modules/.pnpm/has-symbols@1.0.3/node_modules/has-symbols/index.js"(exports, module) {
+      "use strict";
+      var origSymbol = typeof Symbol !== "undefined" && Symbol;
+      var hasSymbolSham = require_shams();
+      module.exports = function hasNativeSymbols() {
+        if (typeof origSymbol !== "function") {
+          return false;
+        }
+        if (typeof Symbol !== "function") {
+          return false;
+        }
+        if (typeof origSymbol("foo") !== "symbol") {
+          return false;
+        }
+        if (typeof Symbol("bar") !== "symbol") {
+          return false;
+        }
+        return hasSymbolSham();
+      };
+    }
+  });
+
+  // node_modules/.pnpm/has-proto@1.0.3/node_modules/has-proto/index.js
+  var require_has_proto = __commonJS({
+    "node_modules/.pnpm/has-proto@1.0.3/node_modules/has-proto/index.js"(exports, module) {
+      "use strict";
+      var test = {
+        __proto__: null,
+        foo: {}
+      };
+      var $Object = Object;
+      module.exports = function hasProto() {
+        return { __proto__: test }.foo === test.foo && !(test instanceof $Object);
+      };
+    }
+  });
+
+  // node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js
+  var require_implementation = __commonJS({
+    "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js"(exports, module) {
+      "use strict";
+      var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
+      var toStr3 = Object.prototype.toString;
+      var max = Math.max;
+      var funcType = "[object Function]";
+      var concatty = function concatty2(a, b) {
+        var arr = [];
+        for (var i = 0; i < a.length; i += 1) {
+          arr[i] = a[i];
+        }
+        for (var j = 0; j < b.length; j += 1) {
+          arr[j + a.length] = b[j];
+        }
+        return arr;
+      };
+      var slicy = function slicy2(arrLike, offset) {
+        var arr = [];
+        for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
+          arr[j] = arrLike[i];
+        }
+        return arr;
+      };
+      var joiny = function(arr, joiner) {
+        var str = "";
+        for (var i = 0; i < arr.length; i += 1) {
+          str += arr[i];
+          if (i + 1 < arr.length) {
+            str += joiner;
+          }
+        }
+        return str;
+      };
+      module.exports = function bind2(that) {
+        var target = this;
+        if (typeof target !== "function" || toStr3.apply(target) !== funcType) {
+          throw new TypeError(ERROR_MESSAGE + target);
+        }
+        var args = slicy(arguments, 1);
+        var bound;
+        var binder = function() {
+          if (this instanceof bound) {
+            var result = target.apply(
+              this,
+              concatty(args, arguments)
+            );
+            if (Object(result) === result) {
+              return result;
+            }
+            return this;
+          }
+          return target.apply(
+            that,
+            concatty(args, arguments)
+          );
+        };
+        var boundLength = max(0, target.length - args.length);
+        var boundArgs = [];
+        for (var i = 0; i < boundLength; i++) {
+          boundArgs[i] = "$" + i;
+        }
+        bound = Function("binder", "return function (" + joiny(boundArgs, ",") + "){ return binder.apply(this,arguments); }")(binder);
+        if (target.prototype) {
+          var Empty = function Empty2() {
+          };
+          Empty.prototype = target.prototype;
+          bound.prototype = new Empty();
+          Empty.prototype = null;
+        }
+        return bound;
+      };
+    }
+  });
+
+  // node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js
+  var require_function_bind = __commonJS({
+    "node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js"(exports, module) {
+      "use strict";
+      var implementation = require_implementation();
+      module.exports = Function.prototype.bind || implementation;
+    }
+  });
+
+  // node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js
+  var require_hasown = __commonJS({
+    "node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js"(exports, module) {
+      "use strict";
+      var call = Function.prototype.call;
+      var $hasOwn = Object.prototype.hasOwnProperty;
+      var bind2 = require_function_bind();
+      module.exports = bind2.call(call, $hasOwn);
+    }
+  });
+
+  // node_modules/.pnpm/get-intrinsic@1.2.4/node_modules/get-intrinsic/index.js
+  var require_get_intrinsic = __commonJS({
+    "node_modules/.pnpm/get-intrinsic@1.2.4/node_modules/get-intrinsic/index.js"(exports, module) {
+      "use strict";
+      var undefined2;
+      var $Error = require_es_errors();
+      var $EvalError = require_eval();
+      var $RangeError = require_range();
+      var $ReferenceError = require_ref();
+      var $SyntaxError = require_syntax();
+      var $TypeError = require_type();
+      var $URIError = require_uri();
+      var $Function = Function;
+      var getEvalledConstructor = function(expressionSyntax) {
+        try {
+          return $Function('"use strict"; return (' + expressionSyntax + ").constructor;")();
+        } catch (e) {
+        }
+      };
+      var $gOPD = Object.getOwnPropertyDescriptor;
+      if ($gOPD) {
+        try {
+          $gOPD({}, "");
+        } catch (e) {
+          $gOPD = null;
+        }
+      }
+      var throwTypeError = function() {
+        throw new $TypeError();
+      };
+      var ThrowTypeError = $gOPD ? function() {
+        try {
+          arguments.callee;
+          return throwTypeError;
+        } catch (calleeThrows) {
+          try {
+            return $gOPD(arguments, "callee").get;
+          } catch (gOPDthrows) {
+            return throwTypeError;
+          }
+        }
+      }() : throwTypeError;
+      var hasSymbols = require_has_symbols()();
+      var hasProto = require_has_proto()();
+      var getProto = Object.getPrototypeOf || (hasProto ? function(x) {
+        return x.__proto__;
+      } : null);
+      var needsEval = {};
+      var TypedArray = typeof Uint8Array === "undefined" || !getProto ? undefined2 : getProto(Uint8Array);
+      var INTRINSICS = {
+        __proto__: null,
+        "%AggregateError%": typeof AggregateError === "undefined" ? undefined2 : AggregateError,
+        "%Array%": Array,
+        "%ArrayBuffer%": typeof ArrayBuffer === "undefined" ? undefined2 : ArrayBuffer,
+        "%ArrayIteratorPrototype%": hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined2,
+        "%AsyncFromSyncIteratorPrototype%": undefined2,
+        "%AsyncFunction%": needsEval,
+        "%AsyncGenerator%": needsEval,
+        "%AsyncGeneratorFunction%": needsEval,
+        "%AsyncIteratorPrototype%": needsEval,
+        "%Atomics%": typeof Atomics === "undefined" ? undefined2 : Atomics,
+        "%BigInt%": typeof BigInt === "undefined" ? undefined2 : BigInt,
+        "%BigInt64Array%": typeof BigInt64Array === "undefined" ? undefined2 : BigInt64Array,
+        "%BigUint64Array%": typeof BigUint64Array === "undefined" ? undefined2 : BigUint64Array,
+        "%Boolean%": Boolean,
+        "%DataView%": typeof DataView === "undefined" ? undefined2 : DataView,
+        "%Date%": Date,
+        "%decodeURI%": decodeURI,
+        "%decodeURIComponent%": decodeURIComponent,
+        "%encodeURI%": encodeURI,
+        "%encodeURIComponent%": encodeURIComponent,
+        "%Error%": $Error,
+        "%eval%": eval,
+        // eslint-disable-line no-eval
+        "%EvalError%": $EvalError,
+        "%Float32Array%": typeof Float32Array === "undefined" ? undefined2 : Float32Array,
+        "%Float64Array%": typeof Float64Array === "undefined" ? undefined2 : Float64Array,
+        "%FinalizationRegistry%": typeof FinalizationRegistry === "undefined" ? undefined2 : FinalizationRegistry,
+        "%Function%": $Function,
+        "%GeneratorFunction%": needsEval,
+        "%Int8Array%": typeof Int8Array === "undefined" ? undefined2 : Int8Array,
+        "%Int16Array%": typeof Int16Array === "undefined" ? undefined2 : Int16Array,
+        "%Int32Array%": typeof Int32Array === "undefined" ? undefined2 : Int32Array,
+        "%isFinite%": isFinite,
+        "%isNaN%": isNaN,
+        "%IteratorPrototype%": hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined2,
+        "%JSON%": typeof JSON === "object" ? JSON : undefined2,
+        "%Map%": typeof Map === "undefined" ? undefined2 : Map,
+        "%MapIteratorPrototype%": typeof Map === "undefined" || !hasSymbols || !getProto ? undefined2 : getProto((/* @__PURE__ */ new Map())[Symbol.iterator]()),
+        "%Math%": Math,
+        "%Number%": Number,
+        "%Object%": Object,
+        "%parseFloat%": parseFloat,
+        "%parseInt%": parseInt,
+        "%Promise%": typeof Promise === "undefined" ? undefined2 : Promise,
+        "%Proxy%": typeof Proxy === "undefined" ? undefined2 : Proxy,
+        "%RangeError%": $RangeError,
+        "%ReferenceError%": $ReferenceError,
+        "%Reflect%": typeof Reflect === "undefined" ? undefined2 : Reflect,
+        "%RegExp%": RegExp,
+        "%Set%": typeof Set === "undefined" ? undefined2 : Set,
+        "%SetIteratorPrototype%": typeof Set === "undefined" || !hasSymbols || !getProto ? undefined2 : getProto((/* @__PURE__ */ new Set())[Symbol.iterator]()),
+        "%SharedArrayBuffer%": typeof SharedArrayBuffer === "undefined" ? undefined2 : SharedArrayBuffer,
+        "%String%": String,
+        "%StringIteratorPrototype%": hasSymbols && getProto ? getProto(""[Symbol.iterator]()) : undefined2,
+        "%Symbol%": hasSymbols ? Symbol : undefined2,
+        "%SyntaxError%": $SyntaxError,
+        "%ThrowTypeError%": ThrowTypeError,
+        "%TypedArray%": TypedArray,
+        "%TypeError%": $TypeError,
+        "%Uint8Array%": typeof Uint8Array === "undefined" ? undefined2 : Uint8Array,
+        "%Uint8ClampedArray%": typeof Uint8ClampedArray === "undefined" ? undefined2 : Uint8ClampedArray,
+        "%Uint16Array%": typeof Uint16Array === "undefined" ? undefined2 : Uint16Array,
+        "%Uint32Array%": typeof Uint32Array === "undefined" ? undefined2 : Uint32Array,
+        "%URIError%": $URIError,
+        "%WeakMap%": typeof WeakMap === "undefined" ? undefined2 : WeakMap,
+        "%WeakRef%": typeof WeakRef === "undefined" ? undefined2 : WeakRef,
+        "%WeakSet%": typeof WeakSet === "undefined" ? undefined2 : WeakSet
+      };
+      if (getProto) {
+        try {
+          null.error;
+        } catch (e) {
+          errorProto = getProto(getProto(e));
+          INTRINSICS["%Error.prototype%"] = errorProto;
+        }
+      }
+      var errorProto;
+      var doEval = function doEval2(name) {
+        var value;
+        if (name === "%AsyncFunction%") {
+          value = getEvalledConstructor("async function () {}");
+        } else if (name === "%GeneratorFunction%") {
+          value = getEvalledConstructor("function* () {}");
+        } else if (name === "%AsyncGeneratorFunction%") {
+          value = getEvalledConstructor("async function* () {}");
+        } else if (name === "%AsyncGenerator%") {
+          var fn = doEval2("%AsyncGeneratorFunction%");
+          if (fn) {
+            value = fn.prototype;
+          }
+        } else if (name === "%AsyncIteratorPrototype%") {
+          var gen3 = doEval2("%AsyncGenerator%");
+          if (gen3 && getProto) {
+            value = getProto(gen3.prototype);
+          }
+        }
+        INTRINSICS[name] = value;
+        return value;
+      };
+      var LEGACY_ALIASES = {
+        __proto__: null,
+        "%ArrayBufferPrototype%": ["ArrayBuffer", "prototype"],
+        "%ArrayPrototype%": ["Array", "prototype"],
+        "%ArrayProto_entries%": ["Array", "prototype", "entries"],
+        "%ArrayProto_forEach%": ["Array", "prototype", "forEach"],
+        "%ArrayProto_keys%": ["Array", "prototype", "keys"],
+        "%ArrayProto_values%": ["Array", "prototype", "values"],
+        "%AsyncFunctionPrototype%": ["AsyncFunction", "prototype"],
+        "%AsyncGenerator%": ["AsyncGeneratorFunction", "prototype"],
+        "%AsyncGeneratorPrototype%": ["AsyncGeneratorFunction", "prototype", "prototype"],
+        "%BooleanPrototype%": ["Boolean", "prototype"],
+        "%DataViewPrototype%": ["DataView", "prototype"],
+        "%DatePrototype%": ["Date", "prototype"],
+        "%ErrorPrototype%": ["Error", "prototype"],
+        "%EvalErrorPrototype%": ["EvalError", "prototype"],
+        "%Float32ArrayPrototype%": ["Float32Array", "prototype"],
+        "%Float64ArrayPrototype%": ["Float64Array", "prototype"],
+        "%FunctionPrototype%": ["Function", "prototype"],
+        "%Generator%": ["GeneratorFunction", "prototype"],
+        "%GeneratorPrototype%": ["GeneratorFunction", "prototype", "prototype"],
+        "%Int8ArrayPrototype%": ["Int8Array", "prototype"],
+        "%Int16ArrayPrototype%": ["Int16Array", "prototype"],
+        "%Int32ArrayPrototype%": ["Int32Array", "prototype"],
+        "%JSONParse%": ["JSON", "parse"],
+        "%JSONStringify%": ["JSON", "stringify"],
+        "%MapPrototype%": ["Map", "prototype"],
+        "%NumberPrototype%": ["Number", "prototype"],
+        "%ObjectPrototype%": ["Object", "prototype"],
+        "%ObjProto_toString%": ["Object", "prototype", "toString"],
+        "%ObjProto_valueOf%": ["Object", "prototype", "valueOf"],
+        "%PromisePrototype%": ["Promise", "prototype"],
+        "%PromiseProto_then%": ["Promise", "prototype", "then"],
+        "%Promise_all%": ["Promise", "all"],
+        "%Promise_reject%": ["Promise", "reject"],
+        "%Promise_resolve%": ["Promise", "resolve"],
+        "%RangeErrorPrototype%": ["RangeError", "prototype"],
+        "%ReferenceErrorPrototype%": ["ReferenceError", "prototype"],
+        "%RegExpPrototype%": ["RegExp", "prototype"],
+        "%SetPrototype%": ["Set", "prototype"],
+        "%SharedArrayBufferPrototype%": ["SharedArrayBuffer", "prototype"],
+        "%StringPrototype%": ["String", "prototype"],
+        "%SymbolPrototype%": ["Symbol", "prototype"],
+        "%SyntaxErrorPrototype%": ["SyntaxError", "prototype"],
+        "%TypedArrayPrototype%": ["TypedArray", "prototype"],
+        "%TypeErrorPrototype%": ["TypeError", "prototype"],
+        "%Uint8ArrayPrototype%": ["Uint8Array", "prototype"],
+        "%Uint8ClampedArrayPrototype%": ["Uint8ClampedArray", "prototype"],
+        "%Uint16ArrayPrototype%": ["Uint16Array", "prototype"],
+        "%Uint32ArrayPrototype%": ["Uint32Array", "prototype"],
+        "%URIErrorPrototype%": ["URIError", "prototype"],
+        "%WeakMapPrototype%": ["WeakMap", "prototype"],
+        "%WeakSetPrototype%": ["WeakSet", "prototype"]
+      };
+      var bind2 = require_function_bind();
+      var hasOwn = require_hasown();
+      var $concat = bind2.call(Function.call, Array.prototype.concat);
+      var $spliceApply = bind2.call(Function.apply, Array.prototype.splice);
+      var $replace = bind2.call(Function.call, String.prototype.replace);
+      var $strSlice = bind2.call(Function.call, String.prototype.slice);
+      var $exec = bind2.call(Function.call, RegExp.prototype.exec);
+      var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+      var reEscapeChar = /\\(\\)?/g;
+      var stringToPath = function stringToPath2(string) {
+        var first = $strSlice(string, 0, 1);
+        var last = $strSlice(string, -1);
+        if (first === "%" && last !== "%") {
+          throw new $SyntaxError("invalid intrinsic syntax, expected closing `%`");
+        } else if (last === "%" && first !== "%") {
+          throw new $SyntaxError("invalid intrinsic syntax, expected opening `%`");
+        }
+        var result = [];
+        $replace(string, rePropName, function(match, number3, quote, subString) {
+          result[result.length] = quote ? $replace(subString, reEscapeChar, "$1") : number3 || match;
+        });
+        return result;
+      };
+      var getBaseIntrinsic = function getBaseIntrinsic2(name, allowMissing) {
+        var intrinsicName = name;
+        var alias;
+        if (hasOwn(LEGACY_ALIASES, intrinsicName)) {
+          alias = LEGACY_ALIASES[intrinsicName];
+          intrinsicName = "%" + alias[0] + "%";
+        }
+        if (hasOwn(INTRINSICS, intrinsicName)) {
+          var value = INTRINSICS[intrinsicName];
+          if (value === needsEval) {
+            value = doEval(intrinsicName);
+          }
+          if (typeof value === "undefined" && !allowMissing) {
+            throw new $TypeError("intrinsic " + name + " exists, but is not available. Please file an issue!");
+          }
+          return {
+            alias,
+            name: intrinsicName,
+            value
+          };
+        }
+        throw new $SyntaxError("intrinsic " + name + " does not exist!");
+      };
+      module.exports = function GetIntrinsic(name, allowMissing) {
+        if (typeof name !== "string" || name.length === 0) {
+          throw new $TypeError("intrinsic name must be a non-empty string");
+        }
+        if (arguments.length > 1 && typeof allowMissing !== "boolean") {
+          throw new $TypeError('"allowMissing" argument must be a boolean');
+        }
+        if ($exec(/^%?[^%]*%?$/, name) === null) {
+          throw new $SyntaxError("`%` may not be present anywhere but at the beginning and end of the intrinsic name");
+        }
+        var parts = stringToPath(name);
+        var intrinsicBaseName = parts.length > 0 ? parts[0] : "";
+        var intrinsic = getBaseIntrinsic("%" + intrinsicBaseName + "%", allowMissing);
+        var intrinsicRealName = intrinsic.name;
+        var value = intrinsic.value;
+        var skipFurtherCaching = false;
+        var alias = intrinsic.alias;
+        if (alias) {
+          intrinsicBaseName = alias[0];
+          $spliceApply(parts, $concat([0, 1], alias));
+        }
+        for (var i = 1, isOwn = true; i < parts.length; i += 1) {
+          var part = parts[i];
+          var first = $strSlice(part, 0, 1);
+          var last = $strSlice(part, -1);
+          if ((first === '"' || first === "'" || first === "`" || (last === '"' || last === "'" || last === "`")) && first !== last) {
+            throw new $SyntaxError("property names with quotes must have matching quotes");
+          }
+          if (part === "constructor" || !isOwn) {
+            skipFurtherCaching = true;
+          }
+          intrinsicBaseName += "." + part;
+          intrinsicRealName = "%" + intrinsicBaseName + "%";
+          if (hasOwn(INTRINSICS, intrinsicRealName)) {
+            value = INTRINSICS[intrinsicRealName];
+          } else if (value != null) {
+            if (!(part in value)) {
+              if (!allowMissing) {
+                throw new $TypeError("base intrinsic for " + name + " exists, but the property is not available.");
+              }
+              return void 0;
+            }
+            if ($gOPD && i + 1 >= parts.length) {
+              var desc = $gOPD(value, part);
+              isOwn = !!desc;
+              if (isOwn && "get" in desc && !("originalValue" in desc.get)) {
+                value = desc.get;
+              } else {
+                value = value[part];
+              }
+            } else {
+              isOwn = hasOwn(value, part);
+              value = value[part];
+            }
+            if (isOwn && !skipFurtherCaching) {
+              INTRINSICS[intrinsicRealName] = value;
+            }
+          }
+        }
+        return value;
+      };
+    }
+  });
+
+  // node_modules/.pnpm/es-define-property@1.0.0/node_modules/es-define-property/index.js
+  var require_es_define_property = __commonJS({
+    "node_modules/.pnpm/es-define-property@1.0.0/node_modules/es-define-property/index.js"(exports, module) {
+      "use strict";
+      var GetIntrinsic = require_get_intrinsic();
+      var $defineProperty = GetIntrinsic("%Object.defineProperty%", true) || false;
+      if ($defineProperty) {
+        try {
+          $defineProperty({}, "a", { value: 1 });
+        } catch (e) {
+          $defineProperty = false;
+        }
+      }
+      module.exports = $defineProperty;
+    }
+  });
+
+  // node_modules/.pnpm/gopd@1.0.1/node_modules/gopd/index.js
+  var require_gopd = __commonJS({
+    "node_modules/.pnpm/gopd@1.0.1/node_modules/gopd/index.js"(exports, module) {
+      "use strict";
+      var GetIntrinsic = require_get_intrinsic();
+      var $gOPD = GetIntrinsic("%Object.getOwnPropertyDescriptor%", true);
+      if ($gOPD) {
+        try {
+          $gOPD([], "length");
+        } catch (e) {
+          $gOPD = null;
+        }
+      }
+      module.exports = $gOPD;
+    }
+  });
+
+  // node_modules/.pnpm/define-data-property@1.1.4/node_modules/define-data-property/index.js
+  var require_define_data_property = __commonJS({
+    "node_modules/.pnpm/define-data-property@1.1.4/node_modules/define-data-property/index.js"(exports, module) {
+      "use strict";
+      var $defineProperty = require_es_define_property();
+      var $SyntaxError = require_syntax();
+      var $TypeError = require_type();
+      var gopd = require_gopd();
+      module.exports = function defineDataProperty(obj, property, value) {
+        if (!obj || typeof obj !== "object" && typeof obj !== "function") {
+          throw new $TypeError("`obj` must be an object or a function`");
+        }
+        if (typeof property !== "string" && typeof property !== "symbol") {
+          throw new $TypeError("`property` must be a string or a symbol`");
+        }
+        if (arguments.length > 3 && typeof arguments[3] !== "boolean" && arguments[3] !== null) {
+          throw new $TypeError("`nonEnumerable`, if provided, must be a boolean or null");
+        }
+        if (arguments.length > 4 && typeof arguments[4] !== "boolean" && arguments[4] !== null) {
+          throw new $TypeError("`nonWritable`, if provided, must be a boolean or null");
+        }
+        if (arguments.length > 5 && typeof arguments[5] !== "boolean" && arguments[5] !== null) {
+          throw new $TypeError("`nonConfigurable`, if provided, must be a boolean or null");
+        }
+        if (arguments.length > 6 && typeof arguments[6] !== "boolean") {
+          throw new $TypeError("`loose`, if provided, must be a boolean");
+        }
+        var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
+        var nonWritable = arguments.length > 4 ? arguments[4] : null;
+        var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
+        var loose = arguments.length > 6 ? arguments[6] : false;
+        var desc = !!gopd && gopd(obj, property);
+        if ($defineProperty) {
+          $defineProperty(obj, property, {
+            configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
+            enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
+            value,
+            writable: nonWritable === null && desc ? desc.writable : !nonWritable
+          });
+        } else if (loose || !nonEnumerable && !nonWritable && !nonConfigurable) {
+          obj[property] = value;
+        } else {
+          throw new $SyntaxError("This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.");
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/has-property-descriptors@1.0.2/node_modules/has-property-descriptors/index.js
+  var require_has_property_descriptors = __commonJS({
+    "node_modules/.pnpm/has-property-descriptors@1.0.2/node_modules/has-property-descriptors/index.js"(exports, module) {
+      "use strict";
+      var $defineProperty = require_es_define_property();
+      var hasPropertyDescriptors = function hasPropertyDescriptors2() {
+        return !!$defineProperty;
+      };
+      hasPropertyDescriptors.hasArrayLengthDefineBug = function hasArrayLengthDefineBug() {
+        if (!$defineProperty) {
+          return null;
+        }
+        try {
+          return $defineProperty([], "length", { value: 1 }).length !== 1;
+        } catch (e) {
+          return true;
+        }
+      };
+      module.exports = hasPropertyDescriptors;
+    }
+  });
+
+  // node_modules/.pnpm/set-function-length@1.2.2/node_modules/set-function-length/index.js
+  var require_set_function_length = __commonJS({
+    "node_modules/.pnpm/set-function-length@1.2.2/node_modules/set-function-length/index.js"(exports, module) {
+      "use strict";
+      var GetIntrinsic = require_get_intrinsic();
+      var define2 = require_define_data_property();
+      var hasDescriptors = require_has_property_descriptors()();
+      var gOPD = require_gopd();
+      var $TypeError = require_type();
+      var $floor = GetIntrinsic("%Math.floor%");
+      module.exports = function setFunctionLength(fn, length) {
+        if (typeof fn !== "function") {
+          throw new $TypeError("`fn` is not a function");
+        }
+        if (typeof length !== "number" || length < 0 || length > 4294967295 || $floor(length) !== length) {
+          throw new $TypeError("`length` must be a positive 32-bit integer");
+        }
+        var loose = arguments.length > 2 && !!arguments[2];
+        var functionLengthIsConfigurable = true;
+        var functionLengthIsWritable = true;
+        if ("length" in fn && gOPD) {
+          var desc = gOPD(fn, "length");
+          if (desc && !desc.configurable) {
+            functionLengthIsConfigurable = false;
+          }
+          if (desc && !desc.writable) {
+            functionLengthIsWritable = false;
+          }
+        }
+        if (functionLengthIsConfigurable || functionLengthIsWritable || !loose) {
+          if (hasDescriptors) {
+            define2(
+              /** @type {Parameters<define>[0]} */
+              fn,
+              "length",
+              length,
+              true,
+              true
+            );
+          } else {
+            define2(
+              /** @type {Parameters<define>[0]} */
+              fn,
+              "length",
+              length
+            );
+          }
+        }
+        return fn;
+      };
+    }
+  });
+
+  // node_modules/.pnpm/call-bind@1.0.7/node_modules/call-bind/index.js
+  var require_call_bind = __commonJS({
+    "node_modules/.pnpm/call-bind@1.0.7/node_modules/call-bind/index.js"(exports, module) {
+      "use strict";
+      var bind2 = require_function_bind();
+      var GetIntrinsic = require_get_intrinsic();
+      var setFunctionLength = require_set_function_length();
+      var $TypeError = require_type();
+      var $apply = GetIntrinsic("%Function.prototype.apply%");
+      var $call = GetIntrinsic("%Function.prototype.call%");
+      var $reflectApply = GetIntrinsic("%Reflect.apply%", true) || bind2.call($call, $apply);
+      var $defineProperty = require_es_define_property();
+      var $max = GetIntrinsic("%Math.max%");
+      module.exports = function callBind(originalFunction) {
+        if (typeof originalFunction !== "function") {
+          throw new $TypeError("a function is required");
+        }
+        var func = $reflectApply(bind2, $call, arguments);
+        return setFunctionLength(
+          func,
+          1 + $max(0, originalFunction.length - (arguments.length - 1)),
+          true
+        );
+      };
+      var applyBind = function applyBind2() {
+        return $reflectApply(bind2, $apply, arguments);
+      };
+      if ($defineProperty) {
+        $defineProperty(module.exports, "apply", { value: applyBind });
+      } else {
+        module.exports.apply = applyBind;
+      }
+    }
+  });
+
+  // node_modules/.pnpm/call-bind@1.0.7/node_modules/call-bind/callBound.js
+  var require_callBound = __commonJS({
+    "node_modules/.pnpm/call-bind@1.0.7/node_modules/call-bind/callBound.js"(exports, module) {
+      "use strict";
+      var GetIntrinsic = require_get_intrinsic();
+      var callBind = require_call_bind();
+      var $indexOf = callBind(GetIntrinsic("String.prototype.indexOf"));
+      module.exports = function callBoundIntrinsic(name, allowMissing) {
+        var intrinsic = GetIntrinsic(name, !!allowMissing);
+        if (typeof intrinsic === "function" && $indexOf(name, ".prototype.") > -1) {
+          return callBind(intrinsic);
+        }
+        return intrinsic;
+      };
+    }
+  });
+
+  // (disabled):node_modules/.pnpm/object-inspect@1.13.2/node_modules/object-inspect/util.inspect
+  var require_util = __commonJS({
+    "(disabled):node_modules/.pnpm/object-inspect@1.13.2/node_modules/object-inspect/util.inspect"() {
+      "use strict";
+    }
+  });
+
+  // node_modules/.pnpm/object-inspect@1.13.2/node_modules/object-inspect/index.js
+  var require_object_inspect = __commonJS({
+    "node_modules/.pnpm/object-inspect@1.13.2/node_modules/object-inspect/index.js"(exports, module) {
+      "use strict";
+      var hasMap = typeof Map === "function" && Map.prototype;
+      var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, "size") : null;
+      var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === "function" ? mapSizeDescriptor.get : null;
+      var mapForEach = hasMap && Map.prototype.forEach;
+      var hasSet = typeof Set === "function" && Set.prototype;
+      var setSizeDescriptor = Object.getOwnPropertyDescriptor && hasSet ? Object.getOwnPropertyDescriptor(Set.prototype, "size") : null;
+      var setSize = hasSet && setSizeDescriptor && typeof setSizeDescriptor.get === "function" ? setSizeDescriptor.get : null;
+      var setForEach = hasSet && Set.prototype.forEach;
+      var hasWeakMap = typeof WeakMap === "function" && WeakMap.prototype;
+      var weakMapHas = hasWeakMap ? WeakMap.prototype.has : null;
+      var hasWeakSet = typeof WeakSet === "function" && WeakSet.prototype;
+      var weakSetHas = hasWeakSet ? WeakSet.prototype.has : null;
+      var hasWeakRef = typeof WeakRef === "function" && WeakRef.prototype;
+      var weakRefDeref = hasWeakRef ? WeakRef.prototype.deref : null;
+      var booleanValueOf = Boolean.prototype.valueOf;
+      var objectToString = Object.prototype.toString;
+      var functionToString = Function.prototype.toString;
+      var $match = String.prototype.match;
+      var $slice = String.prototype.slice;
+      var $replace = String.prototype.replace;
+      var $toUpperCase = String.prototype.toUpperCase;
+      var $toLowerCase = String.prototype.toLowerCase;
+      var $test = RegExp.prototype.test;
+      var $concat = Array.prototype.concat;
+      var $join = Array.prototype.join;
+      var $arrSlice = Array.prototype.slice;
+      var $floor = Math.floor;
+      var bigIntValueOf = typeof BigInt === "function" ? BigInt.prototype.valueOf : null;
+      var gOPS = Object.getOwnPropertySymbols;
+      var symToString = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? Symbol.prototype.toString : null;
+      var hasShammedSymbols = typeof Symbol === "function" && typeof Symbol.iterator === "object";
+      var toStringTag = typeof Symbol === "function" && Symbol.toStringTag && (typeof Symbol.toStringTag === hasShammedSymbols ? "object" : "symbol") ? Symbol.toStringTag : null;
+      var isEnumerable = Object.prototype.propertyIsEnumerable;
+      var gPO = (typeof Reflect === "function" ? Reflect.getPrototypeOf : Object.getPrototypeOf) || ([].__proto__ === Array.prototype ? function(O) {
+        return O.__proto__;
+      } : null);
+      function addNumericSeparator(num, str) {
+        if (num === Infinity || num === -Infinity || num !== num || num && num > -1e3 && num < 1e3 || $test.call(/e/, str)) {
+          return str;
+        }
+        var sepRegex = /[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;
+        if (typeof num === "number") {
+          var int = num < 0 ? -$floor(-num) : $floor(num);
+          if (int !== num) {
+            var intStr = String(int);
+            var dec = $slice.call(str, intStr.length + 1);
+            return $replace.call(intStr, sepRegex, "$&_") + "." + $replace.call($replace.call(dec, /([0-9]{3})/g, "$&_"), /_$/, "");
+          }
+        }
+        return $replace.call(str, sepRegex, "$&_");
+      }
+      var utilInspect = require_util();
+      var inspectCustom = utilInspect.custom;
+      var inspectSymbol = isSymbol(inspectCustom) ? inspectCustom : null;
+      module.exports = function inspect_(obj, options, depth, seen) {
+        var opts = options || {};
+        if (has(opts, "quoteStyle") && (opts.quoteStyle !== "single" && opts.quoteStyle !== "double")) {
+          throw new TypeError('option "quoteStyle" must be "single" or "double"');
+        }
+        if (has(opts, "maxStringLength") && (typeof opts.maxStringLength === "number" ? opts.maxStringLength < 0 && opts.maxStringLength !== Infinity : opts.maxStringLength !== null)) {
+          throw new TypeError('option "maxStringLength", if provided, must be a positive integer, Infinity, or `null`');
+        }
+        var customInspect = has(opts, "customInspect") ? opts.customInspect : true;
+        if (typeof customInspect !== "boolean" && customInspect !== "symbol") {
+          throw new TypeError("option \"customInspect\", if provided, must be `true`, `false`, or `'symbol'`");
+        }
+        if (has(opts, "indent") && opts.indent !== null && opts.indent !== "	" && !(parseInt(opts.indent, 10) === opts.indent && opts.indent > 0)) {
+          throw new TypeError('option "indent" must be "\\t", an integer > 0, or `null`');
+        }
+        if (has(opts, "numericSeparator") && typeof opts.numericSeparator !== "boolean") {
+          throw new TypeError('option "numericSeparator", if provided, must be `true` or `false`');
+        }
+        var numericSeparator = opts.numericSeparator;
+        if (typeof obj === "undefined") {
+          return "undefined";
+        }
+        if (obj === null) {
+          return "null";
+        }
+        if (typeof obj === "boolean") {
+          return obj ? "true" : "false";
+        }
+        if (typeof obj === "string") {
+          return inspectString(obj, opts);
+        }
+        if (typeof obj === "number") {
+          if (obj === 0) {
+            return Infinity / obj > 0 ? "0" : "-0";
+          }
+          var str = String(obj);
+          return numericSeparator ? addNumericSeparator(obj, str) : str;
+        }
+        if (typeof obj === "bigint") {
+          var bigIntStr = String(obj) + "n";
+          return numericSeparator ? addNumericSeparator(obj, bigIntStr) : bigIntStr;
+        }
+        var maxDepth = typeof opts.depth === "undefined" ? 5 : opts.depth;
+        if (typeof depth === "undefined") {
+          depth = 0;
+        }
+        if (depth >= maxDepth && maxDepth > 0 && typeof obj === "object") {
+          return isArray2(obj) ? "[Array]" : "[Object]";
+        }
+        var indent = getIndent(opts, depth);
+        if (typeof seen === "undefined") {
+          seen = [];
+        } else if (indexOf(seen, obj) >= 0) {
+          return "[Circular]";
+        }
+        function inspect(value, from, noIndent) {
+          if (from) {
+            seen = $arrSlice.call(seen);
+            seen.push(from);
+          }
+          if (noIndent) {
+            var newOpts = {
+              depth: opts.depth
+            };
+            if (has(opts, "quoteStyle")) {
+              newOpts.quoteStyle = opts.quoteStyle;
+            }
+            return inspect_(value, newOpts, depth + 1, seen);
+          }
+          return inspect_(value, opts, depth + 1, seen);
+        }
+        if (typeof obj === "function" && !isRegExp2(obj)) {
+          var name = nameOf(obj);
+          var keys = arrObjKeys(obj, inspect);
+          return "[Function" + (name ? ": " + name : " (anonymous)") + "]" + (keys.length > 0 ? " { " + $join.call(keys, ", ") + " }" : "");
+        }
+        if (isSymbol(obj)) {
+          var symString = hasShammedSymbols ? $replace.call(String(obj), /^(Symbol\(.*\))_[^)]*$/, "$1") : symToString.call(obj);
+          return typeof obj === "object" && !hasShammedSymbols ? markBoxed(symString) : symString;
+        }
+        if (isElement(obj)) {
+          var s = "<" + $toLowerCase.call(String(obj.nodeName));
+          var attrs = obj.attributes || [];
+          for (var i = 0; i < attrs.length; i++) {
+            s += " " + attrs[i].name + "=" + wrapQuotes(quote(attrs[i].value), "double", opts);
+          }
+          s += ">";
+          if (obj.childNodes && obj.childNodes.length) {
+            s += "...";
+          }
+          s += "</" + $toLowerCase.call(String(obj.nodeName)) + ">";
+          return s;
+        }
+        if (isArray2(obj)) {
+          if (obj.length === 0) {
+            return "[]";
+          }
+          var xs = arrObjKeys(obj, inspect);
+          if (indent && !singleLineValues(xs)) {
+            return "[" + indentedJoin(xs, indent) + "]";
+          }
+          return "[ " + $join.call(xs, ", ") + " ]";
+        }
+        if (isError2(obj)) {
+          var parts = arrObjKeys(obj, inspect);
+          if (!("cause" in Error.prototype) && "cause" in obj && !isEnumerable.call(obj, "cause")) {
+            return "{ [" + String(obj) + "] " + $join.call($concat.call("[cause]: " + inspect(obj.cause), parts), ", ") + " }";
+          }
+          if (parts.length === 0) {
+            return "[" + String(obj) + "]";
+          }
+          return "{ [" + String(obj) + "] " + $join.call(parts, ", ") + " }";
+        }
+        if (typeof obj === "object" && customInspect) {
+          if (inspectSymbol && typeof obj[inspectSymbol] === "function" && utilInspect) {
+            return utilInspect(obj, { depth: maxDepth - depth });
+          } else if (customInspect !== "symbol" && typeof obj.inspect === "function") {
+            return obj.inspect();
+          }
+        }
+        if (isMap(obj)) {
+          var mapParts = [];
+          if (mapForEach) {
+            mapForEach.call(obj, function(value, key) {
+              mapParts.push(inspect(key, obj, true) + " => " + inspect(value, obj));
+            });
+          }
+          return collectionOf("Map", mapSize.call(obj), mapParts, indent);
+        }
+        if (isSet(obj)) {
+          var setParts = [];
+          if (setForEach) {
+            setForEach.call(obj, function(value) {
+              setParts.push(inspect(value, obj));
+            });
+          }
+          return collectionOf("Set", setSize.call(obj), setParts, indent);
+        }
+        if (isWeakMap(obj)) {
+          return weakCollectionOf("WeakMap");
+        }
+        if (isWeakSet(obj)) {
+          return weakCollectionOf("WeakSet");
+        }
+        if (isWeakRef(obj)) {
+          return weakCollectionOf("WeakRef");
+        }
+        if (isNumber4(obj)) {
+          return markBoxed(inspect(Number(obj)));
+        }
+        if (isBigInt2(obj)) {
+          return markBoxed(inspect(bigIntValueOf.call(obj)));
+        }
+        if (isBoolean3(obj)) {
+          return markBoxed(booleanValueOf.call(obj));
+        }
+        if (isString3(obj)) {
+          return markBoxed(inspect(String(obj)));
+        }
+        if (typeof window !== "undefined" && obj === window) {
+          return "{ [object Window] }";
+        }
+        if (typeof globalThis !== "undefined" && obj === globalThis || typeof global !== "undefined" && obj === global) {
+          return "{ [object globalThis] }";
+        }
+        if (!isDate2(obj) && !isRegExp2(obj)) {
+          var ys = arrObjKeys(obj, inspect);
+          var isPlainObject2 = gPO ? gPO(obj) === Object.prototype : obj instanceof Object || obj.constructor === Object;
+          var protoTag = obj instanceof Object ? "" : "null prototype";
+          var stringTag = !isPlainObject2 && toStringTag && Object(obj) === obj && toStringTag in obj ? $slice.call(toStr3(obj), 8, -1) : protoTag ? "Object" : "";
+          var constructorTag = isPlainObject2 || typeof obj.constructor !== "function" ? "" : obj.constructor.name ? obj.constructor.name + " " : "";
+          var tag = constructorTag + (stringTag || protoTag ? "[" + $join.call($concat.call([], stringTag || [], protoTag || []), ": ") + "] " : "");
+          if (ys.length === 0) {
+            return tag + "{}";
+          }
+          if (indent) {
+            return tag + "{" + indentedJoin(ys, indent) + "}";
+          }
+          return tag + "{ " + $join.call(ys, ", ") + " }";
+        }
+        return String(obj);
+      };
+      function wrapQuotes(s, defaultStyle, opts) {
+        var quoteChar = (opts.quoteStyle || defaultStyle) === "double" ? '"' : "'";
+        return quoteChar + s + quoteChar;
+      }
+      function quote(s) {
+        return $replace.call(String(s), /"/g, "&quot;");
+      }
+      function isArray2(obj) {
+        return toStr3(obj) === "[object Array]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isDate2(obj) {
+        return toStr3(obj) === "[object Date]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isRegExp2(obj) {
+        return toStr3(obj) === "[object RegExp]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isError2(obj) {
+        return toStr3(obj) === "[object Error]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isString3(obj) {
+        return toStr3(obj) === "[object String]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isNumber4(obj) {
+        return toStr3(obj) === "[object Number]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isBoolean3(obj) {
+        return toStr3(obj) === "[object Boolean]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
+      }
+      function isSymbol(obj) {
+        if (hasShammedSymbols) {
+          return obj && typeof obj === "object" && obj instanceof Symbol;
+        }
+        if (typeof obj === "symbol") {
+          return true;
+        }
+        if (!obj || typeof obj !== "object" || !symToString) {
+          return false;
+        }
+        try {
+          symToString.call(obj);
+          return true;
+        } catch (e) {
+        }
+        return false;
+      }
+      function isBigInt2(obj) {
+        if (!obj || typeof obj !== "object" || !bigIntValueOf) {
+          return false;
+        }
+        try {
+          bigIntValueOf.call(obj);
+          return true;
+        } catch (e) {
+        }
+        return false;
+      }
+      var hasOwn = Object.prototype.hasOwnProperty || function(key) {
+        return key in this;
+      };
+      function has(obj, key) {
+        return hasOwn.call(obj, key);
+      }
+      function toStr3(obj) {
+        return objectToString.call(obj);
+      }
+      function nameOf(f) {
+        if (f.name) {
+          return f.name;
+        }
+        var m = $match.call(functionToString.call(f), /^function\s*([\w$]+)/);
+        if (m) {
+          return m[1];
+        }
+        return null;
+      }
+      function indexOf(xs, x) {
+        if (xs.indexOf) {
+          return xs.indexOf(x);
+        }
+        for (var i = 0, l = xs.length; i < l; i++) {
+          if (xs[i] === x) {
+            return i;
+          }
+        }
+        return -1;
+      }
+      function isMap(x) {
+        if (!mapSize || !x || typeof x !== "object") {
+          return false;
+        }
+        try {
+          mapSize.call(x);
+          try {
+            setSize.call(x);
+          } catch (s) {
+            return true;
+          }
+          return x instanceof Map;
+        } catch (e) {
+        }
+        return false;
+      }
+      function isWeakMap(x) {
+        if (!weakMapHas || !x || typeof x !== "object") {
+          return false;
+        }
+        try {
+          weakMapHas.call(x, weakMapHas);
+          try {
+            weakSetHas.call(x, weakSetHas);
+          } catch (s) {
+            return true;
+          }
+          return x instanceof WeakMap;
+        } catch (e) {
+        }
+        return false;
+      }
+      function isWeakRef(x) {
+        if (!weakRefDeref || !x || typeof x !== "object") {
+          return false;
+        }
+        try {
+          weakRefDeref.call(x);
+          return true;
+        } catch (e) {
+        }
+        return false;
+      }
+      function isSet(x) {
+        if (!setSize || !x || typeof x !== "object") {
+          return false;
+        }
+        try {
+          setSize.call(x);
+          try {
+            mapSize.call(x);
+          } catch (m) {
+            return true;
+          }
+          return x instanceof Set;
+        } catch (e) {
+        }
+        return false;
+      }
+      function isWeakSet(x) {
+        if (!weakSetHas || !x || typeof x !== "object") {
+          return false;
+        }
+        try {
+          weakSetHas.call(x, weakSetHas);
+          try {
+            weakMapHas.call(x, weakMapHas);
+          } catch (s) {
+            return true;
+          }
+          return x instanceof WeakSet;
+        } catch (e) {
+        }
+        return false;
+      }
+      function isElement(x) {
+        if (!x || typeof x !== "object") {
+          return false;
+        }
+        if (typeof HTMLElement !== "undefined" && x instanceof HTMLElement) {
+          return true;
+        }
+        return typeof x.nodeName === "string" && typeof x.getAttribute === "function";
+      }
+      function inspectString(str, opts) {
+        if (str.length > opts.maxStringLength) {
+          var remaining = str.length - opts.maxStringLength;
+          var trailer = "... " + remaining + " more character" + (remaining > 1 ? "s" : "");
+          return inspectString($slice.call(str, 0, opts.maxStringLength), opts) + trailer;
+        }
+        var s = $replace.call($replace.call(str, /(['\\])/g, "\\$1"), /[\x00-\x1f]/g, lowbyte);
+        return wrapQuotes(s, "single", opts);
+      }
+      function lowbyte(c) {
+        var n = c.charCodeAt(0);
+        var x = {
+          8: "b",
+          9: "t",
+          10: "n",
+          12: "f",
+          13: "r"
+        }[n];
+        if (x) {
+          return "\\" + x;
+        }
+        return "\\x" + (n < 16 ? "0" : "") + $toUpperCase.call(n.toString(16));
+      }
+      function markBoxed(str) {
+        return "Object(" + str + ")";
+      }
+      function weakCollectionOf(type) {
+        return type + " { ? }";
+      }
+      function collectionOf(type, size, entries, indent) {
+        var joinedEntries = indent ? indentedJoin(entries, indent) : $join.call(entries, ", ");
+        return type + " (" + size + ") {" + joinedEntries + "}";
+      }
+      function singleLineValues(xs) {
+        for (var i = 0; i < xs.length; i++) {
+          if (indexOf(xs[i], "\n") >= 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+      function getIndent(opts, depth) {
+        var baseIndent;
+        if (opts.indent === "	") {
+          baseIndent = "	";
+        } else if (typeof opts.indent === "number" && opts.indent > 0) {
+          baseIndent = $join.call(Array(opts.indent + 1), " ");
+        } else {
+          return null;
+        }
+        return {
+          base: baseIndent,
+          prev: $join.call(Array(depth + 1), baseIndent)
+        };
+      }
+      function indentedJoin(xs, indent) {
+        if (xs.length === 0) {
+          return "";
+        }
+        var lineJoiner = "\n" + indent.prev + indent.base;
+        return lineJoiner + $join.call(xs, "," + lineJoiner) + "\n" + indent.prev;
+      }
+      function arrObjKeys(obj, inspect) {
+        var isArr = isArray2(obj);
+        var xs = [];
+        if (isArr) {
+          xs.length = obj.length;
+          for (var i = 0; i < obj.length; i++) {
+            xs[i] = has(obj, i) ? inspect(obj[i], obj) : "";
+          }
+        }
+        var syms = typeof gOPS === "function" ? gOPS(obj) : [];
+        var symMap;
+        if (hasShammedSymbols) {
+          symMap = {};
+          for (var k = 0; k < syms.length; k++) {
+            symMap["$" + syms[k]] = syms[k];
+          }
+        }
+        for (var key in obj) {
+          if (!has(obj, key)) {
+            continue;
+          }
+          if (isArr && String(Number(key)) === key && key < obj.length) {
+            continue;
+          }
+          if (hasShammedSymbols && symMap["$" + key] instanceof Symbol) {
+            continue;
+          } else if ($test.call(/[^\w$]/, key)) {
+            xs.push(inspect(key, obj) + ": " + inspect(obj[key], obj));
+          } else {
+            xs.push(key + ": " + inspect(obj[key], obj));
+          }
+        }
+        if (typeof gOPS === "function") {
+          for (var j = 0; j < syms.length; j++) {
+            if (isEnumerable.call(obj, syms[j])) {
+              xs.push("[" + inspect(syms[j]) + "]: " + inspect(obj[syms[j]], obj));
+            }
+          }
+        }
+        return xs;
+      }
+    }
+  });
+
+  // node_modules/.pnpm/side-channel@1.0.6/node_modules/side-channel/index.js
+  var require_side_channel = __commonJS({
+    "node_modules/.pnpm/side-channel@1.0.6/node_modules/side-channel/index.js"(exports, module) {
+      "use strict";
+      var GetIntrinsic = require_get_intrinsic();
+      var callBound = require_callBound();
+      var inspect = require_object_inspect();
+      var $TypeError = require_type();
+      var $WeakMap = GetIntrinsic("%WeakMap%", true);
+      var $Map = GetIntrinsic("%Map%", true);
+      var $weakMapGet = callBound("WeakMap.prototype.get", true);
+      var $weakMapSet = callBound("WeakMap.prototype.set", true);
+      var $weakMapHas = callBound("WeakMap.prototype.has", true);
+      var $mapGet = callBound("Map.prototype.get", true);
+      var $mapSet = callBound("Map.prototype.set", true);
+      var $mapHas = callBound("Map.prototype.has", true);
+      var listGetNode = function(list, key) {
+        var prev = list;
+        var curr;
+        for (; (curr = prev.next) !== null; prev = curr) {
+          if (curr.key === key) {
+            prev.next = curr.next;
+            curr.next = /** @type {NonNullable<typeof list.next>} */
+            list.next;
+            list.next = curr;
+            return curr;
+          }
+        }
+      };
+      var listGet = function(objects, key) {
+        var node = listGetNode(objects, key);
+        return node && node.value;
+      };
+      var listSet = function(objects, key, value) {
+        var node = listGetNode(objects, key);
+        if (node) {
+          node.value = value;
+        } else {
+          objects.next = /** @type {import('.').ListNode<typeof value>} */
+          {
+            // eslint-disable-line no-param-reassign, no-extra-parens
+            key,
+            next: objects.next,
+            value
+          };
+        }
+      };
+      var listHas = function(objects, key) {
+        return !!listGetNode(objects, key);
+      };
+      module.exports = function getSideChannel() {
+        var $wm;
+        var $m;
+        var $o;
+        var channel = {
+          assert: function(key) {
+            if (!channel.has(key)) {
+              throw new $TypeError("Side channel does not contain " + inspect(key));
+            }
+          },
+          get: function(key) {
+            if ($WeakMap && key && (typeof key === "object" || typeof key === "function")) {
+              if ($wm) {
+                return $weakMapGet($wm, key);
+              }
+            } else if ($Map) {
+              if ($m) {
+                return $mapGet($m, key);
+              }
+            } else {
+              if ($o) {
+                return listGet($o, key);
+              }
+            }
+          },
+          has: function(key) {
+            if ($WeakMap && key && (typeof key === "object" || typeof key === "function")) {
+              if ($wm) {
+                return $weakMapHas($wm, key);
+              }
+            } else if ($Map) {
+              if ($m) {
+                return $mapHas($m, key);
+              }
+            } else {
+              if ($o) {
+                return listHas($o, key);
+              }
+            }
+            return false;
+          },
+          set: function(key, value) {
+            if ($WeakMap && key && (typeof key === "object" || typeof key === "function")) {
+              if (!$wm) {
+                $wm = new $WeakMap();
+              }
+              $weakMapSet($wm, key, value);
+            } else if ($Map) {
+              if (!$m) {
+                $m = new $Map();
+              }
+              $mapSet($m, key, value);
+            } else {
+              if (!$o) {
+                $o = { key: {}, next: null };
+              }
+              listSet($o, key, value);
+            }
+          }
+        };
+        return channel;
+      };
+    }
+  });
+
+  // node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/formats.js
+  var require_formats = __commonJS({
+    "node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/formats.js"(exports, module) {
+      "use strict";
+      var replace = String.prototype.replace;
+      var percentTwenties = /%20/g;
+      var Format = {
+        RFC1738: "RFC1738",
+        RFC3986: "RFC3986"
+      };
+      module.exports = {
+        "default": Format.RFC3986,
+        formatters: {
+          RFC1738: function(value) {
+            return replace.call(value, percentTwenties, "+");
+          },
+          RFC3986: function(value) {
+            return String(value);
+          }
+        },
+        RFC1738: Format.RFC1738,
+        RFC3986: Format.RFC3986
+      };
+    }
+  });
+
+  // node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/utils.js
+  var require_utils = __commonJS({
+    "node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/utils.js"(exports, module) {
+      "use strict";
+      var formats = require_formats();
+      var has = Object.prototype.hasOwnProperty;
+      var isArray2 = Array.isArray;
+      var hexTable = function() {
+        var array = [];
+        for (var i = 0; i < 256; ++i) {
+          array.push("%" + ((i < 16 ? "0" : "") + i.toString(16)).toUpperCase());
+        }
+        return array;
+      }();
+      var compactQueue = function compactQueue2(queue) {
+        while (queue.length > 1) {
+          var item = queue.pop();
+          var obj = item.obj[item.prop];
+          if (isArray2(obj)) {
+            var compacted = [];
+            for (var j = 0; j < obj.length; ++j) {
+              if (typeof obj[j] !== "undefined") {
+                compacted.push(obj[j]);
+              }
+            }
+            item.obj[item.prop] = compacted;
+          }
+        }
+      };
+      var arrayToObject2 = function arrayToObject3(source, options) {
+        var obj = options && options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+        for (var i = 0; i < source.length; ++i) {
+          if (typeof source[i] !== "undefined") {
+            obj[i] = source[i];
+          }
+        }
+        return obj;
+      };
+      var merge2 = function merge3(target, source, options) {
+        if (!source) {
+          return target;
+        }
+        if (typeof source !== "object") {
+          if (isArray2(target)) {
+            target.push(source);
+          } else if (target && typeof target === "object") {
+            if (options && (options.plainObjects || options.allowPrototypes) || !has.call(Object.prototype, source)) {
+              target[source] = true;
+            }
+          } else {
+            return [target, source];
+          }
+          return target;
+        }
+        if (!target || typeof target !== "object") {
+          return [target].concat(source);
+        }
+        var mergeTarget = target;
+        if (isArray2(target) && !isArray2(source)) {
+          mergeTarget = arrayToObject2(target, options);
+        }
+        if (isArray2(target) && isArray2(source)) {
+          source.forEach(function(item, i) {
+            if (has.call(target, i)) {
+              var targetItem = target[i];
+              if (targetItem && typeof targetItem === "object" && item && typeof item === "object") {
+                target[i] = merge3(targetItem, item, options);
+              } else {
+                target.push(item);
+              }
+            } else {
+              target[i] = item;
+            }
+          });
+          return target;
+        }
+        return Object.keys(source).reduce(function(acc, key) {
+          var value = source[key];
+          if (has.call(acc, key)) {
+            acc[key] = merge3(acc[key], value, options);
+          } else {
+            acc[key] = value;
+          }
+          return acc;
+        }, mergeTarget);
+      };
+      var assign2 = function assignSingleSource(target, source) {
+        return Object.keys(source).reduce(function(acc, key) {
+          acc[key] = source[key];
+          return acc;
+        }, target);
+      };
+      var decode3 = function(str, decoder, charset) {
+        var strWithoutPlus = str.replace(/\+/g, " ");
+        if (charset === "iso-8859-1") {
+          return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape);
+        }
+        try {
+          return decodeURIComponent(strWithoutPlus);
+        } catch (e) {
+          return strWithoutPlus;
+        }
+      };
+      var encode4 = function encode5(str, defaultEncoder, charset, kind, format) {
+        if (str.length === 0) {
+          return str;
+        }
+        var string = str;
+        if (typeof str === "symbol") {
+          string = Symbol.prototype.toString.call(str);
+        } else if (typeof str !== "string") {
+          string = String(str);
+        }
+        if (charset === "iso-8859-1") {
+          return escape(string).replace(/%u[0-9a-f]{4}/gi, function($0) {
+            return "%26%23" + parseInt($0.slice(2), 16) + "%3B";
+          });
+        }
+        var out = "";
+        for (var i = 0; i < string.length; ++i) {
+          var c = string.charCodeAt(i);
+          if (c === 45 || c === 46 || c === 95 || c === 126 || c >= 48 && c <= 57 || c >= 65 && c <= 90 || c >= 97 && c <= 122 || format === formats.RFC1738 && (c === 40 || c === 41)) {
+            out += string.charAt(i);
+            continue;
+          }
+          if (c < 128) {
+            out = out + hexTable[c];
+            continue;
+          }
+          if (c < 2048) {
+            out = out + (hexTable[192 | c >> 6] + hexTable[128 | c & 63]);
+            continue;
+          }
+          if (c < 55296 || c >= 57344) {
+            out = out + (hexTable[224 | c >> 12] + hexTable[128 | c >> 6 & 63] + hexTable[128 | c & 63]);
+            continue;
+          }
+          i += 1;
+          c = 65536 + ((c & 1023) << 10 | string.charCodeAt(i) & 1023);
+          out += hexTable[240 | c >> 18] + hexTable[128 | c >> 12 & 63] + hexTable[128 | c >> 6 & 63] + hexTable[128 | c & 63];
+        }
+        return out;
+      };
+      var compact = function compact2(value) {
+        var queue = [{ obj: { o: value }, prop: "o" }];
+        var refs = [];
+        for (var i = 0; i < queue.length; ++i) {
+          var item = queue[i];
+          var obj = item.obj[item.prop];
+          var keys = Object.keys(obj);
+          for (var j = 0; j < keys.length; ++j) {
+            var key = keys[j];
+            var val = obj[key];
+            if (typeof val === "object" && val !== null && refs.indexOf(val) === -1) {
+              queue.push({ obj, prop: key });
+              refs.push(val);
+            }
+          }
+        }
+        compactQueue(queue);
+        return value;
+      };
+      var isRegExp2 = function isRegExp3(obj) {
+        return Object.prototype.toString.call(obj) === "[object RegExp]";
+      };
+      var isBuffer2 = function isBuffer3(obj) {
+        if (!obj || typeof obj !== "object") {
+          return false;
+        }
+        return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
+      };
+      var combine = function combine2(a, b) {
+        return [].concat(a, b);
+      };
+      var maybeMap = function maybeMap2(val, fn) {
+        if (isArray2(val)) {
+          var mapped = [];
+          for (var i = 0; i < val.length; i += 1) {
+            mapped.push(fn(val[i]));
+          }
+          return mapped;
+        }
+        return fn(val);
+      };
+      module.exports = {
+        arrayToObject: arrayToObject2,
+        assign: assign2,
+        combine,
+        compact,
+        decode: decode3,
+        encode: encode4,
+        isBuffer: isBuffer2,
+        isRegExp: isRegExp2,
+        maybeMap,
+        merge: merge2
+      };
+    }
+  });
+
+  // node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/stringify.js
+  var require_stringify = __commonJS({
+    "node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/stringify.js"(exports, module) {
+      "use strict";
+      var getSideChannel = require_side_channel();
+      var utils2 = require_utils();
+      var formats = require_formats();
+      var has = Object.prototype.hasOwnProperty;
+      var arrayPrefixGenerators = {
+        brackets: function brackets(prefix) {
+          return prefix + "[]";
+        },
+        comma: "comma",
+        indices: function indices(prefix, key) {
+          return prefix + "[" + key + "]";
+        },
+        repeat: function repeat(prefix) {
+          return prefix;
+        }
+      };
+      var isArray2 = Array.isArray;
+      var split3 = String.prototype.split;
+      var push = Array.prototype.push;
+      var pushToArray = function(arr, valueOrArray) {
+        push.apply(arr, isArray2(valueOrArray) ? valueOrArray : [valueOrArray]);
+      };
+      var toISO = Date.prototype.toISOString;
+      var defaultFormat = formats["default"];
+      var defaults2 = {
+        addQueryPrefix: false,
+        allowDots: false,
+        charset: "utf-8",
+        charsetSentinel: false,
+        delimiter: "&",
+        encode: true,
+        encoder: utils2.encode,
+        encodeValuesOnly: false,
+        format: defaultFormat,
+        formatter: formats.formatters[defaultFormat],
+        // deprecated
+        indices: false,
+        serializeDate: function serializeDate(date) {
+          return toISO.call(date);
+        },
+        skipNulls: false,
+        strictNullHandling: false
+      };
+      var isNonNullishPrimitive = function isNonNullishPrimitive2(v) {
+        return typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "symbol" || typeof v === "bigint";
+      };
+      var sentinel = {};
+      var stringify4 = function stringify5(object, prefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter2, sort, allowDots, serializeDate, format, formatter2, encodeValuesOnly, charset, sideChannel) {
+        var obj = object;
+        var tmpSc = sideChannel;
+        var step = 0;
+        var findFlag = false;
+        while ((tmpSc = tmpSc.get(sentinel)) !== void 0 && !findFlag) {
+          var pos = tmpSc.get(object);
+          step += 1;
+          if (typeof pos !== "undefined") {
+            if (pos === step) {
+              throw new RangeError("Cyclic object value");
+            } else {
+              findFlag = true;
+            }
+          }
+          if (typeof tmpSc.get(sentinel) === "undefined") {
+            step = 0;
+          }
+        }
+        if (typeof filter2 === "function") {
+          obj = filter2(prefix, obj);
+        } else if (obj instanceof Date) {
+          obj = serializeDate(obj);
+        } else if (generateArrayPrefix === "comma" && isArray2(obj)) {
+          obj = utils2.maybeMap(obj, function(value2) {
+            if (value2 instanceof Date) {
+              return serializeDate(value2);
+            }
+            return value2;
+          });
+        }
+        if (obj === null) {
+          if (strictNullHandling) {
+            return encoder && !encodeValuesOnly ? encoder(prefix, defaults2.encoder, charset, "key", format) : prefix;
+          }
+          obj = "";
+        }
+        if (isNonNullishPrimitive(obj) || utils2.isBuffer(obj)) {
+          if (encoder) {
+            var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults2.encoder, charset, "key", format);
+            if (generateArrayPrefix === "comma" && encodeValuesOnly) {
+              var valuesArray = split3.call(String(obj), ",");
+              var valuesJoined = "";
+              for (var i = 0; i < valuesArray.length; ++i) {
+                valuesJoined += (i === 0 ? "" : ",") + formatter2(encoder(valuesArray[i], defaults2.encoder, charset, "value", format));
+              }
+              return [formatter2(keyValue) + (i === 1 ? "[]" : "") + "=" + valuesJoined];
+            }
+            return [formatter2(keyValue) + "=" + formatter2(encoder(obj, defaults2.encoder, charset, "value", format))];
+          }
+          return [formatter2(prefix) + "=" + formatter2(String(obj))];
+        }
+        var values = [];
+        if (typeof obj === "undefined") {
+          return values;
+        }
+        var objKeys;
+        if (generateArrayPrefix === "comma" && isArray2(obj)) {
+          objKeys = [{ value: obj.length > 0 ? obj.join(",") || null : void 0 }];
+        } else if (isArray2(filter2)) {
+          objKeys = filter2;
+        } else {
+          var keys = Object.keys(obj);
+          objKeys = sort ? keys.sort(sort) : keys;
+        }
+        for (var j = 0; j < objKeys.length; ++j) {
+          var key = objKeys[j];
+          var value = typeof key === "object" && typeof key.value !== "undefined" ? key.value : obj[key];
+          if (skipNulls && value === null) {
+            continue;
+          }
+          var keyPrefix = isArray2(obj) ? typeof generateArrayPrefix === "function" ? generateArrayPrefix(prefix, key) : prefix : prefix + (allowDots ? "." + key : "[" + key + "]");
+          sideChannel.set(object, step);
+          var valueSideChannel = getSideChannel();
+          valueSideChannel.set(sentinel, sideChannel);
+          pushToArray(values, stringify5(
+            value,
+            keyPrefix,
+            generateArrayPrefix,
+            strictNullHandling,
+            skipNulls,
+            encoder,
+            filter2,
+            sort,
+            allowDots,
+            serializeDate,
+            format,
+            formatter2,
+            encodeValuesOnly,
+            charset,
+            valueSideChannel
+          ));
+        }
+        return values;
+      };
+      var normalizeStringifyOptions = function normalizeStringifyOptions2(opts) {
+        if (!opts) {
+          return defaults2;
+        }
+        if (opts.encoder !== null && typeof opts.encoder !== "undefined" && typeof opts.encoder !== "function") {
+          throw new TypeError("Encoder has to be a function.");
+        }
+        var charset = opts.charset || defaults2.charset;
+        if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
+          throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
+        }
+        var format = formats["default"];
+        if (typeof opts.format !== "undefined") {
+          if (!has.call(formats.formatters, opts.format)) {
+            throw new TypeError("Unknown format option provided.");
+          }
+          format = opts.format;
+        }
+        var formatter2 = formats.formatters[format];
+        var filter2 = defaults2.filter;
+        if (typeof opts.filter === "function" || isArray2(opts.filter)) {
+          filter2 = opts.filter;
+        }
+        return {
+          addQueryPrefix: typeof opts.addQueryPrefix === "boolean" ? opts.addQueryPrefix : defaults2.addQueryPrefix,
+          allowDots: typeof opts.allowDots === "undefined" ? defaults2.allowDots : !!opts.allowDots,
+          charset,
+          charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
+          delimiter: typeof opts.delimiter === "undefined" ? defaults2.delimiter : opts.delimiter,
+          encode: typeof opts.encode === "boolean" ? opts.encode : defaults2.encode,
+          encoder: typeof opts.encoder === "function" ? opts.encoder : defaults2.encoder,
+          encodeValuesOnly: typeof opts.encodeValuesOnly === "boolean" ? opts.encodeValuesOnly : defaults2.encodeValuesOnly,
+          filter: filter2,
+          format,
+          formatter: formatter2,
+          serializeDate: typeof opts.serializeDate === "function" ? opts.serializeDate : defaults2.serializeDate,
+          skipNulls: typeof opts.skipNulls === "boolean" ? opts.skipNulls : defaults2.skipNulls,
+          sort: typeof opts.sort === "function" ? opts.sort : null,
+          strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
+        };
+      };
+      module.exports = function(object, opts) {
+        var obj = object;
+        var options = normalizeStringifyOptions(opts);
+        var objKeys;
+        var filter2;
+        if (typeof options.filter === "function") {
+          filter2 = options.filter;
+          obj = filter2("", obj);
+        } else if (isArray2(options.filter)) {
+          filter2 = options.filter;
+          objKeys = filter2;
+        }
+        var keys = [];
+        if (typeof obj !== "object" || obj === null) {
+          return "";
+        }
+        var arrayFormat;
+        if (opts && opts.arrayFormat in arrayPrefixGenerators) {
+          arrayFormat = opts.arrayFormat;
+        } else if (opts && "indices" in opts) {
+          arrayFormat = opts.indices ? "indices" : "repeat";
+        } else {
+          arrayFormat = "indices";
+        }
+        var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];
+        if (!objKeys) {
+          objKeys = Object.keys(obj);
+        }
+        if (options.sort) {
+          objKeys.sort(options.sort);
+        }
+        var sideChannel = getSideChannel();
+        for (var i = 0; i < objKeys.length; ++i) {
+          var key = objKeys[i];
+          if (options.skipNulls && obj[key] === null) {
+            continue;
+          }
+          pushToArray(keys, stringify4(
+            obj[key],
+            key,
+            generateArrayPrefix,
+            options.strictNullHandling,
+            options.skipNulls,
+            options.encode ? options.encoder : null,
+            options.filter,
+            options.sort,
+            options.allowDots,
+            options.serializeDate,
+            options.format,
+            options.formatter,
+            options.encodeValuesOnly,
+            options.charset,
+            sideChannel
+          ));
+        }
+        var joined = keys.join(options.delimiter);
+        var prefix = options.addQueryPrefix === true ? "?" : "";
+        if (options.charsetSentinel) {
+          if (options.charset === "iso-8859-1") {
+            prefix += "utf8=%26%2310003%3B&";
+          } else {
+            prefix += "utf8=%E2%9C%93&";
+          }
+        }
+        return joined.length > 0 ? prefix + joined : "";
+      };
+    }
+  });
+
+  // node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/parse.js
+  var require_parse = __commonJS({
+    "node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/parse.js"(exports, module) {
+      "use strict";
+      var utils2 = require_utils();
+      var has = Object.prototype.hasOwnProperty;
+      var isArray2 = Array.isArray;
+      var defaults2 = {
+        allowDots: false,
+        allowPrototypes: false,
+        allowSparse: false,
+        arrayLimit: 20,
+        charset: "utf-8",
+        charsetSentinel: false,
+        comma: false,
+        decoder: utils2.decode,
+        delimiter: "&",
+        depth: 5,
+        ignoreQueryPrefix: false,
+        interpretNumericEntities: false,
+        parameterLimit: 1e3,
+        parseArrays: true,
+        plainObjects: false,
+        strictNullHandling: false
+      };
+      var interpretNumericEntities = function(str) {
+        return str.replace(/&#(\d+);/g, function($0, numberStr) {
+          return String.fromCharCode(parseInt(numberStr, 10));
+        });
+      };
+      var parseArrayValue = function(val, options) {
+        if (val && typeof val === "string" && options.comma && val.indexOf(",") > -1) {
+          return val.split(",");
+        }
+        return val;
+      };
+      var isoSentinel = "utf8=%26%2310003%3B";
+      var charsetSentinel = "utf8=%E2%9C%93";
+      var parseValues = function parseQueryStringValues(str, options) {
+        var obj = {};
+        var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\?/, "") : str;
+        var limit = options.parameterLimit === Infinity ? void 0 : options.parameterLimit;
+        var parts = cleanStr.split(options.delimiter, limit);
+        var skipIndex = -1;
+        var i;
+        var charset = options.charset;
+        if (options.charsetSentinel) {
+          for (i = 0; i < parts.length; ++i) {
+            if (parts[i].indexOf("utf8=") === 0) {
+              if (parts[i] === charsetSentinel) {
+                charset = "utf-8";
+              } else if (parts[i] === isoSentinel) {
+                charset = "iso-8859-1";
+              }
+              skipIndex = i;
+              i = parts.length;
+            }
+          }
+        }
+        for (i = 0; i < parts.length; ++i) {
+          if (i === skipIndex) {
+            continue;
+          }
+          var part = parts[i];
+          var bracketEqualsPos = part.indexOf("]=");
+          var pos = bracketEqualsPos === -1 ? part.indexOf("=") : bracketEqualsPos + 1;
+          var key, val;
+          if (pos === -1) {
+            key = options.decoder(part, defaults2.decoder, charset, "key");
+            val = options.strictNullHandling ? null : "";
+          } else {
+            key = options.decoder(part.slice(0, pos), defaults2.decoder, charset, "key");
+            val = utils2.maybeMap(
+              parseArrayValue(part.slice(pos + 1), options),
+              function(encodedVal) {
+                return options.decoder(encodedVal, defaults2.decoder, charset, "value");
+              }
+            );
+          }
+          if (val && options.interpretNumericEntities && charset === "iso-8859-1") {
+            val = interpretNumericEntities(val);
+          }
+          if (part.indexOf("[]=") > -1) {
+            val = isArray2(val) ? [val] : val;
+          }
+          if (has.call(obj, key)) {
+            obj[key] = utils2.combine(obj[key], val);
+          } else {
+            obj[key] = val;
+          }
+        }
+        return obj;
+      };
+      var parseObject = function(chain2, val, options, valuesParsed) {
+        var leaf = valuesParsed ? val : parseArrayValue(val, options);
+        for (var i = chain2.length - 1; i >= 0; --i) {
+          var obj;
+          var root = chain2[i];
+          if (root === "[]" && options.parseArrays) {
+            obj = [].concat(leaf);
+          } else {
+            obj = options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+            var cleanRoot = root.charAt(0) === "[" && root.charAt(root.length - 1) === "]" ? root.slice(1, -1) : root;
+            var index = parseInt(cleanRoot, 10);
+            if (!options.parseArrays && cleanRoot === "") {
+              obj = { 0: leaf };
+            } else if (!isNaN(index) && root !== cleanRoot && String(index) === cleanRoot && index >= 0 && (options.parseArrays && index <= options.arrayLimit)) {
+              obj = [];
+              obj[index] = leaf;
+            } else if (cleanRoot !== "__proto__") {
+              obj[cleanRoot] = leaf;
+            }
+          }
+          leaf = obj;
+        }
+        return leaf;
+      };
+      var parseKeys = function parseQueryStringKeys(givenKey, val, options, valuesParsed) {
+        if (!givenKey) {
+          return;
+        }
+        var key = options.allowDots ? givenKey.replace(/\.([^.[]+)/g, "[$1]") : givenKey;
+        var brackets = /(\[[^[\]]*])/;
+        var child = /(\[[^[\]]*])/g;
+        var segment = options.depth > 0 && brackets.exec(key);
+        var parent = segment ? key.slice(0, segment.index) : key;
+        var keys = [];
+        if (parent) {
+          if (!options.plainObjects && has.call(Object.prototype, parent)) {
+            if (!options.allowPrototypes) {
+              return;
+            }
+          }
+          keys.push(parent);
+        }
+        var i = 0;
+        while (options.depth > 0 && (segment = child.exec(key)) !== null && i < options.depth) {
+          i += 1;
+          if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {
+            if (!options.allowPrototypes) {
+              return;
+            }
+          }
+          keys.push(segment[1]);
+        }
+        if (segment) {
+          keys.push("[" + key.slice(segment.index) + "]");
+        }
+        return parseObject(keys, val, options, valuesParsed);
+      };
+      var normalizeParseOptions = function normalizeParseOptions2(opts) {
+        if (!opts) {
+          return defaults2;
+        }
+        if (opts.decoder !== null && opts.decoder !== void 0 && typeof opts.decoder !== "function") {
+          throw new TypeError("Decoder has to be a function.");
+        }
+        if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
+          throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
+        }
+        var charset = typeof opts.charset === "undefined" ? defaults2.charset : opts.charset;
+        return {
+          allowDots: typeof opts.allowDots === "undefined" ? defaults2.allowDots : !!opts.allowDots,
+          allowPrototypes: typeof opts.allowPrototypes === "boolean" ? opts.allowPrototypes : defaults2.allowPrototypes,
+          allowSparse: typeof opts.allowSparse === "boolean" ? opts.allowSparse : defaults2.allowSparse,
+          arrayLimit: typeof opts.arrayLimit === "number" ? opts.arrayLimit : defaults2.arrayLimit,
+          charset,
+          charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
+          comma: typeof opts.comma === "boolean" ? opts.comma : defaults2.comma,
+          decoder: typeof opts.decoder === "function" ? opts.decoder : defaults2.decoder,
+          delimiter: typeof opts.delimiter === "string" || utils2.isRegExp(opts.delimiter) ? opts.delimiter : defaults2.delimiter,
+          // eslint-disable-next-line no-implicit-coercion, no-extra-parens
+          depth: typeof opts.depth === "number" || opts.depth === false ? +opts.depth : defaults2.depth,
+          ignoreQueryPrefix: opts.ignoreQueryPrefix === true,
+          interpretNumericEntities: typeof opts.interpretNumericEntities === "boolean" ? opts.interpretNumericEntities : defaults2.interpretNumericEntities,
+          parameterLimit: typeof opts.parameterLimit === "number" ? opts.parameterLimit : defaults2.parameterLimit,
+          parseArrays: opts.parseArrays !== false,
+          plainObjects: typeof opts.plainObjects === "boolean" ? opts.plainObjects : defaults2.plainObjects,
+          strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
+        };
+      };
+      module.exports = function(str, opts) {
+        var options = normalizeParseOptions(opts);
+        if (str === "" || str === null || typeof str === "undefined") {
+          return options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+        }
+        var tempObj = typeof str === "string" ? parseValues(str, options) : str;
+        var obj = options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+        var keys = Object.keys(tempObj);
+        for (var i = 0; i < keys.length; ++i) {
+          var key = keys[i];
+          var newObj = parseKeys(key, tempObj[key], options, typeof str === "string");
+          obj = utils2.merge(obj, newObj, options);
+        }
+        if (options.allowSparse === true) {
+          return obj;
+        }
+        return utils2.compact(obj);
+      };
+    }
+  });
+
+  // node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/index.js
+  var require_lib = __commonJS({
+    "node_modules/.pnpm/qs@6.10.4/node_modules/qs/lib/index.js"(exports, module) {
+      "use strict";
+      var stringify4 = require_stringify();
+      var parse3 = require_parse();
+      var formats = require_formats();
+      module.exports = {
+        formats,
+        parse: parse3,
+        stringify: stringify4
+      };
+    }
+  });
+
   // src/index.browser.ts
   var index_browser_exports = {};
   __export(index_browser_exports, {
     AutoCompounderSTRK: () => AutoCompounderSTRK,
+    AvnuWrapper: () => AvnuWrapper,
     ContractAddr: () => ContractAddr,
+    ERC20: () => ERC20,
+    EkuboCLVault: () => EkuboCLVault,
+    EkuboCLVaultStrategies: () => EkuboCLVaultStrategies,
     FatalError: () => FatalError,
     FlowChartColors: () => FlowChartColors,
     Global: () => Global,
@@ -15952,23 +18058,23 @@ var strkfarm_risk_engine = (() => {
     };
   });
   var deprecatedWarnings = {};
-  validators.transitional = function transitional(validator, version, message) {
+  validators.transitional = function transitional(validator, version2, message) {
     function formatMessage(opt, desc) {
       return "[Axios v" + VERSION + "] Transitional option '" + opt + "'" + desc + (message ? ". " + message : "");
     }
     return (value, opt, opts) => {
       if (validator === false) {
         throw new AxiosError_default(
-          formatMessage(opt, " has been removed" + (version ? " in " + version : "")),
+          formatMessage(opt, " has been removed" + (version2 ? " in " + version2 : "")),
           AxiosError_default.ERR_DEPRECATED
         );
       }
-      if (version && !deprecatedWarnings[opt]) {
+      if (version2 && !deprecatedWarnings[opt]) {
         deprecatedWarnings[opt] = true;
         console.warn(
           formatMessage(
             opt,
-            " has been deprecated since v" + version + " and will be removed in the near future"
+            " has been deprecated since v" + version2 + " and will be removed in the near future"
           )
         );
       }
@@ -16390,109 +18496,55 @@ var strkfarm_risk_engine = (() => {
     mergeConfig: mergeConfig2
   } = axios_default;
 
-  // src/global.ts
-  var logger = {
-    ...console,
-    verbose(message) {
-      console.log(`[VERBOSE] ${message}`);
-    }
-  };
-  var FatalError = class extends Error {
-    constructor(message, err2) {
-      super(message);
-      logger.error(message);
-      if (err2)
-        logger.error(err2.message);
-      this.name = "FatalError";
-    }
-  };
-  var tokens = [{
-    name: "Starknet",
-    symbol: "STRK",
-    logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
-    address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-    decimals: 18,
-    coingeckId: "starknet"
-  }];
-  var Global = class {
-    static fatalError(message, err2) {
-      logger.error(message);
-      console.error(message, err2);
-      if (err2)
-        console.error(err2);
-      process.exit(1);
-    }
-    static httpError(url, err2, message) {
-      logger.error(`${url}: ${message}`);
-      console.error(err2);
-    }
-    static getDefaultTokens() {
-      return tokens;
-    }
-    static async getTokens() {
-      if (tokens.length) return tokens;
-      const data = await axios_default.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
-      const tokensData = data.data.content;
-      tokensData.forEach((token) => {
-        if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
-          return;
-        }
-        tokens.push({
-          name: token.name,
-          symbol: token.symbol,
-          address: token.address,
-          decimals: token.decimals,
-          logo: token.logoUri,
-          coingeckId: token.extensions.coingeckoId
-        });
-      });
-      console.log(tokens);
-      return tokens;
-    }
-    static assert(condition, message) {
-      if (!condition) {
-        throw new FatalError(message);
-      }
-    }
-  };
-
-  // src/dataTypes/bignumber.ts
+  // src/dataTypes/_bignumber.ts
   var import_bignumber = __toESM(require_bignumber());
-  var Web3Number = class _Web3Number extends import_bignumber.default {
+  var _Web3Number = class extends import_bignumber.default {
     constructor(value, decimals) {
       super(value);
       this.decimals = decimals;
-    }
-    static fromWei(weiNumber, decimals) {
-      const bn = new _Web3Number(weiNumber, decimals).dividedBy(10 ** decimals);
-      return new _Web3Number(bn.toString(), decimals);
     }
     toWei() {
       return this.mul(10 ** this.decimals).toFixed(0);
     }
     multipliedBy(value) {
-      let _value = Number(value).toFixed(6);
-      return new _Web3Number(this.mul(_value).toString(), this.decimals);
+      let _value = Number(value).toFixed(13);
+      return this.construct(this.mul(_value).toString(), this.decimals);
     }
     dividedBy(value) {
-      let _value = Number(value).toFixed(6);
-      return new _Web3Number(this.div(_value).toString(), this.decimals);
+      let _value = Number(value).toFixed(13);
+      return this.construct(this.div(_value).toString(), this.decimals);
     }
     plus(value) {
-      return new _Web3Number(this.add(value).toString(), this.decimals);
+      const _value = Number(value).toFixed(13);
+      return this.construct(this.add(_value).toString(), this.decimals);
     }
     minus(n, base2) {
-      return new _Web3Number(super.minus(n, base2).toString(), this.decimals);
+      const _value = Number(n).toFixed(13);
+      return this.construct(super.minus(_value, base2).toString(), this.decimals);
+    }
+    construct(value, decimals) {
+      return new this.constructor(value, decimals);
     }
     toString(base2) {
       return super.toString(base2);
     }
-    // [customInspectSymbol](depth: any, inspectOptions: any, inspect: any) {
-    // return this.toString();
-    // }
+    toJSON() {
+      return this.toString();
+    }
+    valueOf() {
+      return this.toString();
+    }
   };
   import_bignumber.default.config({ DECIMAL_PLACES: 18 });
-  Web3Number.config({ DECIMAL_PLACES: 18 });
+  _Web3Number.config({ DECIMAL_PLACES: 18 });
+
+  // src/dataTypes/bignumber.browser.ts
+  var Web3Number = class _Web3Number2 extends _Web3Number {
+    static fromWei(weiNumber, decimals) {
+      const bn = new _Web3Number2(weiNumber, decimals).dividedBy(10 ** decimals);
+      return new _Web3Number2(bn.toString(), decimals);
+    }
+  };
 
   // node_modules/.pnpm/@starknet-io+types-js@0.7.7/node_modules/@starknet-io/types-js/dist/esm/index.js
   var esm_exports = {};
@@ -16731,7 +18783,7 @@ var strkfarm_risk_engine = (() => {
     }
     let carry = 0;
     let pos = 0;
-    const mask = 2 ** to - 1;
+    const mask2 = 2 ** to - 1;
     const res = [];
     for (const n of data) {
       /* @__PURE__ */ assertNumber(n);
@@ -16742,10 +18794,10 @@ var strkfarm_risk_engine = (() => {
         throw new Error(`convertRadix2: carry overflow pos=${pos} from=${from}`);
       pos += from;
       for (; pos >= to; pos -= to)
-        res.push((carry >> pos - to & mask) >>> 0);
+        res.push((carry >> pos - to & mask2) >>> 0);
       carry &= 2 ** pos - 1;
     }
-    carry = carry << to - pos & mask;
+    carry = carry << to - pos & mask2;
     if (!padding2 && pos >= from)
       throw new Error("Excess padding");
     if (!padding2 && carry)
@@ -18556,12 +20608,12 @@ var strkfarm_risk_engine = (() => {
         const { windows, windowSize } = opts(W);
         let p = c.ZERO;
         let f = c.BASE;
-        const mask = BigInt(2 ** W - 1);
+        const mask2 = BigInt(2 ** W - 1);
         const maxNumber = 2 ** W;
         const shiftBy = BigInt(W);
         for (let window2 = 0; window2 < windows; window2++) {
           const offset = window2 * windowSize;
-          let wbits = Number(n & mask);
+          let wbits = Number(n & mask2);
           n >>= shiftBy;
           if (wbits > windowSize) {
             wbits -= maxNumber;
@@ -20186,12 +22238,12 @@ var strkfarm_risk_engine = (() => {
         const { windows, windowSize } = opts(W);
         let p = c.ZERO;
         let f = c.BASE;
-        const mask = BigInt(2 ** W - 1);
+        const mask2 = BigInt(2 ** W - 1);
         const maxNumber = 2 ** W;
         const shiftBy = BigInt(W);
         for (let window2 = 0; window2 < windows; window2++) {
           const offset = window2 * windowSize;
-          let wbits = Number(n & mask);
+          let wbits = Number(n & mask2);
           n >>= shiftBy;
           if (wbits > windowSize) {
             wbits -= maxNumber;
@@ -24269,7 +26321,7 @@ var strkfarm_risk_engine = (() => {
     let incr;
     let fill;
     let low;
-    let mask;
+    let mask2;
     let next;
     let base2 = null;
     let match;
@@ -24346,7 +26398,7 @@ var strkfarm_risk_engine = (() => {
     drop = 0;
     low = -1;
     used = 1 << root;
-    mask = used - 1;
+    mask2 = used - 1;
     if (type === LENS$1 && used > ENOUGH_LENS$1 || type === DISTS$1 && used > ENOUGH_DISTS$1) {
       return 1;
     }
@@ -24386,7 +26438,7 @@ var strkfarm_risk_engine = (() => {
         }
         len = lens[lens_index + work[sym]];
       }
-      if (len > root && (huff & mask) !== low) {
+      if (len > root && (huff & mask2) !== low) {
         if (drop === 0) {
           drop = root;
         }
@@ -24405,7 +26457,7 @@ var strkfarm_risk_engine = (() => {
         if (type === LENS$1 && used > ENOUGH_LENS$1 || type === DISTS$1 && used > ENOUGH_DISTS$1) {
           return 1;
         }
-        low = huff & mask;
+        low = huff & mask2;
         table[low] = root << 24 | curr << 16 | next - table_index | 0;
       }
     }
@@ -27834,14 +29886,14 @@ var strkfarm_risk_engine = (() => {
     }
   };
   function createAbiParser(abi) {
-    const version = getAbiVersion(abi);
-    if (version === 0 || version === 1) {
+    const version2 = getAbiVersion(abi);
+    if (version2 === 0 || version2 === 1) {
       return new AbiParser1(abi);
     }
-    if (version === 2) {
+    if (version2 === 2) {
       return new AbiParser2(abi);
     }
-    throw Error(`Unsupported ABI version ${version}`);
+    throw Error(`Unsupported ABI version ${version2}`);
   }
   function getAbiVersion(abi) {
     if (abi.find((it) => it.type === "interface"))
@@ -29076,11 +31128,11 @@ var strkfarm_risk_engine = (() => {
   function computeHashOnElements2(data) {
     return [...data, data.length].reduce((x, y) => pedersen(toBigInt(x), toBigInt(y)), 0).toString();
   }
-  function calculateTransactionHashCommon(txHashPrefix, version, contractAddress, entryPointSelector, calldata, maxFee, chainId, additionalData = []) {
+  function calculateTransactionHashCommon(txHashPrefix, version2, contractAddress, entryPointSelector, calldata, maxFee, chainId, additionalData = []) {
     const calldataHash = computeHashOnElements2(calldata);
     const dataToHash = [
       txHashPrefix,
-      version,
+      version2,
       contractAddress,
       entryPointSelector,
       calldataHash,
@@ -29090,10 +31142,10 @@ var strkfarm_risk_engine = (() => {
     ];
     return computeHashOnElements2(dataToHash);
   }
-  function calculateDeclareTransactionHash(classHash, senderAddress, version, maxFee, chainId, nonce, compiledClassHash) {
+  function calculateDeclareTransactionHash(classHash, senderAddress, version2, maxFee, chainId, nonce, compiledClassHash) {
     return calculateTransactionHashCommon(
       "0x6465636c617265",
-      version,
+      version2,
       senderAddress,
       0,
       [classHash],
@@ -29102,11 +31154,11 @@ var strkfarm_risk_engine = (() => {
       [nonce, ...compiledClassHash ? [compiledClassHash] : []]
     );
   }
-  function calculateDeployAccountTransactionHash(contractAddress, classHash, constructorCalldata, salt, version, maxFee, chainId, nonce) {
+  function calculateDeployAccountTransactionHash(contractAddress, classHash, constructorCalldata, salt, version2, maxFee, chainId, nonce) {
     const calldata = [classHash, salt, ...constructorCalldata];
     return calculateTransactionHashCommon(
       "0x6465706c6f795f6163636f756e74",
-      version,
+      version2,
       contractAddress,
       0,
       calldata,
@@ -29115,10 +31167,10 @@ var strkfarm_risk_engine = (() => {
       [nonce]
     );
   }
-  function calculateTransactionHash(contractAddress, version, calldata, maxFee, chainId, nonce) {
+  function calculateTransactionHash(contractAddress, version2, calldata, maxFee, chainId, nonce) {
     return calculateTransactionHashCommon(
       "0x696e766f6b65",
-      version,
+      version2,
       contractAddress,
       0,
       calldata,
@@ -29151,12 +31203,12 @@ var strkfarm_risk_engine = (() => {
     const L2Bound = (L2_GAS_NAME << RESOURCE_VALUE_OFFSET) + (BigInt(bounds.l2_gas.max_amount) << MAX_PRICE_PER_UNIT_BITS) + BigInt(bounds.l2_gas.max_price_per_unit);
     return poseidonHashMany([BigInt(tip), L1Bound, L2Bound]);
   }
-  function calculateTransactionHashCommon2(txHashPrefix, version, senderAddress, chainId, nonce, tip, paymasterData, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, additionalData = []) {
+  function calculateTransactionHashCommon2(txHashPrefix, version2, senderAddress, chainId, nonce, tip, paymasterData, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, additionalData = []) {
     const feeFieldHash = hashFeeField(tip, resourceBounds);
     const dAModeHash = hashDAMode(nonceDataAvailabilityMode, feeDataAvailabilityMode);
     const dataToHash = AToBI([
       txHashPrefix,
-      version,
+      version2,
       senderAddress,
       feeFieldHash,
       poseidonHashMany(AToBI(paymasterData)),
@@ -29167,10 +31219,10 @@ var strkfarm_risk_engine = (() => {
     ]);
     return toHex(poseidonHashMany(dataToHash));
   }
-  function calculateDeployAccountTransactionHash2(contractAddress, classHash, compiledConstructorCalldata, salt, version, chainId, nonce, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, tip, paymasterData) {
+  function calculateDeployAccountTransactionHash2(contractAddress, classHash, compiledConstructorCalldata, salt, version2, chainId, nonce, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, tip, paymasterData) {
     return calculateTransactionHashCommon2(
       "0x6465706c6f795f6163636f756e74",
-      version,
+      version2,
       contractAddress,
       chainId,
       nonce,
@@ -29182,10 +31234,10 @@ var strkfarm_risk_engine = (() => {
       [poseidonHashMany(AToBI(compiledConstructorCalldata)), classHash, salt]
     );
   }
-  function calculateDeclareTransactionHash2(classHash, compiledClassHash, senderAddress, version, chainId, nonce, accountDeploymentData, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, tip, paymasterData) {
+  function calculateDeclareTransactionHash2(classHash, compiledClassHash, senderAddress, version2, chainId, nonce, accountDeploymentData, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, tip, paymasterData) {
     return calculateTransactionHashCommon2(
       "0x6465636c617265",
-      version,
+      version2,
       senderAddress,
       chainId,
       nonce,
@@ -29197,10 +31249,10 @@ var strkfarm_risk_engine = (() => {
       [poseidonHashMany(AToBI(accountDeploymentData)), classHash, compiledClassHash]
     );
   }
-  function calculateInvokeTransactionHash(senderAddress, version, compiledCalldata, chainId, nonce, accountDeploymentData, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, tip, paymasterData) {
+  function calculateInvokeTransactionHash(senderAddress, version2, compiledCalldata, chainId, nonce, accountDeploymentData, nonceDataAvailabilityMode, feeDataAvailabilityMode, resourceBounds, tip, paymasterData) {
     return calculateTransactionHashCommon2(
       "0x696e766f6b65",
-      version,
+      version2,
       senderAddress,
       chainId,
       nonce,
@@ -29572,16 +31624,16 @@ var strkfarm_risk_engine = (() => {
   function toFeeVersion(providedVersion) {
     if (!providedVersion)
       return void 0;
-    const version = toHex(providedVersion);
-    if (version === api_exports2.ETransactionVersion.V0)
+    const version2 = toHex(providedVersion);
+    if (version2 === api_exports2.ETransactionVersion.V0)
       return api_exports2.ETransactionVersion.F0;
-    if (version === api_exports2.ETransactionVersion.V1)
+    if (version2 === api_exports2.ETransactionVersion.V1)
       return api_exports2.ETransactionVersion.F1;
-    if (version === api_exports2.ETransactionVersion.V2)
+    if (version2 === api_exports2.ETransactionVersion.V2)
       return api_exports2.ETransactionVersion.F2;
-    if (version === api_exports2.ETransactionVersion.V3)
+    if (version2 === api_exports2.ETransactionVersion.V3)
       return api_exports2.ETransactionVersion.F3;
-    throw Error(`toFeeVersion: ${version} is not supported`);
+    throw Error(`toFeeVersion: ${version2} is not supported`);
   }
   function v3Details(details) {
     return {
@@ -29768,11 +31820,11 @@ var strkfarm_risk_engine = (() => {
     }
   };
   function isV3Tx(details) {
-    const version = details.version ? toHex(details.version) : api_exports2.ETransactionVersion.V3;
-    return version === api_exports2.ETransactionVersion.V3 || version === api_exports2.ETransactionVersion.F3;
+    const version2 = details.version ? toHex(details.version) : api_exports2.ETransactionVersion.V3;
+    return version2 === api_exports2.ETransactionVersion.V3 || version2 === api_exports2.ETransactionVersion.F3;
   }
-  function isVersion(version, response) {
-    const [majorS, minorS] = version.split(".");
+  function isVersion(version2, response) {
+    const [majorS, minorS] = version2.split(".");
     const [majorR, minorR] = response.split(".");
     return majorS === majorR && minorS === minorR;
   }
@@ -32588,7 +34640,7 @@ var strkfarm_risk_engine = (() => {
     }
     async call(method, args = [], {
       parseRequest = true,
-      parseResponse = true,
+      parseResponse: parseResponse2 = true,
       formatResponse = void 0,
       blockIdentifier = void 0
     } = {}) {
@@ -32609,7 +34661,7 @@ var strkfarm_risk_engine = (() => {
         },
         blockIdentifier
       ).then((it) => {
-        if (!parseResponse) {
+        if (!parseResponse2) {
           return it;
         }
         if (formatResponse) {
@@ -32717,6 +34769,93 @@ var strkfarm_risk_engine = (() => {
     }
     static eqString(a, b) {
       return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
+    }
+    toString() {
+      return this.address;
+    }
+  };
+
+  // src/global.ts
+  var logger = {
+    ...console,
+    verbose(message) {
+      console.log(`[VERBOSE] ${message}`);
+    }
+  };
+  var FatalError = class extends Error {
+    constructor(message, err2) {
+      super(message);
+      logger.error(message);
+      if (err2)
+        logger.error(err2.message);
+      this.name = "FatalError";
+    }
+  };
+  var defaultTokens = [{
+    name: "Starknet",
+    symbol: "STRK",
+    logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
+    address: ContractAddr.from("0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
+    decimals: 18,
+    coingeckId: "starknet"
+  }, {
+    name: "xSTRK",
+    symbol: "xSTRK",
+    logo: "https://dashboard.endur.fi/endur-fi.svg",
+    address: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
+    decimals: 18,
+    coingeckId: void 0
+  }];
+  var tokens = defaultTokens;
+  var Global = class _Global {
+    static fatalError(message, err2) {
+      logger.error(message);
+      console.error(message, err2);
+      if (err2)
+        console.error(err2);
+      process.exit(1);
+    }
+    static httpError(url, err2, message) {
+      logger.error(`${url}: ${message}`);
+      console.error(err2);
+    }
+    static getDefaultTokens() {
+      return tokens;
+    }
+    static async getTokens() {
+      if (tokens.length) return tokens;
+      const data = await axios_default.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
+      const tokensData = data.data.content;
+      tokensData.forEach((token) => {
+        if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
+          return;
+        }
+        tokens.push({
+          name: token.name,
+          symbol: token.symbol,
+          address: ContractAddr.from(token.address),
+          decimals: token.decimals,
+          logo: token.logoUri,
+          coingeckId: token.extensions.coingeckoId
+        });
+      });
+      console.log(tokens);
+      return tokens;
+    }
+    static assert(condition, message) {
+      if (!condition) {
+        throw new FatalError(message);
+      }
+    }
+    static async getTokenInfoFromAddr(addr) {
+      if (tokens.length == defaultTokens.length) {
+        await _Global.getTokens();
+      }
+      const token = tokens.find((token2) => addr.eq(token2.address));
+      if (!token) {
+        throw new FatalError(`Token not found: ${addr.address}`);
+      }
+      return token;
     }
   };
 
@@ -32879,7 +35018,7 @@ var strkfarm_risk_engine = (() => {
       throw new Error("Not implemented");
     }
     async _getPriceEkubo(token, amountIn = new Web3Number(1, token.decimals), retry = 0) {
-      const url = this.EKUBO_API.replace("{{TOKEN_ADDRESS}}", token.address).replace("{{AMOUNT}}", amountIn.toWei());
+      const url = this.EKUBO_API.replace("{{TOKEN_ADDRESS}}", token.address.toString()).replace("{{AMOUNT}}", amountIn.toWei());
       const result = await axios_default.get(url);
       const data = result.data;
       const outputUSDC = Number(Web3Number.fromWei(data.total_calculated, 6).toFixed(6));
@@ -33063,7 +35202,7 @@ var strkfarm_risk_engine = (() => {
           const token = {
             name: pool.token.name,
             symbol: pool.token.symbol,
-            address: savedTokenInfo?.address || "",
+            address: savedTokenInfo?.address || ContractAddr.from(""),
             logo: "",
             decimals: pool.token.decimals,
             borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
@@ -33225,6 +35364,1520 @@ var strkfarm_risk_engine = (() => {
         price,
         timestamp: new Date(priceInfo.timestamp)
       };
+    }
+  };
+
+  // src/data/erc20.abi.json
+  var erc20_abi_default = [
+    {
+      name: "LockingContract",
+      type: "impl",
+      interface_name: "src::mintable_lock_interface::ILockingContract"
+    },
+    {
+      name: "src::mintable_lock_interface::ILockingContract",
+      type: "interface",
+      items: [
+        {
+          name: "set_locking_contract",
+          type: "function",
+          inputs: [
+            {
+              name: "locking_contract",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "get_locking_contract",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      name: "LockAndDelegate",
+      type: "impl",
+      interface_name: "src::mintable_lock_interface::ILockAndDelegate"
+    },
+    {
+      name: "core::integer::u256",
+      type: "struct",
+      members: [
+        {
+          name: "low",
+          type: "core::integer::u128"
+        },
+        {
+          name: "high",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      name: "src::mintable_lock_interface::ILockAndDelegate",
+      type: "interface",
+      items: [
+        {
+          name: "lock_and_delegate",
+          type: "function",
+          inputs: [
+            {
+              name: "delegatee",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "lock_and_delegate_by_sig",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "delegatee",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            },
+            {
+              name: "nonce",
+              type: "core::felt252"
+            },
+            {
+              name: "expiry",
+              type: "core::integer::u64"
+            },
+            {
+              name: "signature",
+              type: "core::array::Array::<core::felt252>"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "MintableToken",
+      type: "impl",
+      interface_name: "src::mintable_token_interface::IMintableToken"
+    },
+    {
+      name: "src::mintable_token_interface::IMintableToken",
+      type: "interface",
+      items: [
+        {
+          name: "permissioned_mint",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "permissioned_burn",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "MintableTokenCamelImpl",
+      type: "impl",
+      interface_name: "src::mintable_token_interface::IMintableTokenCamel"
+    },
+    {
+      name: "src::mintable_token_interface::IMintableTokenCamel",
+      type: "interface",
+      items: [
+        {
+          name: "permissionedMint",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "permissionedBurn",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "Replaceable",
+      type: "impl",
+      interface_name: "src::replaceability_interface::IReplaceable"
+    },
+    {
+      name: "core::array::Span::<core::felt252>",
+      type: "struct",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      name: "src::replaceability_interface::EICData",
+      type: "struct",
+      members: [
+        {
+          name: "eic_hash",
+          type: "core::starknet::class_hash::ClassHash"
+        },
+        {
+          name: "eic_init_data",
+          type: "core::array::Span::<core::felt252>"
+        }
+      ]
+    },
+    {
+      name: "core::option::Option::<src::replaceability_interface::EICData>",
+      type: "enum",
+      variants: [
+        {
+          name: "Some",
+          type: "src::replaceability_interface::EICData"
+        },
+        {
+          name: "None",
+          type: "()"
+        }
+      ]
+    },
+    {
+      name: "core::bool",
+      type: "enum",
+      variants: [
+        {
+          name: "False",
+          type: "()"
+        },
+        {
+          name: "True",
+          type: "()"
+        }
+      ]
+    },
+    {
+      name: "src::replaceability_interface::ImplementationData",
+      type: "struct",
+      members: [
+        {
+          name: "impl_hash",
+          type: "core::starknet::class_hash::ClassHash"
+        },
+        {
+          name: "eic_data",
+          type: "core::option::Option::<src::replaceability_interface::EICData>"
+        },
+        {
+          name: "final",
+          type: "core::bool"
+        }
+      ]
+    },
+    {
+      name: "src::replaceability_interface::IReplaceable",
+      type: "interface",
+      items: [
+        {
+          name: "get_upgrade_delay",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u64"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "get_impl_activation_time",
+          type: "function",
+          inputs: [
+            {
+              name: "implementation_data",
+              type: "src::replaceability_interface::ImplementationData"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u64"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "add_new_implementation",
+          type: "function",
+          inputs: [
+            {
+              name: "implementation_data",
+              type: "src::replaceability_interface::ImplementationData"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "remove_implementation",
+          type: "function",
+          inputs: [
+            {
+              name: "implementation_data",
+              type: "src::replaceability_interface::ImplementationData"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "replace_to",
+          type: "function",
+          inputs: [
+            {
+              name: "implementation_data",
+              type: "src::replaceability_interface::ImplementationData"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "AccessControlImplExternal",
+      type: "impl",
+      interface_name: "src::access_control_interface::IAccessControl"
+    },
+    {
+      name: "src::access_control_interface::IAccessControl",
+      type: "interface",
+      items: [
+        {
+          name: "has_role",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            },
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "get_role_admin",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::felt252"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      name: "RolesImpl",
+      type: "impl",
+      interface_name: "src::roles_interface::IMinimalRoles"
+    },
+    {
+      name: "src::roles_interface::IMinimalRoles",
+      type: "interface",
+      items: [
+        {
+          name: "is_governance_admin",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "is_upgrade_governor",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "register_governance_admin",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "remove_governance_admin",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "register_upgrade_governor",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "remove_upgrade_governor",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "renounce",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "ERC20Impl",
+      type: "impl",
+      interface_name: "openzeppelin::token::erc20::interface::IERC20"
+    },
+    {
+      name: "openzeppelin::token::erc20::interface::IERC20",
+      type: "interface",
+      items: [
+        {
+          name: "name",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::felt252"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "symbol",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::felt252"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "decimals",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u8"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "total_supply",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "balance_of",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "allowance",
+          type: "function",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "transfer",
+          type: "function",
+          inputs: [
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "transfer_from",
+          type: "function",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "approve",
+          type: "function",
+          inputs: [
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "ERC20CamelOnlyImpl",
+      type: "impl",
+      interface_name: "openzeppelin::token::erc20::interface::IERC20CamelOnly"
+    },
+    {
+      name: "openzeppelin::token::erc20::interface::IERC20CamelOnly",
+      type: "interface",
+      items: [
+        {
+          name: "totalSupply",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "balanceOf",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "transferFrom",
+          type: "function",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "constructor",
+      type: "constructor",
+      inputs: [
+        {
+          name: "name",
+          type: "core::felt252"
+        },
+        {
+          name: "symbol",
+          type: "core::felt252"
+        },
+        {
+          name: "decimals",
+          type: "core::integer::u8"
+        },
+        {
+          name: "initial_supply",
+          type: "core::integer::u256"
+        },
+        {
+          name: "recipient",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "permitted_minter",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "provisional_governance_admin",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "upgrade_delay",
+          type: "core::integer::u64"
+        }
+      ]
+    },
+    {
+      name: "increase_allowance",
+      type: "function",
+      inputs: [
+        {
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "added_value",
+          type: "core::integer::u256"
+        }
+      ],
+      outputs: [
+        {
+          type: "core::bool"
+        }
+      ],
+      state_mutability: "external"
+    },
+    {
+      name: "decrease_allowance",
+      type: "function",
+      inputs: [
+        {
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "subtracted_value",
+          type: "core::integer::u256"
+        }
+      ],
+      outputs: [
+        {
+          type: "core::bool"
+        }
+      ],
+      state_mutability: "external"
+    },
+    {
+      name: "increaseAllowance",
+      type: "function",
+      inputs: [
+        {
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "addedValue",
+          type: "core::integer::u256"
+        }
+      ],
+      outputs: [
+        {
+          type: "core::bool"
+        }
+      ],
+      state_mutability: "external"
+    },
+    {
+      name: "decreaseAllowance",
+      type: "function",
+      inputs: [
+        {
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "subtractedValue",
+          type: "core::integer::u256"
+        }
+      ],
+      outputs: [
+        {
+          type: "core::bool"
+        }
+      ],
+      state_mutability: "external"
+    },
+    {
+      kind: "struct",
+      name: "src::strk::erc20_lockable::ERC20Lockable::Transfer",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "from",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "to",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "value",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::strk::erc20_lockable::ERC20Lockable::Approval",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "value",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::replaceability_interface::ImplementationAdded",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "implementation_data",
+          type: "src::replaceability_interface::ImplementationData"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::replaceability_interface::ImplementationRemoved",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "implementation_data",
+          type: "src::replaceability_interface::ImplementationData"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::replaceability_interface::ImplementationReplaced",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "implementation_data",
+          type: "src::replaceability_interface::ImplementationData"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::replaceability_interface::ImplementationFinalized",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "impl_hash",
+          type: "core::starknet::class_hash::ClassHash"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::access_control_interface::RoleGranted",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::access_control_interface::RoleRevoked",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::access_control_interface::RoleAdminChanged",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "previous_admin_role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "new_admin_role",
+          type: "core::felt252"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::roles_interface::GovernanceAdminAdded",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "added_account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "added_by",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::roles_interface::GovernanceAdminRemoved",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "removed_account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "removed_by",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::roles_interface::UpgradeGovernorAdded",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "added_account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "added_by",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "src::roles_interface::UpgradeGovernorRemoved",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "removed_account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "removed_by",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "src::strk::erc20_lockable::ERC20Lockable::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "Transfer",
+          type: "src::strk::erc20_lockable::ERC20Lockable::Transfer"
+        },
+        {
+          kind: "nested",
+          name: "Approval",
+          type: "src::strk::erc20_lockable::ERC20Lockable::Approval"
+        },
+        {
+          kind: "nested",
+          name: "ImplementationAdded",
+          type: "src::replaceability_interface::ImplementationAdded"
+        },
+        {
+          kind: "nested",
+          name: "ImplementationRemoved",
+          type: "src::replaceability_interface::ImplementationRemoved"
+        },
+        {
+          kind: "nested",
+          name: "ImplementationReplaced",
+          type: "src::replaceability_interface::ImplementationReplaced"
+        },
+        {
+          kind: "nested",
+          name: "ImplementationFinalized",
+          type: "src::replaceability_interface::ImplementationFinalized"
+        },
+        {
+          kind: "nested",
+          name: "RoleGranted",
+          type: "src::access_control_interface::RoleGranted"
+        },
+        {
+          kind: "nested",
+          name: "RoleRevoked",
+          type: "src::access_control_interface::RoleRevoked"
+        },
+        {
+          kind: "nested",
+          name: "RoleAdminChanged",
+          type: "src::access_control_interface::RoleAdminChanged"
+        },
+        {
+          kind: "nested",
+          name: "GovernanceAdminAdded",
+          type: "src::roles_interface::GovernanceAdminAdded"
+        },
+        {
+          kind: "nested",
+          name: "GovernanceAdminRemoved",
+          type: "src::roles_interface::GovernanceAdminRemoved"
+        },
+        {
+          kind: "nested",
+          name: "UpgradeGovernorAdded",
+          type: "src::roles_interface::UpgradeGovernorAdded"
+        },
+        {
+          kind: "nested",
+          name: "UpgradeGovernorRemoved",
+          type: "src::roles_interface::UpgradeGovernorRemoved"
+        }
+      ]
+    }
+  ];
+
+  // src/modules/erc20.ts
+  var ERC20 = class {
+    constructor(config2) {
+      this.config = config2;
+    }
+    contract(addr) {
+      const _addr = typeof addr === "string" ? addr : addr.address;
+      return new Contract(erc20_abi_default, _addr, this.config.provider);
+    }
+    async balanceOf(token, address, tokenDecimals) {
+      const contract = this.contract(token);
+      const balance = await contract.call("balanceOf", [address.toString()]);
+      return Web3Number.fromWei(balance.toString(), tokenDecimals);
+    }
+  };
+
+  // node_modules/.pnpm/ethers@6.13.5/node_modules/ethers/lib.esm/_version.js
+  var version = "6.13.5";
+
+  // node_modules/.pnpm/ethers@6.13.5/node_modules/ethers/lib.esm/utils/properties.js
+  function checkType(value, type, name) {
+    const types = type.split("|").map((t) => t.trim());
+    for (let i = 0; i < types.length; i++) {
+      switch (type) {
+        case "any":
+          return;
+        case "bigint":
+        case "boolean":
+        case "number":
+        case "string":
+          if (typeof value === type) {
+            return;
+          }
+      }
+    }
+    const error2 = new Error(`invalid value for type ${type}`);
+    error2.code = "INVALID_ARGUMENT";
+    error2.argument = `value.${name}`;
+    error2.value = value;
+    throw error2;
+  }
+  function defineProperties(target, values, types) {
+    for (let key in values) {
+      let value = values[key];
+      const type = types ? types[key] : null;
+      if (type) {
+        checkType(value, type, key);
+      }
+      Object.defineProperty(target, key, { enumerable: true, value, writable: false });
+    }
+  }
+
+  // node_modules/.pnpm/ethers@6.13.5/node_modules/ethers/lib.esm/utils/errors.js
+  function stringify3(value) {
+    if (value == null) {
+      return "null";
+    }
+    if (Array.isArray(value)) {
+      return "[ " + value.map(stringify3).join(", ") + " ]";
+    }
+    if (value instanceof Uint8Array) {
+      const HEX = "0123456789abcdef";
+      let result = "0x";
+      for (let i = 0; i < value.length; i++) {
+        result += HEX[value[i] >> 4];
+        result += HEX[value[i] & 15];
+      }
+      return result;
+    }
+    if (typeof value === "object" && typeof value.toJSON === "function") {
+      return stringify3(value.toJSON());
+    }
+    switch (typeof value) {
+      case "boolean":
+      case "symbol":
+        return value.toString();
+      case "bigint":
+        return BigInt(value).toString();
+      case "number":
+        return value.toString();
+      case "string":
+        return JSON.stringify(value);
+      case "object": {
+        const keys = Object.keys(value);
+        keys.sort();
+        return "{ " + keys.map((k) => `${stringify3(k)}: ${stringify3(value[k])}`).join(", ") + " }";
+      }
+    }
+    return `[ COULD NOT SERIALIZE ]`;
+  }
+  function makeError(message, code, info) {
+    let shortMessage = message;
+    {
+      const details = [];
+      if (info) {
+        if ("message" in info || "code" in info || "name" in info) {
+          throw new Error(`value will overwrite populated values: ${stringify3(info)}`);
+        }
+        for (const key in info) {
+          if (key === "shortMessage") {
+            continue;
+          }
+          const value = info[key];
+          details.push(key + "=" + stringify3(value));
+        }
+      }
+      details.push(`code=${code}`);
+      details.push(`version=${version}`);
+      if (details.length) {
+        message += " (" + details.join(", ") + ")";
+      }
+    }
+    let error2;
+    switch (code) {
+      case "INVALID_ARGUMENT":
+        error2 = new TypeError(message);
+        break;
+      case "NUMERIC_FAULT":
+      case "BUFFER_OVERRUN":
+        error2 = new RangeError(message);
+        break;
+      default:
+        error2 = new Error(message);
+    }
+    defineProperties(error2, { code });
+    if (info) {
+      Object.assign(error2, info);
+    }
+    if (error2.shortMessage == null) {
+      defineProperties(error2, { shortMessage });
+    }
+    return error2;
+  }
+  function assert2(check, message, code, info) {
+    if (!check) {
+      throw makeError(message, code, info);
+    }
+  }
+  function assertArgument(check, message, name, value) {
+    assert2(check, message, "INVALID_ARGUMENT", { argument: name, value });
+  }
+  var _normalizeForms = ["NFD", "NFC", "NFKD", "NFKC"].reduce((accum, form) => {
+    try {
+      if ("test".normalize(form) !== "test") {
+        throw new Error("bad");
+      }
+      ;
+      if (form === "NFD") {
+        const check = String.fromCharCode(233).normalize("NFD");
+        const expected = String.fromCharCode(101, 769);
+        if (check !== expected) {
+          throw new Error("broken");
+        }
+      }
+      accum.push(form);
+    } catch (error2) {
+    }
+    return accum;
+  }, []);
+
+  // node_modules/.pnpm/ethers@6.13.5/node_modules/ethers/lib.esm/utils/maths.js
+  var BN_0 = BigInt(0);
+  var BN_1 = BigInt(1);
+  var maxValue = 9007199254740991;
+  function getBigInt(value, name) {
+    switch (typeof value) {
+      case "bigint":
+        return value;
+      case "number":
+        assertArgument(Number.isInteger(value), "underflow", name || "value", value);
+        assertArgument(value >= -maxValue && value <= maxValue, "overflow", name || "value", value);
+        return BigInt(value);
+      case "string":
+        try {
+          if (value === "") {
+            throw new Error("empty string");
+          }
+          if (value[0] === "-" && value[1] !== "-") {
+            return -BigInt(value.substring(1));
+          }
+          return BigInt(value);
+        } catch (e) {
+          assertArgument(false, `invalid BigNumberish string: ${e.message}`, name || "value", value);
+        }
+    }
+    assertArgument(false, "invalid BigNumberish value", name || "value", value);
+  }
+  function getUint(value, name) {
+    const result = getBigInt(value, name);
+    assert2(result >= BN_0, "unsigned value cannot be negative", "NUMERIC_FAULT", {
+      fault: "overflow",
+      operation: "getUint",
+      value
+    });
+    return result;
+  }
+  function getNumber(value, name) {
+    switch (typeof value) {
+      case "bigint":
+        assertArgument(value >= -maxValue && value <= maxValue, "overflow", name || "value", value);
+        return Number(value);
+      case "number":
+        assertArgument(Number.isInteger(value), "underflow", name || "value", value);
+        assertArgument(value >= -maxValue && value <= maxValue, "overflow", name || "value", value);
+        return value;
+      case "string":
+        try {
+          if (value === "") {
+            throw new Error("empty string");
+          }
+          return getNumber(BigInt(value), name);
+        } catch (e) {
+          assertArgument(false, `invalid numeric string: ${e.message}`, name || "value", value);
+        }
+    }
+    assertArgument(false, "invalid numeric value", name || "value", value);
+  }
+  function toBeHex(_value, _width) {
+    const value = getUint(_value, "value");
+    let result = value.toString(16);
+    if (_width == null) {
+      if (result.length % 2) {
+        result = "0" + result;
+      }
+    } else {
+      const width = getNumber(_width, "width");
+      assert2(width * 2 >= result.length, `value exceeds width (${width} bytes)`, "NUMERIC_FAULT", {
+        operation: "toBeHex",
+        fault: "overflow",
+        value: _value
+      });
+      while (result.length < width * 2) {
+        result = "0" + result;
+      }
+    }
+    return "0x" + result;
+  }
+
+  // node_modules/.pnpm/@avnu+avnu-sdk@3.0.2_ethers@6.13.5_moment@2.30.1_qs@6.10.4_starknet@6.11.0/node_modules/@avnu/avnu-sdk/dist/index.mjs
+  var import_qs = __toESM(require_lib(), 1);
+  var import_qs2 = __toESM(require_lib(), 1);
+  var import_qs3 = __toESM(require_lib(), 1);
+  var BASE_URL = "https://starknet.api.avnu.fi";
+  var ContractError = class {
+    constructor(message, revertError) {
+      this.message = message;
+      this.revertError = revertError;
+    }
+  };
+  var getBaseUrl = (options) => options?.baseUrl ?? (false ? SEPOLIA_BASE_URL : BASE_URL);
+  var getRequest = (options) => ({
+    signal: options?.abortSignal,
+    headers: {
+      ...options?.avnuPublicKey !== void 0 && { "ask-signature": "true" }
+    }
+  });
+  var postRequest = (body, options) => ({
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...options?.avnuPublicKey && { "ask-signature": "true" }
+    },
+    ...body !== void 0 && { body: JSON.stringify(body) }
+  });
+  var parseResponse = (response, avnuPublicKey) => {
+    if (response.status === 400) {
+      return response.json().then((error2) => {
+        throw new Error(error2.messages[0]);
+      });
+    }
+    if (response.status === 500) {
+      return response.json().then((error2) => {
+        if (error2.messages.length >= 0 && error2.messages[0].includes("Contract error")) {
+          throw new ContractError(error2.messages[0], error2.revertError || "");
+        } else {
+          throw new Error(error2.messages[0]);
+        }
+      });
+    }
+    if (response.status > 400) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    if (avnuPublicKey) {
+      const signature = response.headers.get("signature");
+      if (!signature) throw new Error("No server signature");
+      return response.clone().text().then((textResponse) => {
+        const hashResponse = hash_exports.computeHashOnElements([hash_exports.starknetKeccak(textResponse)]);
+        const formattedSig = signature.split(",").map((s) => BigInt(s));
+        const signatureType = new ec_exports.starkCurve.Signature(formattedSig[0], formattedSig[1]);
+        if (!ec_exports.starkCurve.verify(signatureType, hashResponse, avnuPublicKey))
+          throw new Error("Invalid server signature");
+      }).then(() => response.json());
+    }
+    return response.json();
+  };
+  var fetchQuotes = (request, options) => {
+    if (!request.sellAmount && !request.buyAmount) throw new Error("Sell amount or buy amount is required");
+    const queryParams = import_qs2.default.stringify(
+      {
+        ...request,
+        buyAmount: request.buyAmount ? toBeHex(request.buyAmount) : void 0,
+        sellAmount: request.sellAmount ? toBeHex(request.sellAmount) : void 0,
+        integratorFees: request.integratorFees ? toBeHex(request.integratorFees) : void 0
+      },
+      { arrayFormat: "repeat" }
+    );
+    return fetch(`${getBaseUrl(options)}/swap/v2/quotes?${queryParams}`, getRequest(options)).then((response) => parseResponse(response, options?.avnuPublicKey)).then(
+      (quotes) => quotes.map((quote) => ({
+        ...quote,
+        sellAmount: BigInt(quote.sellAmount),
+        buyAmount: BigInt(quote.buyAmount),
+        buyAmountWithoutFees: BigInt(quote.buyAmountWithoutFees),
+        gasFees: BigInt(quote.gasFees),
+        avnuFees: BigInt(quote.avnuFees),
+        integratorFees: BigInt(quote.integratorFees),
+        avnuFeesBps: BigInt(quote.avnuFeesBps),
+        integratorFeesBps: BigInt(quote.integratorFeesBps),
+        gasless: quote.gasless && {
+          active: quote.gasless.active,
+          gasTokenPrices: quote.gasless.gasTokenPrices.map((gasTokenPrice) => ({
+            tokenAddress: gasTokenPrice.tokenAddress,
+            gasFeesInUsd: gasTokenPrice.gasFeesInUsd,
+            gasFeesInGasToken: BigInt(gasTokenPrice.gasFeesInGasToken)
+          }))
+        }
+      }))
+    );
+  };
+  var fetchBuildExecuteTransaction = (quoteId, takerAddress, slippage, includeApprove, options) => fetch(
+    `${getBaseUrl(options)}/swap/v2/build`,
+    postRequest({ quoteId, takerAddress, slippage, includeApprove }, options)
+  ).then((response) => parseResponse(response, options?.avnuPublicKey));
+
+  // src/utils/index.ts
+  function assert3(condition, message) {
+    if (!condition) {
+      throw new Error(message);
+    }
+  }
+
+  // src/modules/avnu.ts
+  var AvnuWrapper = class {
+    async getQuotes(fromToken, toToken, amountWei, taker) {
+      const params = {
+        sellTokenAddress: fromToken,
+        buyTokenAddress: toToken,
+        sellAmount: amountWei,
+        takerAddress: taker
+      };
+      assert3(fromToken != toToken, "From and to tokens are the same");
+      const quotes = await fetchQuotes(params);
+      assert3(quotes.length > 0, "No quotes found");
+      return quotes[0];
+    }
+    async getSwapInfo(quote, taker, integratorFeeBps, integratorFeeRecipient, minAmount) {
+      const calldata = await fetchBuildExecuteTransaction(quote.quoteId);
+      const call = calldata.calls[1];
+      const callData = call.calldata;
+      const routesLen = Number(callData[11]);
+      assert3(routesLen > 0, "No routes found");
+      let startIndex = 12;
+      const routes = [];
+      for (let i = 0; i < routesLen; ++i) {
+        const swap_params_len = Number(callData[startIndex + 4]);
+        const route = {
+          token_from: callData[startIndex],
+          token_to: callData[startIndex + 1],
+          exchange_address: callData[startIndex + 2],
+          percent: Number(callData[startIndex + 3]),
+          additional_swap_params: swap_params_len > 0 ? callData.slice(startIndex + 5, startIndex + 5 + swap_params_len) : []
+        };
+        routes.push(route);
+        startIndex += 5 + swap_params_len;
+      }
+      const swapInfo = {
+        token_from_address: quote.sellTokenAddress,
+        token_from_amount: uint256_exports.bnToUint256(quote.sellAmount),
+        token_to_address: quote.buyTokenAddress,
+        token_to_amount: uint256_exports.bnToUint256(quote.buyAmount),
+        token_to_min_amount: uint256_exports.bnToUint256(minAmount),
+        beneficiary: taker,
+        integrator_fee_amount_bps: integratorFeeBps,
+        integrator_fee_recipient: integratorFeeRecipient,
+        routes
+      };
+      return swapInfo;
     }
   };
 
@@ -34847,15 +38500,33 @@ var strkfarm_risk_engine = (() => {
     }
   ];
 
-  // src/utils/index.ts
-  function assert2(condition, message) {
-    if (!condition) {
-      throw new Error(message);
+  // src/strategies/base-strategy.ts
+  var BaseStrategy = class {
+    constructor(config2) {
+      this.config = config2;
     }
+    async getUserTVL(user) {
+      throw new Error("Not implemented");
+    }
+    async getTVL() {
+      throw new Error("Not implemented");
+    }
+    depositCall(amountInfo, receiver) {
+      throw new Error("Not implemented");
+    }
+    withdrawCall(amountInfo, receiver, owner) {
+      throw new Error("Not implemented");
+    }
+  };
+
+  // src/node/headless.browser.ts
+  async function getAPIUsingHeadlessBrowser(url) {
+    const res = await axios_default.get(url);
+    return res.data;
   }
 
   // src/strategies/vesu-rebalance.ts
-  var VesuRebalance = class _VesuRebalance {
+  var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     // 10000 bps = 100%
     /**
      * Creates a new VesuRebalance strategy instance.
@@ -34865,10 +38536,10 @@ var strkfarm_risk_engine = (() => {
      * @throws {Error} If more than one deposit token is specified
      */
     constructor(config2, pricer, metadata) {
+      super(config2);
       this.BASE_WEIGHT = 1e4;
-      this.config = config2;
       this.pricer = pricer;
-      assert2(metadata.depositTokens.length === 1, "VesuRebalance only supports 1 deposit token");
+      assert3(metadata.depositTokens.length === 1, "VesuRebalance only supports 1 deposit token");
       this.metadata = metadata;
       this.address = metadata.address;
       this.contract = new Contract(vesu_rebalance_abi_default, this.address.address, this.config.provider);
@@ -34879,10 +38550,11 @@ var strkfarm_risk_engine = (() => {
      * @param receiver - Address that will receive the strategy tokens
      * @returns Populated contract call for deposit
      */
-    depositCall(assets, receiver) {
-      const assetContract = new Contract(vesu_rebalance_abi_default, this.metadata.depositTokens[0].address, this.config.provider);
-      const call1 = assetContract.populate("approve", [this.address.address, uint256_exports.bnToUint256(assets.toWei())]);
-      const call2 = this.contract.populate("deposit", [uint256_exports.bnToUint256(assets.toWei()), receiver.address]);
+    depositCall(amountInfo, receiver) {
+      assert3(amountInfo.tokenInfo.address.eq(this.asset().address), "Deposit token mismatch");
+      const assetContract = new Contract(vesu_rebalance_abi_default, this.asset().address.address, this.config.provider);
+      const call1 = assetContract.populate("approve", [this.address.address, uint256_exports.bnToUint256(amountInfo.amount.toWei())]);
+      const call2 = this.contract.populate("deposit", [uint256_exports.bnToUint256(amountInfo.amount.toWei()), receiver.address]);
       return [call1, call2];
     }
     /**
@@ -34892,8 +38564,8 @@ var strkfarm_risk_engine = (() => {
      * @param owner - Address that owns the strategy tokens
      * @returns Populated contract call for withdrawal
      */
-    withdrawCall(assets, receiver, owner) {
-      return [this.contract.populate("withdraw", [uint256_exports.bnToUint256(assets.toWei()), receiver.address, owner.address])];
+    withdrawCall(amountInfo, receiver, owner) {
+      return [this.contract.populate("withdraw", [uint256_exports.bnToUint256(amountInfo.amount.toWei()), receiver.address, owner.address])];
     }
     /**
      * Returns the underlying asset token of the strategy.
@@ -34921,6 +38593,7 @@ var strkfarm_risk_engine = (() => {
       let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
       const usdValue = Number(amount.toFixed(6)) * price.price;
       return {
+        tokenInfo: this.asset(),
         amount,
         usdValue
       };
@@ -34935,6 +38608,7 @@ var strkfarm_risk_engine = (() => {
       let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
       const usdValue = Number(amount.toFixed(6)) * price.price;
       return {
+        tokenInfo: this.asset(),
         amount,
         usdValue
       };
@@ -34961,18 +38635,16 @@ var strkfarm_risk_engine = (() => {
       let isErrorPositionsAPI = false;
       let vesuPositions = [];
       try {
-        const res = await axios_default.get(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`);
-        const data2 = await res.data;
+        const data2 = await getAPIUsingHeadlessBrowser(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`);
         vesuPositions = data2.data;
       } catch (e) {
-        console.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
+        console.error(`${_VesuRebalance.name}: Error fetching positions for ${this.address.address}`, e);
         isErrorPositionsAPI = true;
       }
       let isErrorPoolsAPI = false;
       let pools = [];
       try {
-        const res = await axios_default.get(`https://api.vesu.xyz/pools`);
-        const data2 = await res.data;
+        const data2 = await getAPIUsingHeadlessBrowser("https://api.vesu.xyz/pools");
         pools = data2.data;
       } catch (e) {
         console.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
@@ -34982,7 +38654,7 @@ var strkfarm_risk_engine = (() => {
       const info = allowedPools.map(async (p) => {
         const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === num_exports.getDecimalString(p.pool_id.address.toString()));
         const pool = pools.find((d) => d.id == num_exports.getDecimalString(p.pool_id.address));
-        const assetInfo = pool?.assets.find((d) => ContractAddr.from(this.asset().address).eqString(d.address));
+        const assetInfo = pool?.assets.find((d) => this.asset().address.eqString(d.address));
         let vTokenContract = new Contract(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
         const bal = await vTokenContract.balanceOf(this.address.address);
         const assets = await vTokenContract.convert_to_assets(uint256_exports.bnToUint256(bal.toString()));
@@ -35062,7 +38734,7 @@ var strkfarm_risk_engine = (() => {
         finalPools: []
       };
       const sumPools = pools.reduce((acc, curr) => acc.plus(curr.amount.toString()), Web3Number.fromWei("0", this.decimals()));
-      assert2(sumPools.lte(totalAssets), "Sum of pools.amount must be less than or equal to totalAssets");
+      assert3(sumPools.lte(totalAssets), "Sum of pools.amount must be less than or equal to totalAssets");
       const sortedPools = [...pools].sort((a, b) => b.APY.netApy - a.APY.netApy);
       const targetAmounts = {};
       let remainingAssets = totalAssets;
@@ -35076,7 +38748,7 @@ var strkfarm_risk_engine = (() => {
           isAnyPoolOverMaxWeight = true;
         }
       }
-      assert2(remainingAssets.lt(1e-5), "Remaining assets must be 0");
+      assert3(remainingAssets.lt(1e-5), "Remaining assets must be 0");
       const changes = sortedPools.map((pool) => {
         const target = targetAmounts[pool.pool_id.address.toString()] || Web3Number.fromWei("0", this.decimals());
         const change = Web3Number.fromWei(target.minus(pool.amount.toString()).toWei(), this.decimals());
@@ -35160,7 +38832,6 @@ var strkfarm_risk_engine = (() => {
   var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
   var _riskFactor = [
     { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-    { type: "Technical Risk" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
     { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
     { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
   ];
@@ -35174,7 +38845,5297 @@ var strkfarm_risk_engine = (() => {
     maxTVL: Web3Number.fromWei("0", 18),
     risk: {
       riskFactor: _riskFactor,
-      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0)
+    },
+    additionalInfo: void 0
+  }];
+
+  // src/data/cl-vault.abi.json
+  var cl_vault_abi_default = [
+    {
+      type: "impl",
+      name: "ExternalImpl",
+      interface_name: "strkfarm_contracts::strategies::cl_vault::interface::IClVault"
+    },
+    {
+      type: "struct",
+      name: "core::integer::u256",
+      members: [
+        {
+          name: "low",
+          type: "core::integer::u128"
+        },
+        {
+          name: "high",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::strategies::cl_vault::interface::MyPosition",
+      members: [
+        {
+          name: "liquidity",
+          type: "core::integer::u256"
+        },
+        {
+          name: "amount0",
+          type: "core::integer::u256"
+        },
+        {
+          name: "amount1",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      type: "enum",
+      name: "core::bool",
+      variants: [
+        {
+          name: "False",
+          type: "()"
+        },
+        {
+          name: "True",
+          type: "()"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::i129::i129",
+      members: [
+        {
+          name: "mag",
+          type: "core::integer::u128"
+        },
+        {
+          name: "sign",
+          type: "core::bool"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::interfaces::IEkuboCore::Bounds",
+      members: [
+        {
+          name: "lower",
+          type: "ekubo::types::i129::i129"
+        },
+        {
+          name: "upper",
+          type: "ekubo::types::i129::i129"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::interfaces::IEkuboCore::PositionKey",
+      members: [
+        {
+          name: "salt",
+          type: "core::integer::u64"
+        },
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "bounds",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::Bounds"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::fees_per_liquidity::FeesPerLiquidity",
+      members: [
+        {
+          name: "value0",
+          type: "core::felt252"
+        },
+        {
+          name: "value1",
+          type: "core::felt252"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::position::Position",
+      members: [
+        {
+          name: "liquidity",
+          type: "core::integer::u128"
+        },
+        {
+          name: "fees_per_liquidity_inside_last",
+          type: "ekubo::types::fees_per_liquidity::FeesPerLiquidity"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::interfaces::IEkuboDistributor::Claim",
+      members: [
+        {
+          name: "id",
+          type: "core::integer::u64"
+        },
+        {
+          name: "claimee",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "amount",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<core::felt252>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::swap::Route",
+      members: [
+        {
+          name: "token_from",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token_to",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "exchange_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "percent",
+          type: "core::integer::u128"
+        },
+        {
+          name: "additional_swap_params",
+          type: "core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap",
+      members: [
+        {
+          name: "token_from_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token_from_amount",
+          type: "core::integer::u256"
+        },
+        {
+          name: "token_to_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token_to_amount",
+          type: "core::integer::u256"
+        },
+        {
+          name: "token_to_min_amount",
+          type: "core::integer::u256"
+        },
+        {
+          name: "beneficiary",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "integrator_fee_amount_bps",
+          type: "core::integer::u128"
+        },
+        {
+          name: "integrator_fee_recipient",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "routes",
+          type: "core::array::Array::<strkfarm_contracts::components::swap::Route>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::interfaces::IEkuboCore::PoolKey",
+      members: [
+        {
+          name: "token0",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token1",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "fee",
+          type: "core::integer::u128"
+        },
+        {
+          name: "tick_spacing",
+          type: "core::integer::u128"
+        },
+        {
+          name: "extension",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::strategies::cl_vault::interface::FeeSettings",
+      members: [
+        {
+          name: "fee_bps",
+          type: "core::integer::u256"
+        },
+        {
+          name: "fee_collector",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::strategies::cl_vault::interface::ClSettings",
+      members: [
+        {
+          name: "ekubo_positions_contract",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "bounds_settings",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::Bounds"
+        },
+        {
+          name: "pool_key",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::PoolKey"
+        },
+        {
+          name: "ekubo_positions_nft",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "contract_nft_id",
+          type: "core::integer::u64"
+        },
+        {
+          name: "ekubo_core",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "oracle",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "fee_settings",
+          type: "strkfarm_contracts::strategies::cl_vault::interface::FeeSettings"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::strategies::cl_vault::interface::IClVault",
+      items: [
+        {
+          type: "function",
+          name: "deposit",
+          inputs: [
+            {
+              name: "amount0",
+              type: "core::integer::u256"
+            },
+            {
+              name: "amount1",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "strkfarm_contracts::strategies::cl_vault::interface::MyPosition"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "convert_to_shares",
+          inputs: [
+            {
+              name: "amount0",
+              type: "core::integer::u256"
+            },
+            {
+              name: "amount1",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "convert_to_assets",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "strkfarm_contracts::strategies::cl_vault::interface::MyPosition"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "total_liquidity",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_position_key",
+          inputs: [],
+          outputs: [
+            {
+              type: "strkfarm_contracts::interfaces::IEkuboCore::PositionKey"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_position",
+          inputs: [],
+          outputs: [
+            {
+              type: "ekubo::types::position::Position"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "handle_fees",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "harvest",
+          inputs: [
+            {
+              name: "rewardsContract",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "claim",
+              type: "strkfarm_contracts::interfaces::IEkuboDistributor::Claim"
+            },
+            {
+              name: "proof",
+              type: "core::array::Span::<core::felt252>"
+            },
+            {
+              name: "swapInfo1",
+              type: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap"
+            },
+            {
+              name: "swapInfo2",
+              type: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "get_settings",
+          inputs: [],
+          outputs: [
+            {
+              type: "strkfarm_contracts::strategies::cl_vault::interface::ClSettings"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "handle_unused",
+          inputs: [
+            {
+              name: "swap_params",
+              type: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "rebalance",
+          inputs: [
+            {
+              name: "new_bounds",
+              type: "strkfarm_contracts::interfaces::IEkuboCore::Bounds"
+            },
+            {
+              name: "swap_params",
+              type: "strkfarm_contracts::components::swap::AvnuMultiRouteSwap"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_settings",
+          inputs: [
+            {
+              name: "fee_settings",
+              type: "strkfarm_contracts::strategies::cl_vault::interface::FeeSettings"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_incentives_off",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "VesuERC20Impl",
+      interface_name: "openzeppelin_token::erc20::interface::IERC20Mixin"
+    },
+    {
+      type: "struct",
+      name: "core::byte_array::ByteArray",
+      members: [
+        {
+          name: "data",
+          type: "core::array::Array::<core::bytes_31::bytes31>"
+        },
+        {
+          name: "pending_word",
+          type: "core::felt252"
+        },
+        {
+          name: "pending_word_len",
+          type: "core::integer::u32"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "openzeppelin_token::erc20::interface::IERC20Mixin",
+      items: [
+        {
+          type: "function",
+          name: "total_supply",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "balance_of",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "allowance",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "transfer",
+          inputs: [
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "transfer_from",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "approve",
+          inputs: [
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "name",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "decimals",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u8"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "transferFrom",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "RewardShareImpl",
+      interface_name: "strkfarm_contracts::components::harvester::reward_shares::IRewardShare"
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::harvester::reward_shares::UserRewardsInfo",
+      members: [
+        {
+          name: "pending_round_points",
+          type: "core::integer::u128"
+        },
+        {
+          name: "shares_owned",
+          type: "core::integer::u128"
+        },
+        {
+          name: "block_number",
+          type: "core::integer::u64"
+        },
+        {
+          name: "index",
+          type: "core::integer::u32"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardsInfo",
+      members: [
+        {
+          name: "amount",
+          type: "core::integer::u128"
+        },
+        {
+          name: "shares",
+          type: "core::integer::u128"
+        },
+        {
+          name: "total_round_points",
+          type: "core::integer::u128"
+        },
+        {
+          name: "block_number",
+          type: "core::integer::u64"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::components::harvester::reward_shares::IRewardShare",
+      items: [
+        {
+          type: "function",
+          name: "get_user_reward_info",
+          inputs: [
+            {
+              name: "user",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "strkfarm_contracts::components::harvester::reward_shares::UserRewardsInfo"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_rewards_info",
+          inputs: [
+            {
+              name: "index",
+              type: "core::integer::u32"
+            }
+          ],
+          outputs: [
+            {
+              type: "strkfarm_contracts::components::harvester::reward_shares::RewardsInfo"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_total_rewards",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u32"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_total_unminted_shares",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_additional_shares",
+          inputs: [
+            {
+              name: "user",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u64, core::integer::u128)"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "CommonCompImpl",
+      interface_name: "strkfarm_contracts::interfaces::common::ICommon"
+    },
+    {
+      type: "interface",
+      name: "strkfarm_contracts::interfaces::common::ICommon",
+      items: [
+        {
+          type: "function",
+          name: "upgrade",
+          inputs: [
+            {
+              name: "new_class",
+              type: "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "pause",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "unpause",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "is_paused",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "constructor",
+      name: "constructor",
+      inputs: [
+        {
+          name: "name",
+          type: "core::byte_array::ByteArray"
+        },
+        {
+          name: "symbol",
+          type: "core::byte_array::ByteArray"
+        },
+        {
+          name: "access_control",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "ekubo_positions_contract",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "bounds_settings",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::Bounds"
+        },
+        {
+          name: "pool_key",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::PoolKey"
+        },
+        {
+          name: "ekubo_positions_nft",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "ekubo_core",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "oracle",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "fee_settings",
+          type: "strkfarm_contracts::strategies::cl_vault::interface::FeeSettings"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+      kind: "enum",
+      variants: []
+    },
+    {
+      type: "event",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
+      kind: "struct",
+      members: [
+        {
+          name: "from",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "to",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "value",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Approval",
+      kind: "struct",
+      members: [
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "value",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Transfer",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
+          kind: "nested"
+        },
+        {
+          name: "Approval",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Approval",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_introspection::src5::SRC5Component::Event",
+      kind: "enum",
+      variants: []
+    },
+    {
+      type: "event",
+      name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+      kind: "struct",
+      members: [
+        {
+          name: "previous_owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "new_owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+      kind: "struct",
+      members: [
+        {
+          name: "previous_owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "new_owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "OwnershipTransferred",
+          type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+          kind: "nested"
+        },
+        {
+          name: "OwnershipTransferStarted",
+          type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+      kind: "struct",
+      members: [
+        {
+          name: "class_hash",
+          type: "core::starknet::class_hash::ClassHash",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Upgraded",
+          type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::pausable::PausableComponent::Paused",
+      kind: "struct",
+      members: [
+        {
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::pausable::PausableComponent::Unpaused",
+      kind: "struct",
+      members: [
+        {
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "openzeppelin_security::pausable::PausableComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Paused",
+          type: "openzeppelin_security::pausable::PausableComponent::Paused",
+          kind: "nested"
+        },
+        {
+          name: "Unpaused",
+          type: "openzeppelin_security::pausable::PausableComponent::Unpaused",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::common::CommonComp::Event",
+      kind: "enum",
+      variants: []
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Rewards",
+      kind: "struct",
+      members: [
+        {
+          name: "index",
+          type: "core::integer::u32",
+          kind: "data"
+        },
+        {
+          name: "info",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardsInfo",
+          kind: "data"
+        },
+        {
+          name: "total_reward_shares",
+          type: "core::integer::u128",
+          kind: "data"
+        },
+        {
+          name: "timestamp",
+          type: "core::integer::u64",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::UserRewards",
+      kind: "struct",
+      members: [
+        {
+          name: "user",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "info",
+          type: "strkfarm_contracts::components::harvester::reward_shares::UserRewardsInfo",
+          kind: "data"
+        },
+        {
+          name: "total_reward_shares",
+          type: "core::integer::u128",
+          kind: "data"
+        },
+        {
+          name: "timestamp",
+          type: "core::integer::u64",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "Rewards",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Rewards",
+          kind: "nested"
+        },
+        {
+          name: "UserRewards",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::UserRewards",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Deposit",
+      kind: "struct",
+      members: [
+        {
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "assets",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "shares",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Withdraw",
+      kind: "struct",
+      members: [
+        {
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "receiver",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "key"
+        },
+        {
+          name: "assets",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "shares",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Rebalance",
+      kind: "struct",
+      members: [
+        {
+          name: "old_bounds",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::Bounds",
+          kind: "data"
+        },
+        {
+          name: "old_liquidity",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "new_bounds",
+          type: "strkfarm_contracts::interfaces::IEkuboCore::Bounds",
+          kind: "data"
+        },
+        {
+          name: "new_liquidity",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::HandleFees",
+      kind: "struct",
+      members: [
+        {
+          name: "token0_addr",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        },
+        {
+          name: "token0_origin_bal",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "token0_deposited",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "token1_addr",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        },
+        {
+          name: "token1_origin_bal",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "token1_deposited",
+          type: "core::integer::u256",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::cl_vault::interface::FeeSettings",
+      kind: "struct",
+      members: [
+        {
+          name: "fee_bps",
+          type: "core::integer::u256",
+          kind: "data"
+        },
+        {
+          name: "fee_collector",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "ReentrancyGuardEvent",
+          type: "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "ERC20Event",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Event",
+          kind: "flat"
+        },
+        {
+          name: "SRC5Event",
+          type: "openzeppelin_introspection::src5::SRC5Component::Event",
+          kind: "flat"
+        },
+        {
+          name: "OwnableEvent",
+          type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "UpgradeableEvent",
+          type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "PausableEvent",
+          type: "openzeppelin_security::pausable::PausableComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "CommonCompEvent",
+          type: "strkfarm_contracts::components::common::CommonComp::Event",
+          kind: "flat"
+        },
+        {
+          name: "RewardShareEvent",
+          type: "strkfarm_contracts::components::harvester::reward_shares::RewardShareComponent::Event",
+          kind: "flat"
+        },
+        {
+          name: "Deposit",
+          type: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Deposit",
+          kind: "nested"
+        },
+        {
+          name: "Withdraw",
+          type: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Withdraw",
+          kind: "nested"
+        },
+        {
+          name: "Rebalance",
+          type: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::Rebalance",
+          kind: "nested"
+        },
+        {
+          name: "HandleFees",
+          type: "strkfarm_contracts::strategies::cl_vault::cl_vault::ConcLiquidityVault::HandleFees",
+          kind: "nested"
+        },
+        {
+          name: "FeeSettings",
+          type: "strkfarm_contracts::strategies::cl_vault::interface::FeeSettings",
+          kind: "nested"
+        }
+      ]
+    }
+  ];
+
+  // src/data/ekubo-positions.abi.json
+  var ekubo_positions_abi_default = [
+    {
+      type: "impl",
+      name: "PositionsHasInterface",
+      interface_name: "ekubo::components::upgradeable::IHasInterface"
+    },
+    {
+      type: "interface",
+      name: "ekubo::components::upgradeable::IHasInterface",
+      items: [
+        {
+          type: "function",
+          name: "get_primary_interface_id",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::felt252"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "ILockerImpl",
+      interface_name: "ekubo::interfaces::core::ILocker"
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<core::felt252>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "ekubo::interfaces::core::ILocker",
+      items: [
+        {
+          type: "function",
+          name: "locked",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u32"
+            },
+            {
+              name: "data",
+              type: "core::array::Span::<core::felt252>"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::array::Span::<core::felt252>"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "PositionsImpl",
+      interface_name: "ekubo::interfaces::positions::IPositions"
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::keys::PoolKey",
+      members: [
+        {
+          name: "token0",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token1",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "fee",
+          type: "core::integer::u128"
+        },
+        {
+          name: "tick_spacing",
+          type: "core::integer::u128"
+        },
+        {
+          name: "extension",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "enum",
+      name: "core::bool",
+      variants: [
+        {
+          name: "False",
+          type: "()"
+        },
+        {
+          name: "True",
+          type: "()"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::i129::i129",
+      members: [
+        {
+          name: "mag",
+          type: "core::integer::u128"
+        },
+        {
+          name: "sign",
+          type: "core::bool"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::bounds::Bounds",
+      members: [
+        {
+          name: "lower",
+          type: "ekubo::types::i129::i129"
+        },
+        {
+          name: "upper",
+          type: "ekubo::types::i129::i129"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::positions::GetTokenInfoRequest",
+      members: [
+        {
+          name: "id",
+          type: "core::integer::u64"
+        },
+        {
+          name: "pool_key",
+          type: "ekubo::types::keys::PoolKey"
+        },
+        {
+          name: "bounds",
+          type: "ekubo::types::bounds::Bounds"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<ekubo::interfaces::positions::GetTokenInfoRequest>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<ekubo::interfaces::positions::GetTokenInfoRequest>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::integer::u256",
+      members: [
+        {
+          name: "low",
+          type: "core::integer::u128"
+        },
+        {
+          name: "high",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::types::pool_price::PoolPrice",
+      members: [
+        {
+          name: "sqrt_ratio",
+          type: "core::integer::u256"
+        },
+        {
+          name: "tick",
+          type: "ekubo::types::i129::i129"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::positions::GetTokenInfoResult",
+      members: [
+        {
+          name: "pool_price",
+          type: "ekubo::types::pool_price::PoolPrice"
+        },
+        {
+          name: "liquidity",
+          type: "core::integer::u128"
+        },
+        {
+          name: "amount0",
+          type: "core::integer::u128"
+        },
+        {
+          name: "amount1",
+          type: "core::integer::u128"
+        },
+        {
+          name: "fees0",
+          type: "core::integer::u128"
+        },
+        {
+          name: "fees1",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<ekubo::interfaces::positions::GetTokenInfoResult>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<ekubo::interfaces::positions::GetTokenInfoResult>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::extensions::twamm::OrderKey",
+      members: [
+        {
+          name: "sell_token",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "buy_token",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "fee",
+          type: "core::integer::u128"
+        },
+        {
+          name: "start_time",
+          type: "core::integer::u64"
+        },
+        {
+          name: "end_time",
+          type: "core::integer::u64"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<(core::integer::u64, ekubo::interfaces::extensions::twamm::OrderKey)>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<(core::integer::u64, ekubo::interfaces::extensions::twamm::OrderKey)>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::extensions::twamm::OrderInfo",
+      members: [
+        {
+          name: "sale_rate",
+          type: "core::integer::u128"
+        },
+        {
+          name: "remaining_sell_amount",
+          type: "core::integer::u128"
+        },
+        {
+          name: "purchased_amount",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<ekubo::interfaces::extensions::twamm::OrderInfo>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<ekubo::interfaces::extensions::twamm::OrderInfo>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::extensions::limit_orders::OrderKey",
+      members: [
+        {
+          name: "token0",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "token1",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "tick",
+          type: "ekubo::types::i129::i129"
+        }
+      ]
+    },
+    {
+      type: "enum",
+      name: "core::option::Option::<(core::integer::u64, core::integer::u128)>",
+      variants: [
+        {
+          name: "Some",
+          type: "(core::integer::u64, core::integer::u128)"
+        },
+        {
+          name: "None",
+          type: "()"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<(core::integer::u64, ekubo::interfaces::extensions::limit_orders::OrderKey)>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<(core::integer::u64, ekubo::interfaces::extensions::limit_orders::OrderKey)>"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::extensions::limit_orders::OrderState",
+      members: [
+        {
+          name: "initialized_ticks_crossed_snapshot",
+          type: "core::integer::u64"
+        },
+        {
+          name: "liquidity",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::extensions::limit_orders::GetOrderInfoResult",
+      members: [
+        {
+          name: "state",
+          type: "ekubo::interfaces::extensions::limit_orders::OrderState"
+        },
+        {
+          name: "executed",
+          type: "core::bool"
+        },
+        {
+          name: "amount0",
+          type: "core::integer::u128"
+        },
+        {
+          name: "amount1",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "core::array::Span::<ekubo::interfaces::extensions::limit_orders::GetOrderInfoResult>",
+      members: [
+        {
+          name: "snapshot",
+          type: "@core::array::Array::<ekubo::interfaces::extensions::limit_orders::GetOrderInfoResult>"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "ekubo::interfaces::positions::IPositions",
+      items: [
+        {
+          type: "function",
+          name: "get_nft_address",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "upgrade_nft",
+          inputs: [
+            {
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_twamm",
+          inputs: [
+            {
+              name: "twamm_address",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "set_limit_orders",
+          inputs: [
+            {
+              name: "limit_orders_address",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "get_twamm_address",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_limit_orders_address",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_tokens_info",
+          inputs: [
+            {
+              name: "params",
+              type: "core::array::Span::<ekubo::interfaces::positions::GetTokenInfoRequest>"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::array::Span::<ekubo::interfaces::positions::GetTokenInfoResult>"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_token_info",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            }
+          ],
+          outputs: [
+            {
+              type: "ekubo::interfaces::positions::GetTokenInfoResult"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_orders_info_with_block_timestamp",
+          inputs: [
+            {
+              name: "params",
+              type: "core::array::Span::<(core::integer::u64, ekubo::interfaces::extensions::twamm::OrderKey)>"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u64, core::array::Span::<ekubo::interfaces::extensions::twamm::OrderInfo>)"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_orders_info",
+          inputs: [
+            {
+              name: "params",
+              type: "core::array::Span::<(core::integer::u64, ekubo::interfaces::extensions::twamm::OrderKey)>"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::array::Span::<ekubo::interfaces::extensions::twamm::OrderInfo>"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "get_order_info",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            }
+          ],
+          outputs: [
+            {
+              type: "ekubo::interfaces::extensions::twamm::OrderInfo"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u64"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "mint_with_referrer",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "referrer",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u64"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "mint_v2",
+          inputs: [
+            {
+              name: "referrer",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u64"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "check_liquidity_is_zero",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            }
+          ],
+          outputs: [],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "unsafe_burn",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "deposit_last",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "deposit_amounts_last",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "amount0",
+              type: "core::integer::u128"
+            },
+            {
+              name: "amount1",
+              type: "core::integer::u128"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "deposit",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "deposit_amounts",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "amount0",
+              type: "core::integer::u128"
+            },
+            {
+              name: "amount1",
+              type: "core::integer::u128"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "mint_and_deposit",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u64, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "mint_and_deposit_with_referrer",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "referrer",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u64, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "mint_and_deposit_and_clear_both",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "min_liquidity",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u64, core::integer::u128, core::integer::u256, core::integer::u256)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "collect_fees",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "min_token0",
+              type: "core::integer::u128"
+            },
+            {
+              name: "min_token1",
+              type: "core::integer::u128"
+            },
+            {
+              name: "collect_fees",
+              type: "core::bool"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "withdraw_v2",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            },
+            {
+              name: "bounds",
+              type: "ekubo::types::bounds::Bounds"
+            },
+            {
+              name: "liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "min_token0",
+              type: "core::integer::u128"
+            },
+            {
+              name: "min_token1",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "get_pool_price",
+          inputs: [
+            {
+              name: "pool_key",
+              type: "ekubo::types::keys::PoolKey"
+            }
+          ],
+          outputs: [
+            {
+              type: "ekubo::types::pool_price::PoolPrice"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "mint_and_increase_sell_amount",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u64, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "increase_sell_amount_last",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "increase_sell_amount",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "decrease_sale_rate_to",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            },
+            {
+              name: "sale_rate_delta",
+              type: "core::integer::u128"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "decrease_sale_rate_to_self",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            },
+            {
+              name: "sale_rate_delta",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "withdraw_proceeds_from_sale_to_self",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "withdraw_proceeds_from_sale_to",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::twamm::OrderKey"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "swap_to_limit_order_price",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "swap_to_limit_order_price_and_maybe_mint_and_place_limit_order_to",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128, core::option::Option::<(core::integer::u64, core::integer::u128)>)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "swap_to_limit_order_price_and_maybe_mint_and_place_limit_order",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128, core::option::Option::<(core::integer::u64, core::integer::u128)>)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "place_limit_order",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "maybe_mint_and_place_limit_order",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::option::Option::<(core::integer::u64, core::integer::u128)>"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "mint_and_place_limit_order",
+          inputs: [
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u64, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "close_limit_order",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "close_limit_order_to",
+          inputs: [
+            {
+              name: "id",
+              type: "core::integer::u64"
+            },
+            {
+              name: "order_key",
+              type: "ekubo::interfaces::extensions::limit_orders::OrderKey"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "(core::integer::u128, core::integer::u128)"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          type: "function",
+          name: "get_limit_orders_info",
+          inputs: [
+            {
+              name: "params",
+              type: "core::array::Span::<(core::integer::u64, ekubo::interfaces::extensions::limit_orders::OrderKey)>"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::array::Span::<ekubo::interfaces::extensions::limit_orders::GetOrderInfoResult>"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "Owned",
+      interface_name: "ekubo::components::owned::IOwned"
+    },
+    {
+      type: "interface",
+      name: "ekubo::components::owned::IOwned",
+      items: [
+        {
+          type: "function",
+          name: "get_owner",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "transfer_ownership",
+          inputs: [
+            {
+              name: "new_owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "Upgradeable",
+      interface_name: "ekubo::interfaces::upgradeable::IUpgradeable"
+    },
+    {
+      type: "interface",
+      name: "ekubo::interfaces::upgradeable::IUpgradeable",
+      items: [
+        {
+          type: "function",
+          name: "replace_class_hash",
+          inputs: [
+            {
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "Clear",
+      interface_name: "ekubo::components::clear::IClear"
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::erc20::IERC20Dispatcher",
+      members: [
+        {
+          name: "contract_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "interface",
+      name: "ekubo::components::clear::IClear",
+      items: [
+        {
+          type: "function",
+          name: "clear",
+          inputs: [
+            {
+              name: "token",
+              type: "ekubo::interfaces::erc20::IERC20Dispatcher"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "clear_minimum",
+          inputs: [
+            {
+              name: "token",
+              type: "ekubo::interfaces::erc20::IERC20Dispatcher"
+            },
+            {
+              name: "minimum",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          type: "function",
+          name: "clear_minimum_to_recipient",
+          inputs: [
+            {
+              name: "token",
+              type: "ekubo::interfaces::erc20::IERC20Dispatcher"
+            },
+            {
+              name: "minimum",
+              type: "core::integer::u256"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "impl",
+      name: "Expires",
+      interface_name: "ekubo::components::expires::IExpires"
+    },
+    {
+      type: "interface",
+      name: "ekubo::components::expires::IExpires",
+      items: [
+        {
+          type: "function",
+          name: "expires",
+          inputs: [
+            {
+              name: "at",
+              type: "core::integer::u64"
+            }
+          ],
+          outputs: [],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      type: "struct",
+      name: "ekubo::interfaces::core::ICoreDispatcher",
+      members: [
+        {
+          name: "contract_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      type: "constructor",
+      name: "constructor",
+      inputs: [
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "core",
+          type: "ekubo::interfaces::core::ICoreDispatcher"
+        },
+        {
+          name: "nft_class_hash",
+          type: "core::starknet::class_hash::ClassHash"
+        },
+        {
+          name: "token_uri_base",
+          type: "core::felt252"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "ekubo::components::upgradeable::Upgradeable::ClassHashReplaced",
+      kind: "struct",
+      members: [
+        {
+          name: "new_class_hash",
+          type: "core::starknet::class_hash::ClassHash",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "ekubo::components::upgradeable::Upgradeable::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "ClassHashReplaced",
+          type: "ekubo::components::upgradeable::Upgradeable::ClassHashReplaced",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "ekubo::components::owned::Owned::OwnershipTransferred",
+      kind: "struct",
+      members: [
+        {
+          name: "old_owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        },
+        {
+          name: "new_owner",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "ekubo::components::owned::Owned::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "OwnershipTransferred",
+          type: "ekubo::components::owned::Owned::OwnershipTransferred",
+          kind: "nested"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "ekubo::positions::Positions::PositionMintedWithReferrer",
+      kind: "struct",
+      members: [
+        {
+          name: "id",
+          type: "core::integer::u64",
+          kind: "data"
+        },
+        {
+          name: "referrer",
+          type: "core::starknet::contract_address::ContractAddress",
+          kind: "data"
+        }
+      ]
+    },
+    {
+      type: "event",
+      name: "ekubo::positions::Positions::Event",
+      kind: "enum",
+      variants: [
+        {
+          name: "UpgradeableEvent",
+          type: "ekubo::components::upgradeable::Upgradeable::Event",
+          kind: "flat"
+        },
+        {
+          name: "OwnedEvent",
+          type: "ekubo::components::owned::Owned::Event",
+          kind: "nested"
+        },
+        {
+          name: "PositionMintedWithReferrer",
+          type: "ekubo::positions::Positions::PositionMintedWithReferrer",
+          kind: "nested"
+        }
+      ]
+    }
+  ];
+
+  // src/data/ekubo-math.abi.json
+  var ekubo_math_abi_default = [
+    {
+      name: "MathLibImpl",
+      type: "impl",
+      interface_name: "ekubo::interfaces::mathlib::IMathLib"
+    },
+    {
+      name: "core::integer::u256",
+      type: "struct",
+      members: [
+        {
+          name: "low",
+          type: "core::integer::u128"
+        },
+        {
+          name: "high",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      name: "core::bool",
+      type: "enum",
+      variants: [
+        {
+          name: "False",
+          type: "()"
+        },
+        {
+          name: "True",
+          type: "()"
+        }
+      ]
+    },
+    {
+      name: "ekubo::types::i129::i129",
+      type: "struct",
+      members: [
+        {
+          name: "mag",
+          type: "core::integer::u128"
+        },
+        {
+          name: "sign",
+          type: "core::bool"
+        }
+      ]
+    },
+    {
+      name: "ekubo::types::delta::Delta",
+      type: "struct",
+      members: [
+        {
+          name: "amount0",
+          type: "ekubo::types::i129::i129"
+        },
+        {
+          name: "amount1",
+          type: "ekubo::types::i129::i129"
+        }
+      ]
+    },
+    {
+      name: "core::option::Option::<core::integer::u256>",
+      type: "enum",
+      variants: [
+        {
+          name: "Some",
+          type: "core::integer::u256"
+        },
+        {
+          name: "None",
+          type: "()"
+        }
+      ]
+    },
+    {
+      name: "ekubo::interfaces::mathlib::IMathLib",
+      type: "interface",
+      items: [
+        {
+          name: "amount0_delta",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio_a",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_b",
+              type: "core::integer::u256"
+            },
+            {
+              name: "liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "round_up",
+              type: "core::bool"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "amount1_delta",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio_a",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_b",
+              type: "core::integer::u256"
+            },
+            {
+              name: "liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "round_up",
+              type: "core::bool"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "liquidity_delta_to_amount_delta",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio",
+              type: "core::integer::u256"
+            },
+            {
+              name: "liquidity_delta",
+              type: "ekubo::types::i129::i129"
+            },
+            {
+              name: "sqrt_ratio_lower",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_upper",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "ekubo::types::delta::Delta"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "max_liquidity_for_token0",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio_lower",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_upper",
+              type: "core::integer::u256"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "max_liquidity_for_token1",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio_lower",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_upper",
+              type: "core::integer::u256"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "max_liquidity",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_lower",
+              type: "core::integer::u256"
+            },
+            {
+              name: "sqrt_ratio_upper",
+              type: "core::integer::u256"
+            },
+            {
+              name: "amount0",
+              type: "core::integer::u128"
+            },
+            {
+              name: "amount1",
+              type: "core::integer::u128"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u128"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "next_sqrt_ratio_from_amount0",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio",
+              type: "core::integer::u256"
+            },
+            {
+              name: "liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "amount",
+              type: "ekubo::types::i129::i129"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::option::Option::<core::integer::u256>"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "next_sqrt_ratio_from_amount1",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio",
+              type: "core::integer::u256"
+            },
+            {
+              name: "liquidity",
+              type: "core::integer::u128"
+            },
+            {
+              name: "amount",
+              type: "ekubo::types::i129::i129"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::option::Option::<core::integer::u256>"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "tick_to_sqrt_ratio",
+          type: "function",
+          inputs: [
+            {
+              name: "tick",
+              type: "ekubo::types::i129::i129"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "sqrt_ratio_to_tick",
+          type: "function",
+          inputs: [
+            {
+              name: "sqrt_ratio",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "ekubo::types::i129::i129"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "ekubo::mathlib::MathLib::Event",
+      type: "event",
+      variants: []
+    }
+  ];
+
+  // src/data/erc4626.abi.json
+  var erc4626_abi_default = [
+    {
+      name: "MyERC4626Impl",
+      type: "impl",
+      interface_name: "lst::lst::interface::IERC4626"
+    },
+    {
+      name: "core::integer::u256",
+      type: "struct",
+      members: [
+        {
+          name: "low",
+          type: "core::integer::u128"
+        },
+        {
+          name: "high",
+          type: "core::integer::u128"
+        }
+      ]
+    },
+    {
+      name: "lst::lst::interface::IERC4626",
+      type: "interface",
+      items: [
+        {
+          name: "asset",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "total_assets",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "convert_to_shares",
+          type: "function",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "convert_to_assets",
+          type: "function",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "max_deposit",
+          type: "function",
+          inputs: [
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "preview_deposit",
+          type: "function",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "deposit",
+          type: "function",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "max_mint",
+          type: "function",
+          inputs: [
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "preview_mint",
+          type: "function",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "mint",
+          type: "function",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "max_withdraw",
+          type: "function",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "preview_withdraw",
+          type: "function",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "withdraw",
+          type: "function",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "max_redeem",
+          type: "function",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "preview_redeem",
+          type: "function",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "redeem",
+          type: "function",
+          inputs: [
+            {
+              name: "shares",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "LSTAdditionalImpl",
+      type: "impl",
+      interface_name: "lst::lst::interface::ILSTAdditional"
+    },
+    {
+      name: "core::byte_array::ByteArray",
+      type: "struct",
+      members: [
+        {
+          name: "data",
+          type: "core::array::Array::<core::bytes_31::bytes31>"
+        },
+        {
+          name: "pending_word",
+          type: "core::felt252"
+        },
+        {
+          name: "pending_word_len",
+          type: "core::integer::u32"
+        }
+      ]
+    },
+    {
+      name: "lst::withdrawal_queue::interface::IWithdrawalQueueDispatcher",
+      type: "struct",
+      members: [
+        {
+          name: "contract_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      name: "contracts::staking::interface::IStakingDispatcher",
+      type: "struct",
+      members: [
+        {
+          name: "contract_address",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      name: "lst::lst::interface::Config",
+      type: "struct",
+      members: [
+        {
+          name: "deposit_fee_bps",
+          type: "core::integer::u256"
+        },
+        {
+          name: "withdraw_fee_bps",
+          type: "core::integer::u256"
+        },
+        {
+          name: "rewards_fee_bps",
+          type: "core::integer::u256"
+        },
+        {
+          name: "treasury",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "withdraw_queue",
+          type: "lst::withdrawal_queue::interface::IWithdrawalQueueDispatcher"
+        },
+        {
+          name: "staker",
+          type: "contracts::staking::interface::IStakingDispatcher"
+        },
+        {
+          name: "validator",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      name: "core::bool",
+      type: "enum",
+      variants: [
+        {
+          name: "False",
+          type: "()"
+        },
+        {
+          name: "True",
+          type: "()"
+        }
+      ]
+    },
+    {
+      name: "lst::lst::interface::DelegatorInfo",
+      type: "struct",
+      members: [
+        {
+          name: "is_active",
+          type: "core::bool"
+        },
+        {
+          name: "delegator_index",
+          type: "core::integer::u32"
+        }
+      ]
+    },
+    {
+      name: "lst::lst::interface::ILSTAdditional",
+      type: "interface",
+      items: [
+        {
+          name: "initializer",
+          type: "function",
+          inputs: [
+            {
+              name: "calldata",
+              type: "core::array::Array::<core::felt252>"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "deposit_with_referral",
+          type: "function",
+          inputs: [
+            {
+              name: "assets",
+              type: "core::integer::u256"
+            },
+            {
+              name: "receiver",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "referral",
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "set_config",
+          type: "function",
+          inputs: [
+            {
+              name: "config",
+              type: "lst::lst::interface::Config"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "get_config",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "lst::lst::interface::Config"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "stake",
+          type: "function",
+          inputs: [
+            {
+              name: "delegator",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "send_to_withdraw_queue",
+          type: "function",
+          inputs: [
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "before_unstake",
+          type: "function",
+          inputs: [
+            {
+              name: "new_amount",
+              type: "core::integer::u256"
+            },
+            {
+              name: "old_amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "add_delegator",
+          type: "function",
+          inputs: [
+            {
+              name: "delegator",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "update_delegator_info",
+          type: "function",
+          inputs: [
+            {
+              name: "delegator",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "info",
+              type: "lst::lst::interface::DelegatorInfo"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "is_delegator",
+          type: "function",
+          inputs: [
+            {
+              name: "delegator",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "claim_rewards",
+          type: "function",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "CommonCompImpl",
+      type: "impl",
+      interface_name: "lst::utils::common::ICommon"
+    },
+    {
+      name: "lst::utils::common::ICommon",
+      type: "interface",
+      items: [
+        {
+          name: "upgrade",
+          type: "function",
+          inputs: [
+            {
+              name: "new_class",
+              type: "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "pause",
+          type: "function",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "unpause",
+          type: "function",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "is_paused",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "owner",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "transfer_ownership",
+          type: "function",
+          inputs: [
+            {
+              name: "new_owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "renounce_ownership",
+          type: "function",
+          inputs: [],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "AccessControlImpl",
+      type: "impl",
+      interface_name: "openzeppelin_access::accesscontrol::interface::IAccessControl"
+    },
+    {
+      name: "openzeppelin_access::accesscontrol::interface::IAccessControl",
+      type: "interface",
+      items: [
+        {
+          name: "has_role",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            },
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "get_role_admin",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::felt252"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "grant_role",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            },
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "revoke_role",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            },
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        },
+        {
+          name: "renounce_role",
+          type: "function",
+          inputs: [
+            {
+              name: "role",
+              type: "core::felt252"
+            },
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "ERC4626MetadataImpl",
+      type: "impl",
+      interface_name: "openzeppelin_token::erc20::interface::IERC20Metadata"
+    },
+    {
+      name: "openzeppelin_token::erc20::interface::IERC20Metadata",
+      type: "interface",
+      items: [
+        {
+          name: "name",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "symbol",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::byte_array::ByteArray"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "decimals",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u8"
+            }
+          ],
+          state_mutability: "view"
+        }
+      ]
+    },
+    {
+      name: "ERC20Impl",
+      type: "impl",
+      interface_name: "openzeppelin_token::erc20::interface::IERC20"
+    },
+    {
+      name: "openzeppelin_token::erc20::interface::IERC20",
+      type: "interface",
+      items: [
+        {
+          name: "total_supply",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "balance_of",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "allowance",
+          type: "function",
+          inputs: [
+            {
+              name: "owner",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "transfer",
+          type: "function",
+          inputs: [
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "transfer_from",
+          type: "function",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        },
+        {
+          name: "approve",
+          type: "function",
+          inputs: [
+            {
+              name: "spender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "ERC20CamelOnlyImpl",
+      type: "impl",
+      interface_name: "openzeppelin_token::erc20::interface::IERC20CamelOnly"
+    },
+    {
+      name: "openzeppelin_token::erc20::interface::IERC20CamelOnly",
+      type: "interface",
+      items: [
+        {
+          name: "totalSupply",
+          type: "function",
+          inputs: [],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "balanceOf",
+          type: "function",
+          inputs: [
+            {
+              name: "account",
+              type: "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::integer::u256"
+            }
+          ],
+          state_mutability: "view"
+        },
+        {
+          name: "transferFrom",
+          type: "function",
+          inputs: [
+            {
+              name: "sender",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "recipient",
+              type: "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256"
+            }
+          ],
+          outputs: [
+            {
+              type: "core::bool"
+            }
+          ],
+          state_mutability: "external"
+        }
+      ]
+    },
+    {
+      name: "constructor",
+      type: "constructor",
+      inputs: [
+        {
+          name: "name",
+          type: "core::byte_array::ByteArray"
+        },
+        {
+          name: "symbol",
+          type: "core::byte_array::ByteArray"
+        },
+        {
+          name: "asset",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          name: "config",
+          type: "lst::lst::interface::Config"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "class_hash",
+          type: "core::starknet::class_hash::ClassHash"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "Upgraded",
+          type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Upgraded"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_security::pausable::PausableComponent::Paused",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_security::pausable::PausableComponent::Unpaused",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_security::pausable::PausableComponent::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "Paused",
+          type: "openzeppelin_security::pausable::PausableComponent::Paused"
+        },
+        {
+          kind: "nested",
+          name: "Unpaused",
+          type: "openzeppelin_security::pausable::PausableComponent::Unpaused"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+      type: "event",
+      variants: []
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "previous_owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "new_owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "previous_owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "new_owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "OwnershipTransferred",
+          type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred"
+        },
+        {
+          kind: "nested",
+          name: "OwnershipTransferStarted",
+          type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "lst::utils::common::CommonComp::Event",
+      type: "event",
+      variants: []
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::erc4626::ERC4626Component::Deposit",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "assets",
+          type: "core::integer::u256"
+        },
+        {
+          kind: "data",
+          name: "shares",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::erc4626::ERC4626Component::Withdraw",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "receiver",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "assets",
+          type: "core::integer::u256"
+        },
+        {
+          kind: "data",
+          name: "shares",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "lst::lst::erc4626::ERC4626Component::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "Deposit",
+          type: "lst::lst::erc4626::ERC4626Component::Deposit"
+        },
+        {
+          kind: "nested",
+          name: "Withdraw",
+          type: "lst::lst::erc4626::ERC4626Component::Withdraw"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "from",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "to",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "value",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Approval",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "owner",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "spender",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "value",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_token::erc20::erc20::ERC20Component::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "Transfer",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer"
+        },
+        {
+          kind: "nested",
+          name: "Approval",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Approval"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "lst::utils::access_control::MyAccessControlComp::Event",
+      type: "event",
+      variants: []
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::RoleGranted",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::RoleRevoked",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "account",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "sender",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::RoleAdminChanged",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "previous_admin_role",
+          type: "core::felt252"
+        },
+        {
+          kind: "data",
+          name: "new_admin_role",
+          type: "core::felt252"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "nested",
+          name: "RoleGranted",
+          type: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::RoleGranted"
+        },
+        {
+          kind: "nested",
+          name: "RoleRevoked",
+          type: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::RoleRevoked"
+        },
+        {
+          kind: "nested",
+          name: "RoleAdminChanged",
+          type: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::RoleAdminChanged"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "openzeppelin_introspection::src5::SRC5Component::Event",
+      type: "event",
+      variants: []
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::interface::DispatchToStake",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "delegator",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "amount",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::interface::DispatchToWithdrawQueue",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "amount",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::lst::LST::DelegatorUpdate",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "delegator",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "info",
+          type: "lst::lst::interface::DelegatorInfo"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::interface::Fee",
+      type: "event",
+      members: [
+        {
+          kind: "data",
+          name: "amount",
+          type: "core::integer::u256"
+        },
+        {
+          kind: "key",
+          name: "token",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "key",
+          name: "receiver",
+          type: "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      kind: "struct",
+      name: "lst::lst::lst::LST::Referral",
+      type: "event",
+      members: [
+        {
+          kind: "key",
+          name: "referrer",
+          type: "core::byte_array::ByteArray"
+        },
+        {
+          kind: "key",
+          name: "referee",
+          type: "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          kind: "data",
+          name: "assets",
+          type: "core::integer::u256"
+        }
+      ]
+    },
+    {
+      kind: "enum",
+      name: "lst::lst::lst::LST::Event",
+      type: "event",
+      variants: [
+        {
+          kind: "flat",
+          name: "UpgradeableEvent",
+          type: "openzeppelin_upgrades::upgradeable::UpgradeableComponent::Event"
+        },
+        {
+          kind: "flat",
+          name: "PausableEvent",
+          type: "openzeppelin_security::pausable::PausableComponent::Event"
+        },
+        {
+          kind: "flat",
+          name: "ReentrancyGuardEvent",
+          type: "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event"
+        },
+        {
+          kind: "flat",
+          name: "OwnableEvent",
+          type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event"
+        },
+        {
+          kind: "flat",
+          name: "CommonCompEvent",
+          type: "lst::utils::common::CommonComp::Event"
+        },
+        {
+          kind: "flat",
+          name: "ERC4626Event",
+          type: "lst::lst::erc4626::ERC4626Component::Event"
+        },
+        {
+          kind: "flat",
+          name: "ERC20Event",
+          type: "openzeppelin_token::erc20::erc20::ERC20Component::Event"
+        },
+        {
+          kind: "flat",
+          name: "MyAccessControlCompEvent",
+          type: "lst::utils::access_control::MyAccessControlComp::Event"
+        },
+        {
+          kind: "flat",
+          name: "AccessControlComponentEvent",
+          type: "openzeppelin_access::accesscontrol::accesscontrol::AccessControlComponent::Event"
+        },
+        {
+          kind: "flat",
+          name: "SRC5Event",
+          type: "openzeppelin_introspection::src5::SRC5Component::Event"
+        },
+        {
+          kind: "nested",
+          name: "DispatchToStake",
+          type: "lst::lst::interface::DispatchToStake"
+        },
+        {
+          kind: "nested",
+          name: "DispatchToWithdrawQueue",
+          type: "lst::lst::interface::DispatchToWithdrawQueue"
+        },
+        {
+          kind: "nested",
+          name: "DelegatorUpdate",
+          type: "lst::lst::lst::LST::DelegatorUpdate"
+        },
+        {
+          kind: "nested",
+          name: "Fee",
+          type: "lst::lst::interface::Fee"
+        },
+        {
+          kind: "nested",
+          name: "Referral",
+          type: "lst::lst::lst::LST::Referral"
+        }
+      ]
+    }
+  ];
+
+  // src/strategies/ekubo-cl-vault.ts
+  var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
+    /**
+     * Creates a new VesuRebalance strategy instance.
+     * @param config - Configuration object containing provider and other settings
+     * @param pricer - Pricer instance for token price calculations
+     * @param metadata - Strategy metadata including deposit tokens and address
+     * @throws {Error} If more than one deposit token is specified
+     */
+    constructor(config2, pricer, metadata) {
+      super(config2);
+      this.BASE_WEIGHT = 1e4;
+      this.pricer = pricer;
+      assert3(metadata.depositTokens.length === 2, "EkuboCL only supports 2 deposit token");
+      this.metadata = metadata;
+      this.address = metadata.address;
+      this.contract = new Contract(cl_vault_abi_default, this.address.address, this.config.provider);
+      this.lstContract = new Contract(erc4626_abi_default, this.metadata.additionalInfo.lstContract.address, this.config.provider);
+      const EKUBO_POSITION = "0x02e0af29598b407c8716b17f6d2795eca1b471413fa03fb145a5e33722184067";
+      this.ekuboPositionsContract = new Contract(ekubo_positions_abi_default, EKUBO_POSITION, this.config.provider);
+      const EKUBO_MATH = "0x04a72e9e166f6c0e9d800af4dc40f6b6fb4404b735d3f528d9250808b2481995";
+      this.ekuboMathContract = new Contract(ekubo_math_abi_default, EKUBO_MATH, this.config.provider);
+      this.avnu = new AvnuWrapper();
+    }
+    depositCall(amountInfo, receiver) {
+      return [];
+    }
+    withdrawCall(amountInfo, receiver, owner) {
+      return [];
+    }
+    rebalanceCall(newBounds, swapParams) {
+      return [this.contract.populate("rebalance", [
+        {
+          lower: _EkuboCLVault.tickToi129(Number(newBounds.lowerTick)),
+          upper: _EkuboCLVault.tickToi129(Number(newBounds.upperTick))
+        },
+        swapParams
+      ])];
+    }
+    handleUnusedCall(swapParams) {
+      return [this.contract.populate("handle_unused", [
+        swapParams
+      ])];
+    }
+    handleFeesCall() {
+      return [this.contract.populate("handle_fees", [])];
+    }
+    async getUserTVL(user) {
+      throw new Error("Not implemented");
+    }
+    async getTVL() {
+      const result = await this.contract.call("total_liquidity", []);
+      const bounds = await this.getCurrentBounds();
+      const { amount0, amount1 } = await this.getLiquidityToAmounts(Web3Number.fromWei(result.toString(), 18), bounds);
+      const poolKey = await this.getPoolKey();
+      const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+      const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+      const P0 = await this.pricer.getPrice(token0Info.symbol);
+      const P1 = await this.pricer.getPrice(token1Info.symbol);
+      const token0Usd = Number(amount0.toFixed(13)) * P0.price;
+      const token1Usd = Number(amount1.toFixed(13)) * P1.price;
+      return {
+        netUsdValue: token0Usd + token1Usd,
+        token0: {
+          tokenInfo: token0Info,
+          amount: amount0,
+          usdValue: token0Usd
+        },
+        token1: {
+          tokenInfo: token1Info,
+          amount: amount1,
+          usdValue: token1Usd
+        }
+      };
+    }
+    async getUncollectedFees() {
+      const nftID = await this.getCurrentNFTID();
+      const poolKey = await this.getPoolKey();
+      const currentBounds = await this.getCurrentBounds();
+      const result = await this.ekuboPositionsContract.call("get_token_info", [
+        nftID,
+        {
+          token0: poolKey.token0.address,
+          token1: poolKey.token1.address,
+          fee: poolKey.fee,
+          tick_spacing: poolKey.tick_spacing,
+          extension: poolKey.extension
+        },
+        {
+          lower: _EkuboCLVault.tickToi129(Number(currentBounds.lowerTick)),
+          upper: _EkuboCLVault.tickToi129(Number(currentBounds.upperTick))
+        }
+      ]);
+      const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+      const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+      const P0 = await this.pricer.getPrice(token0Info.symbol);
+      const P1 = await this.pricer.getPrice(token1Info.symbol);
+      const token0Web3 = Web3Number.fromWei(result.fees0.toString(), token0Info.decimals);
+      const token1Web3 = Web3Number.fromWei(result.fees1.toString(), token1Info.decimals);
+      const token0Usd = Number(token0Web3.toFixed(13)) * P0.price;
+      const token1Usd = Number(token1Web3.toFixed(13)) * P1.price;
+      return {
+        netUsdValue: token0Usd + token1Usd,
+        token0: {
+          tokenInfo: token0Info,
+          amount: token0Web3,
+          usdValue: token0Usd
+        },
+        token1: {
+          tokenInfo: token1Info,
+          amount: token1Web3,
+          usdValue: token1Usd
+        }
+      };
+    }
+    async getCurrentNFTID() {
+      const result = await this.contract.call("get_position_key", []);
+      return Number(result.salt.toString());
+    }
+    async truePrice() {
+      const result = await this.lstContract.call("convert_to_assets", [uint256_exports.bnToUint256(BigInt(1e18).toString())]);
+      const truePrice = Number(BigInt(result.toString()) * BigInt(1e9) / BigInt(1e18)) / 1e9;
+      return truePrice;
+    }
+    async getCurrentPrice() {
+      const poolKey = await this.getPoolKey();
+      return this._getCurrentPrice(poolKey);
+    }
+    async _getCurrentPrice(poolKey) {
+      const priceInfo = await this.ekuboPositionsContract.call("get_pool_price", [
+        {
+          token0: poolKey.token0.address,
+          token1: poolKey.token1.address,
+          fee: poolKey.fee,
+          tick_spacing: poolKey.tick_spacing,
+          extension: poolKey.extension
+        }
+      ]);
+      const sqrtRatio = _EkuboCLVault.div2Power128(BigInt(priceInfo.sqrt_ratio.toString()));
+      const price = sqrtRatio * sqrtRatio;
+      const tick = _EkuboCLVault.priceToTick(price, true, Number(poolKey.tick_spacing));
+      return {
+        price,
+        tick: tick.mag * (tick.sign == 0 ? 1 : -1)
+      };
+    }
+    async getCurrentBounds() {
+      const result = await this.contract.call("get_position_key", []);
+      return {
+        lowerTick: _EkuboCLVault.i129ToNumber(result.bounds.lower),
+        upperTick: _EkuboCLVault.i129ToNumber(result.bounds.upper)
+      };
+    }
+    static div2Power128(num) {
+      return Number(BigInt(num.toString()) * 1000000n / BigInt(2 ** 128)) / 1e6;
+    }
+    static priceToTick(price, isRoundDown, tickSpacing) {
+      const value = isRoundDown ? Math.floor(Math.log(price) / Math.log(1.000001)) : Math.ceil(Math.log(price) / Math.log(1.000001));
+      const tick = Math.floor(value / tickSpacing) * tickSpacing;
+      return this.tickToi129(tick);
+    }
+    async getPoolKey() {
+      if (this.poolKey) {
+        return this.poolKey;
+      }
+      const result = await this.contract.call("get_settings", []);
+      const poolKey = {
+        token0: ContractAddr.from(result.pool_key.token0.toString()),
+        token1: ContractAddr.from(result.pool_key.token1.toString()),
+        fee: result.pool_key.fee.toString(),
+        tick_spacing: result.pool_key.tick_spacing.toString(),
+        extension: result.pool_key.extension.toString()
+      };
+      const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+      const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+      assert3(token0Info.decimals == token1Info.decimals, "Tested only for equal decimals");
+      this.poolKey = poolKey;
+      return poolKey;
+    }
+    async getNewBounds() {
+      const poolKey = await this.getPoolKey();
+      const currentPrice = await this._getCurrentPrice(poolKey);
+      const newLower = currentPrice.tick + Number(this.metadata.additionalInfo.newBounds.lower) * Number(poolKey.tick_spacing);
+      const newUpper = currentPrice.tick + Number(this.metadata.additionalInfo.newBounds.upper) * Number(poolKey.tick_spacing);
+      return {
+        lowerTick: BigInt(newLower),
+        upperTick: BigInt(newUpper)
+      };
+    }
+    /**
+     * Computes the expected amounts to fully utilize amount in
+     * to add liquidity to the pool
+     * @param amount0: amount of token0
+     * @param amount1: amount of token1
+     * @returns {amount0, amount1}
+     */
+    async _getExpectedAmountsForLiquidity(amount0, amount1, bounds) {
+      assert3(amount0.greaterThan(0) || amount1.greaterThan(0), "Amount is 0");
+      const poolKey = await this.getPoolKey();
+      const sampleLiq = 1e18;
+      const { amount0: sampleAmount0, amount1: sampleAmount1 } = await this.getLiquidityToAmounts(Web3Number.fromWei(sampleLiq.toString(), 18), bounds);
+      logger.verbose(`${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => sampleAmount0: ${sampleAmount0.toString()}, sampleAmount1: ${sampleAmount1.toString()}`);
+      assert3(!sampleAmount0.eq(0) && !sampleAmount1.eq(0), "Sample amount is 0");
+      const price = await (await this.getCurrentPrice()).price;
+      logger.verbose(`${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => price: ${price}`);
+      if (amount1.eq(0) && amount0.greaterThan(0)) {
+        if (sampleAmount1.eq(0)) {
+          return {
+            amount0,
+            amount1: Web3Number.fromWei("0", 18),
+            ratio: Infinity
+          };
+        } else if (sampleAmount0.eq(0)) {
+          return {
+            amount0: Web3Number.fromWei("0", 18),
+            amount1: amount0.multipliedBy(price),
+            ratio: 0
+          };
+        }
+      } else if (amount0.eq(0) && amount1.greaterThan(0)) {
+        if (sampleAmount0.eq(0)) {
+          return {
+            amount0: Web3Number.fromWei("0", 18),
+            amount1,
+            ratio: 0
+          };
+        } else if (sampleAmount1.eq(0)) {
+          return {
+            amount0: amount1.dividedBy(price),
+            amount1: Web3Number.fromWei("0", 18),
+            ratio: Infinity
+          };
+        }
+      }
+      const ratio = sampleAmount0.multipliedBy(1e18).dividedBy(sampleAmount1.toString()).dividedBy(1e18);
+      logger.verbose(`${_EkuboCLVault.name}: ${this.metadata.name} => ratio: ${ratio.toString()}`);
+      return this._solveExpectedAmountsEq(amount0, amount1, ratio, price);
+    }
+    _solveExpectedAmountsEq(availableAmount0, availableAmount1, ratio, price) {
+      const y = ratio.multipliedBy(availableAmount1).minus(availableAmount0).dividedBy(ratio.plus(1 / price));
+      const x = y.dividedBy(price);
+      return {
+        amount0: availableAmount0.plus(x),
+        amount1: availableAmount1.minus(y),
+        ratio: Number(ratio.toString())
+      };
+    }
+    async getSwapInfoToHandleUnused(considerRebalance = true) {
+      const poolKey = await this.getPoolKey();
+      const erc20Mod = new ERC20(this.config);
+      const token0Bal1 = await erc20Mod.balanceOf(poolKey.token0, this.address.address, 18);
+      const token1Bal1 = await erc20Mod.balanceOf(poolKey.token1, this.address.address, 18);
+      const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+      const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+      const token0Price = await this.pricer.getPrice(token0Info.symbol);
+      const token1Price = await this.pricer.getPrice(token1Info.symbol);
+      const token0PriceUsd = token0Price.price * Number(token0Bal1.toFixed(13));
+      const token1PriceUsd = token1Price.price * Number(token1Bal1.toFixed(13));
+      if (token0PriceUsd > 1 && token1PriceUsd > 1) {
+        throw new Error("Both tokens are non-zero and above $1, call handle_fees first");
+      }
+      let token0Bal = token0Bal1;
+      let token1Bal = token1Bal1;
+      if (considerRebalance) {
+        const tvl = await this.getTVL();
+        token0Bal = token0Bal.plus(tvl.token0.amount.toString());
+        token1Bal = token1Bal.plus(tvl.token1.amount.toString());
+      } else {
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => considerRebalance: false`);
+      }
+      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`);
+      const newBounds = await this.getNewBounds();
+      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${newBounds.lowerTick}, ${newBounds.upperTick}`);
+      let expectedAmounts = await this._getExpectedAmountsForLiquidity(token0Bal, token1Bal, newBounds);
+      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`);
+      let retry = 0;
+      const maxRetry = 10;
+      while (retry < maxRetry) {
+        retry++;
+        if (expectedAmounts.amount0.lessThan(token0Bal) && expectedAmounts.amount1.lessThan(token1Bal)) {
+          throw new Error("Both tokens are decreased, something is wrong");
+        }
+        if (expectedAmounts.amount0.greaterThan(token0Bal) && expectedAmounts.amount1.greaterThan(token1Bal)) {
+          throw new Error("Both tokens are increased, something is wrong");
+        }
+        const tokenToSell = expectedAmounts.amount0.lessThan(token0Bal) ? poolKey.token0 : poolKey.token1;
+        const tokenToBuy = tokenToSell == poolKey.token0 ? poolKey.token1 : poolKey.token0;
+        let amountToSell = tokenToSell == poolKey.token0 ? token0Bal.minus(expectedAmounts.amount0) : token1Bal.minus(expectedAmounts.amount1);
+        const remainingSellAmount = tokenToSell == poolKey.token0 ? expectedAmounts.amount0 : expectedAmounts.amount1;
+        const tokenToBuyInfo = await Global.getTokenInfoFromAddr(tokenToBuy);
+        const expectedRatio = expectedAmounts.ratio;
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => tokenToSell: ${tokenToSell.address}, tokenToBuy: ${tokenToBuy.address}, amountToSell: ${amountToSell.toWei()}`);
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => remainingSellAmount: ${remainingSellAmount.toString()}`);
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedRatio: ${expectedRatio}`);
+        const quote = await this.avnu.getQuotes(tokenToSell.address, tokenToBuy.address, amountToSell.toWei(), this.address.address);
+        if (remainingSellAmount.eq(0)) {
+          const minAmountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals).multipliedBy(0.9999);
+          return await this.avnu.getSwapInfo(quote, this.address.address, 0, this.address.address, minAmountOut.toWei());
+        }
+        const amountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals);
+        const swapPrice = tokenToSell == poolKey.token0 ? amountOut.dividedBy(amountToSell) : amountToSell.dividedBy(amountOut);
+        const newRatio = tokenToSell == poolKey.token0 ? remainingSellAmount.dividedBy(token1Bal.plus(amountOut)) : token0Bal.plus(amountOut).dividedBy(remainingSellAmount);
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => amountOut: ${amountOut.toString()}`);
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => swapPrice: ${swapPrice.toString()}`);
+        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newRatio: ${newRatio.toString()}`);
+        if (Number(newRatio.toString()) > expectedRatio * 1.0000001 || Number(newRatio.toString()) < expectedRatio * 0.9999999) {
+          expectedAmounts = await this._solveExpectedAmountsEq(token0Bal, token1Bal, new Web3Number(Number(expectedRatio).toFixed(13), 18), Number(swapPrice.toString()));
+          logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`);
+        } else {
+          const minAmountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals).multipliedBy(0.9999);
+          return await this.avnu.getSwapInfo(quote, this.address.address, 0, this.address.address, minAmountOut.toWei());
+        }
+        retry++;
+      }
+      throw new Error("Failed to get swap info");
+    }
+    static tickToi129(tick) {
+      if (tick < 0) {
+        return {
+          mag: -tick,
+          sign: 1
+        };
+      } else {
+        return {
+          mag: tick,
+          sign: 0
+        };
+      }
+    }
+    static priceToSqrtRatio(price) {
+      return BigInt(Math.floor(Math.sqrt(price) * 10 ** 9)) * BigInt(2 ** 128) / BigInt(1e9);
+    }
+    static i129ToNumber(i129) {
+      return i129.mag * (i129.sign.toString() == "false" ? 1n : -1n);
+    }
+    static tickToPrice(tick) {
+      return Math.pow(1.000001, Number(tick));
+    }
+    async getLiquidityToAmounts(liquidity, bounds) {
+      const currentPrice = await this.getCurrentPrice();
+      const lowerPrice = await _EkuboCLVault.tickToPrice(bounds.lowerTick);
+      const upperPrice = await _EkuboCLVault.tickToPrice(bounds.upperTick);
+      logger.verbose(`${_EkuboCLVault.name}: getLiquidityToAmounts => currentPrice: ${currentPrice.price}, lowerPrice: ${lowerPrice}, upperPrice: ${upperPrice}`);
+      const result = await this.ekuboMathContract.call("liquidity_delta_to_amount_delta", [
+        uint256_exports.bnToUint256(_EkuboCLVault.priceToSqrtRatio(currentPrice.price).toString()),
+        {
+          mag: liquidity.toWei(),
+          sign: 0
+        },
+        uint256_exports.bnToUint256(_EkuboCLVault.priceToSqrtRatio(lowerPrice).toString()),
+        uint256_exports.bnToUint256(_EkuboCLVault.priceToSqrtRatio(upperPrice).toString())
+      ]);
+      const poolKey = await this.getPoolKey();
+      const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+      const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+      const amount0 = Web3Number.fromWei(_EkuboCLVault.i129ToNumber(result.amount0).toString(), token0Info.decimals);
+      const amount1 = Web3Number.fromWei(_EkuboCLVault.i129ToNumber(result.amount1).toString(), token1Info.decimals);
+      return {
+        amount0,
+        amount1
+      };
+    }
+  };
+  var _description2 = "Automatically rebalances liquidity near current price to maximize yield while reducing the necessity to manually rebalance positions frequently. Fees earn and Defi spring rewards are automatically re-invested.";
+  var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
+  var _riskFactor2 = [
+    { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+    { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
+  ];
+  var EkuboCLVaultStrategies = [{
+    name: "Ekubo xSTRK/STRK",
+    description: _description2,
+    address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
+    type: "Other",
+    depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK"), Global.getDefaultTokens().find((t) => t.symbol === "xSTRK")],
+    protocols: [_protocol2],
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor2,
+      netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0)
+    },
+    additionalInfo: {
+      newBounds: {
+        lower: -1,
+        upper: 1
+      },
+      lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a")
     }
   }];
   return __toCommonJS(index_browser_exports);

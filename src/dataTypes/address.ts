@@ -35,4 +35,8 @@ export class ContractAddr {
     static eqString(a: string, b: string) {
         return ContractAddr.standardise(a) === ContractAddr.standardise(b);
     }
+
+    toString() {
+        return this.address;
+    }
 }

@@ -63,108 +63,70 @@ import axios2 from "axios";
 
 // src/global.ts
 import axios from "axios";
-var logger = {
-  ...console,
-  verbose(message) {
-    console.log(`[VERBOSE] ${message}`);
-  }
-};
-var FatalError = class extends Error {
-  constructor(message, err) {
-    super(message);
-    logger.error(message);
-    if (err)
-      logger.error(err.message);
-    this.name = "FatalError";
-  }
-};
-var tokens = [{
-  name: "Starknet",
-  symbol: "STRK",
-  logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
-  address: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-  decimals: 18,
-  coingeckId: "starknet"
-}];
-var Global = class {
-  static fatalError(message, err) {
-    logger.error(message);
-    console.error(message, err);
-    if (err)
-      console.error(err);
-    process.exit(1);
-  }
-  static httpError(url, err, message) {
-    logger.error(`${url}: ${message}`);
-    console.error(err);
-  }
-  static getDefaultTokens() {
-    return tokens;
-  }
-  static async getTokens() {
-    if (tokens.length) return tokens;
-    const data = await axios.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
-    const tokensData = data.data.content;
-    tokensData.forEach((token) => {
-      if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
-        return;
-      }
-      tokens.push({
-        name: token.name,
-        symbol: token.symbol,
-        address: token.address,
-        decimals: token.decimals,
-        logo: token.logoUri,
-        coingeckId: token.extensions.coingeckoId
-      });
-    });
-    console.log(tokens);
-    return tokens;
-  }
-  static assert(condition, message) {
-    if (!condition) {
-      throw new FatalError(message);
-    }
-  }
-};
 
-// src/dataTypes/bignumber.ts
+// src/dataTypes/bignumber.node.ts
+import util from "util";
+
+// src/dataTypes/_bignumber.ts
 import BigNumber from "bignumber.js";
-var Web3Number = class _Web3Number extends BigNumber {
+var _Web3Number = class extends BigNumber {
   constructor(value, decimals) {
     super(value);
     this.decimals = decimals;
-  }
-  static fromWei(weiNumber, decimals) {
-    const bn = new _Web3Number(weiNumber, decimals).dividedBy(10 ** decimals);
-    return new _Web3Number(bn.toString(), decimals);
   }
   toWei() {
     return this.mul(10 ** this.decimals).toFixed(0);
   }
   multipliedBy(value) {
-    let _value = Number(value).toFixed(6);
-    return new _Web3Number(this.mul(_value).toString(), this.decimals);
+    let _value = Number(value).toFixed(13);
+    return this.construct(this.mul(_value).toString(), this.decimals);
   }
   dividedBy(value) {
-    let _value = Number(value).toFixed(6);
-    return new _Web3Number(this.div(_value).toString(), this.decimals);
+    let _value = Number(value).toFixed(13);
+    return this.construct(this.div(_value).toString(), this.decimals);
   }
   plus(value) {
-    return new _Web3Number(this.add(value).toString(), this.decimals);
+    const _value = Number(value).toFixed(13);
+    return this.construct(this.add(_value).toString(), this.decimals);
   }
   minus(n, base) {
-    return new _Web3Number(super.minus(n, base).toString(), this.decimals);
+    const _value = Number(n).toFixed(13);
+    return this.construct(super.minus(_value, base).toString(), this.decimals);
+  }
+  construct(value, decimals) {
+    return new this.constructor(value, decimals);
   }
   toString(base) {
     return super.toString(base);
   }
-  // [customInspectSymbol](depth: any, inspectOptions: any, inspect: any) {
-  // return this.toString();
-  // }
+  toJSON() {
+    return this.toString();
+  }
+  valueOf() {
+    return this.toString();
+  }
 };
 BigNumber.config({ DECIMAL_PLACES: 18 });
-Web3Number.config({ DECIMAL_PLACES: 18 });
+_Web3Number.config({ DECIMAL_PLACES: 18 });
+
+// src/dataTypes/bignumber.node.ts
+var Web3Number = class _Web3Number2 extends _Web3Number {
+  static fromWei(weiNumber, decimals) {
+    const bn = new _Web3Number2(weiNumber, decimals).dividedBy(10 ** decimals);
+    return new _Web3Number2(bn.toString(), decimals);
+  }
+  [util.inspect.custom](depth, opts) {
+    return this.toString();
+  }
+  [Symbol.for("nodejs.util.inspect.custom")](depth, inspectOptions, inspect) {
+    return this.toString();
+  }
+  inspect(depth, opts) {
+    return this.toString();
+  }
+};
+var amt = new Web3Number("1.2432", 18);
+console.log(amt, "checking inspect");
 
 // src/dataTypes/address.ts
 import { num } from "starknet";
@@ -192,6 +154,93 @@ var ContractAddr = class _ContractAddr {
   static eqString(a, b) {
     return _ContractAddr.standardise(a) === _ContractAddr.standardise(b);
   }
+  toString() {
+    return this.address;
+  }
+};
+
+// src/global.ts
+var logger = {
+  ...console,
+  verbose(message) {
+    console.log(`[VERBOSE] ${message}`);
+  }
+};
+var FatalError = class extends Error {
+  constructor(message, err) {
+    super(message);
+    logger.error(message);
+    if (err)
+      logger.error(err.message);
+    this.name = "FatalError";
+  }
+};
+var defaultTokens = [{
+  name: "Starknet",
+  symbol: "STRK",
+  logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
+  address: ContractAddr.from("0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
+  decimals: 18,
+  coingeckId: "starknet"
+}, {
+  name: "xSTRK",
+  symbol: "xSTRK",
+  logo: "https://dashboard.endur.fi/endur-fi.svg",
+  address: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
+  decimals: 18,
+  coingeckId: void 0
+}];
+var tokens = defaultTokens;
+var Global = class _Global {
+  static fatalError(message, err) {
+    logger.error(message);
+    console.error(message, err);
+    if (err)
+      console.error(err);
+    process.exit(1);
+  }
+  static httpError(url, err, message) {
+    logger.error(`${url}: ${message}`);
+    console.error(err);
+  }
+  static getDefaultTokens() {
+    return tokens;
+  }
+  static async getTokens() {
+    if (tokens.length) return tokens;
+    const data = await axios.get("https://starknet.api.avnu.fi/v1/starknet/tokens");
+    const tokensData = data.data.content;
+    tokensData.forEach((token) => {
+      if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
+        return;
+      }
+      tokens.push({
+        name: token.name,
+        symbol: token.symbol,
+        address: ContractAddr.from(token.address),
+        decimals: token.decimals,
+        logo: token.logoUri,
+        coingeckId: token.extensions.coingeckoId
+      });
+    });
+    console.log(tokens);
+    return tokens;
+  }
+  static assert(condition, message) {
+    if (!condition) {
+      throw new FatalError(message);
+    }
+  }
+  static async getTokenInfoFromAddr(addr) {
+    if (tokens.length == defaultTokens.length) {
+      await _Global.getTokens();
+    }
+    const token = tokens.find((token2) => addr.eq(token2.address));
+    if (!token) {
+      throw new FatalError(`Token not found: ${addr.address}`);
+    }
+    return token;
+  }
 };
 
 // src/modules/pragma.ts
@@ -199,6 +248,14 @@ import { Contract } from "starknet";
 
 // src/modules/zkLend.ts
 import axios3 from "axios";
+
+// src/dataTypes/bignumber.browser.ts
+var Web3Number2 = class _Web3Number2 extends _Web3Number {
+  static fromWei(weiNumber, decimals) {
+    const bn = new _Web3Number2(weiNumber, decimals).dividedBy(10 ** decimals);
+    return new _Web3Number2(bn.toString(), decimals);
+  }
+};
 
 // src/interfaces/lending.ts
 var ILending = class {
@@ -241,18 +298,18 @@ var _ZkLend = class _ZkLend extends ILending {
       const data = result.data;
       const savedTokens = await Global.getTokens();
       data.forEach((pool) => {
-        let collareralFactor = new Web3Number(0, 0);
+        let collareralFactor = new Web3Number2(0, 0);
         if (pool.collateral_factor) {
-          collareralFactor = Web3Number.fromWei(pool.collateral_factor.value, pool.collateral_factor.decimals);
+          collareralFactor = Web3Number2.fromWei(pool.collateral_factor.value, pool.collateral_factor.decimals);
         }
         const savedTokenInfo = savedTokens.find((t) => t.symbol == pool.token.symbol);
         const token = {
           name: pool.token.name,
           symbol: pool.token.symbol,
-          address: savedTokenInfo?.address || "",
+          address: savedTokenInfo?.address || ContractAddr.from(""),
           logo: "",
           decimals: pool.token.decimals,
-          borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
+          borrowFactor: Web3Number2.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
           collareralFactor
         };
         this.tokens.push(token);
@@ -273,7 +330,7 @@ var _ZkLend = class _ZkLend extends ILending {
   async get_health_factor_tokenwise(lending_tokens, debt_tokens, user) {
     const positions = await this.getPositions(user);
     logger.verbose(`${this.metadata.name}:: Positions: ${JSON.stringify(positions)}`);
-    let effectiveDebt = new Web3Number(0, 6);
+    let effectiveDebt = new Web3Number2(0, 6);
     positions.filter((pos) => {
       return debt_tokens.find((t) => t.symbol === pos.tokenSymbol);
     }).forEach((pos) => {
@@ -287,7 +344,7 @@ var _ZkLend = class _ZkLend extends ILending {
     if (effectiveDebt.isZero()) {
       return Infinity;
     }
-    let effectiveCollateral = new Web3Number(0, 6);
+    let effectiveCollateral = new Web3Number2(0, 6);
     positions.filter((pos) => {
       const exp1 = lending_tokens.find((t) => t.symbol === pos.tokenSymbol);
       const exp2 = pos.marginType === "shared" /* SHARED */;
@@ -340,8 +397,8 @@ var _ZkLend = class _ZkLend extends ILending {
       if (!token) {
         throw new FatalError(`Token ${pool.token_symbol} not found in ${this.metadata.name}`);
       }
-      const debtAmount = Web3Number.fromWei(pool.data.debt_amount, token.decimals);
-      const supplyAmount = Web3Number.fromWei(pool.data.supply_amount, token.decimals);
+      const debtAmount = Web3Number2.fromWei(pool.data.debt_amount, token.decimals);
+      const supplyAmount = Web3Number2.fromWei(pool.data.supply_amount, token.decimals);
       const price = (await this.pricer.getPrice(token.symbol)).price;
       lendingPosition.push({
         tokenName: token.name,
@@ -363,20 +420,30 @@ var ZkLend = _ZkLend;
 // src/modules/pricer-from-api.ts
 import axios4 from "axios";
 
+// src/modules/erc20.ts
+import { Contract as Contract2 } from "starknet";
+
+// src/modules/avnu.ts
+import { uint256 } from "starknet";
+import { fetchBuildExecuteTransaction, fetchQuotes } from "@avnu/avnu-sdk";
+
 // src/interfaces/common.ts
 import { RpcProvider as RpcProvider2 } from "starknet";
 
 // src/strategies/autoCompounderStrk.ts
-import { Contract as Contract2, uint256 } from "starknet";
+import { Contract as Contract3, uint256 as uint2562 } from "starknet";
 
 // src/strategies/vesu-rebalance.ts
-import { CairoCustomEnum, Contract as Contract3, num as num2, uint256 as uint2562 } from "starknet";
+import { CairoCustomEnum, Contract as Contract4, num as num2, uint256 as uint2563 } from "starknet";
+
+// src/node/headless.browser.ts
 import axios5 from "axios";
+
+// src/strategies/vesu-rebalance.ts
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
 var _riskFactor = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-  { type: "Technical Risk" /* TECHNICAL_RISK */, value: 0.5, weight: 25 },
   { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
@@ -390,7 +457,37 @@ var VesuRebalanceStrategies = [{
   maxTVL: Web3Number.fromWei("0", 18),
   risk: {
     riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100
+    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0)
+  },
+  additionalInfo: void 0
+}];
+
+// src/strategies/ekubo-cl-vault.ts
+import { Contract as Contract5, uint256 as uint2564 } from "starknet";
+var _description2 = "Automatically rebalances liquidity near current price to maximize yield while reducing the necessity to manually rebalance positions frequently. Fees earn and Defi spring rewards are automatically re-invested.";
+var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
+var _riskFactor2 = [
+  { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
+  { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
+];
+var EkuboCLVaultStrategies = [{
+  name: "Ekubo xSTRK/STRK",
+  description: _description2,
+  address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
+  type: "Other",
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK"), Global.getDefaultTokens().find((t) => t.symbol === "xSTRK")],
+  protocols: [_protocol2],
+  maxTVL: Web3Number.fromWei("0", 18),
+  risk: {
+    riskFactor: _riskFactor2,
+    netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0)
+  },
+  additionalInfo: {
+    newBounds: {
+      lower: -1,
+      upper: 1
+    },
+    lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a")
   }
 }];
 

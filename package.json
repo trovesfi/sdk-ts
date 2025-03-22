@@ -50,6 +50,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "@avnu/avnu-sdk": "^3.0.2",
     "axios": "^1.7.2",
     "bignumber.js": "4.0.4",
     "browser-assert": "^1.2.1",
@@ -59,6 +60,7 @@
     "inquirer": "^10.1.2",
     "node-telegram-bot-api": "^0.66.0",
     "proxy-from-env": "^1.1.0",
+    "puppeteer": "^24.4.0",
     "redis": "^4.7.0",
     "stacktrace-js": "^2.0.2",
     "starknet": "^6.11.0",

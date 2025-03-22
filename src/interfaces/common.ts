@@ -3,6 +3,10 @@ import { BlockIdentifier, RpcProvider } from "starknet"
 
 export enum RiskType {
     MARKET_RISK = 'Market Risk',
+    // if non-correalted pairs, this is 3 (STRK/USDC)
+    // if highly correalted pairs, this is 1 (e.g. xSTRK/STRK)
+    // if correalted pairs, this is 2 (e.g. BTC/SOL)
+    // If there is added leverage on top, can go till 5
     IMPERMANENT_LOSS = 'Impermanent Loss Risk',
     LIQUIDATION_RISK = 'Liquidation Risk',
     LOW_LIQUIDITY_RISK = 'Low Liquidity Risk',
@@ -21,7 +25,7 @@ export interface RiskFactor {
 export interface TokenInfo {
     name: string,
     symbol: string,
-    address: string,
+    address: ContractAddr,
     decimals: number,
     logo: string,
     coingeckId?: string,
@@ -55,7 +59,7 @@ export enum FlowChartColors {
  * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.
  * @property risk.riskFactor.factor - The value of the risk factor from 0 to 10, 0 being the lowest and 10 being the highest.
  */
-export interface IStrategyMetadata {
+export interface IStrategyMetadata<T> {
     name: string,
     description: string,
     address: ContractAddr,
@@ -67,7 +71,8 @@ export interface IStrategyMetadata {
     risk: {
         riskFactor: RiskFactor[],
         netRisk: number
-    }
+    },
+    additionalInfo: T
 }
 
 export interface IInvestmentFlow {

@@ -7,6 +7,8 @@ import { Global } from "@/global";
 import { assert } from "@/utils";
 import axios from "axios";
 import { PricerBase } from "@/modules/pricerBase";
+import { BaseStrategy, SingleActionAmount, SingleTokenInfo } from "./base-strategy";
+import { getAPIUsingHeadlessBrowser } from "@/node/headless";
 
 interface PoolProps {
     pool_id: ContractAddr;
@@ -42,15 +44,13 @@ interface PoolInfoFull {
  * This class implements an automated rebalancing strategy for Vesu pools,
  * managing deposits and withdrawals while optimizing yield through STRK rewards.
  */
-export class VesuRebalance {
-    /** Configuration object for the strategy */
-    readonly config: IConfig;
+export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmount> {
     /** Contract address of the strategy */
     readonly address: ContractAddr;
     /** Pricer instance for token price calculations */
     readonly pricer: PricerBase;
     /** Metadata containing strategy information */
-    readonly metadata: IStrategyMetadata;
+    readonly metadata: IStrategyMetadata<void>;
     /** Contract instance for interacting with the strategy */
     readonly contract: Contract;
     readonly BASE_WEIGHT = 10000; // 10000 bps = 100%
@@ -62,8 +62,8 @@ export class VesuRebalance {
      * @param metadata - Strategy metadata including deposit tokens and address
      * @throws {Error} If more than one deposit token is specified
      */
-    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata) {
-        this.config = config;
+    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<void>) {
+        super(config);
         this.pricer = pricer;
         
         assert(metadata.depositTokens.length === 1, 'VesuRebalance only supports 1 deposit token');
@@ -79,12 +79,13 @@ export class VesuRebalance {
      * @param receiver - Address that will receive the strategy tokens
      * @returns Populated contract call for deposit
      */
-    depositCall(assets: Web3Number, receiver: ContractAddr) {
+    depositCall(amountInfo: SingleActionAmount, receiver: ContractAddr) {
         // Technically its not erc4626 abi, but we just need approve call
         // so, its ok to use it
-        const assetContract = new Contract(VesuRebalanceAbi, this.metadata.depositTokens[0].address, this.config.provider);
-        const call1 = assetContract.populate('approve', [this.address.address, uint256.bnToUint256(assets.toWei())]);
-        const call2 = this.contract.populate('deposit', [uint256.bnToUint256(assets.toWei()), receiver.address]);
+        assert(amountInfo.tokenInfo.address.eq(this.asset().address), 'Deposit token mismatch');
+        const assetContract = new Contract(VesuRebalanceAbi, this.asset().address.address, this.config.provider);
+        const call1 = assetContract.populate('approve', [this.address.address, uint256.bnToUint256(amountInfo.amount.toWei())]);
+        const call2 = this.contract.populate('deposit', [uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address]);
         return [call1, call2];
     }
 
@@ -95,8 +96,8 @@ export class VesuRebalance {
      * @param owner - Address that owns the strategy tokens
      * @returns Populated contract call for withdrawal
      */
-    withdrawCall(assets: Web3Number, receiver: ContractAddr, owner: ContractAddr) {
-        return [this.contract.populate('withdraw', [uint256.bnToUint256(assets.toWei()), receiver.address, owner.address])];
+    withdrawCall(amountInfo: SingleActionAmount, receiver: ContractAddr, owner: ContractAddr) {
+        return [this.contract.populate('withdraw', [uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address, owner.address])];
     }
 
     /**
@@ -127,6 +128,7 @@ export class VesuRebalance {
         let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
         const usdValue = Number(amount.toFixed(6)) * price.price;
         return {
+            tokenInfo: this.asset(),
             amount,
             usdValue
         }
@@ -142,6 +144,7 @@ export class VesuRebalance {
         let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
         const usdValue = Number(amount.toFixed(6)) * price.price;
         return {
+            tokenInfo: this.asset(),
             amount,
             usdValue
         }
@@ -217,11 +220,10 @@ export class VesuRebalance {
         let isErrorPositionsAPI = false;
         let vesuPositions: any[] = [];
         try {
-            const res = await axios.get(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`)
-            const data = await res.data;
+            const data = await getAPIUsingHeadlessBrowser(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`)
             vesuPositions = data.data;
         } catch (e) {
-            console.error(`${VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
+            console.error(`${VesuRebalance.name}: Error fetching positions for ${this.address.address}`, e);
             isErrorPositionsAPI = true;
         }
         
@@ -229,8 +231,7 @@ export class VesuRebalance {
         let isErrorPoolsAPI = false;
         let pools: any[] = [];
         try {
-            const res = await axios.get(`https://api.vesu.xyz/pools`);
-            const data = await res.data;
+            const data = await getAPIUsingHeadlessBrowser('https://api.vesu.xyz/pools');
             pools = data.data;
         } catch (e) {
             console.error(`${VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
@@ -242,7 +243,7 @@ export class VesuRebalance {
         const info = allowedPools.map(async (p) => {
             const vesuPosition = vesuPositions.find((d: any) => d.pool.id.toString() === num.getDecimalString(p.pool_id.address.toString()));
             const pool = pools.find((d: any) => d.id == num.getDecimalString(p.pool_id.address));
-            const assetInfo = pool?.assets.find((d: any) => ContractAddr.from(this.asset().address).eqString(d.address));
+            const assetInfo = pool?.assets.find((d: any) => this.asset().address.eqString(d.address));
             let vTokenContract = new Contract(VesuRebalanceAbi, p.v_token.address, this.config.provider);
             const bal = await vTokenContract.balanceOf(this.address.address);
             const assets = await vTokenContract.convert_to_assets(uint256.bnToUint256(bal.toString()));
@@ -447,14 +448,13 @@ const _protocol: IProtocol = {name: 'Vesu', logo: 'https://static-assets-8zct.on
 // need to fine tune better
 const _riskFactor: RiskFactor[] = [
     {type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25},
-    {type: RiskType.TECHNICAL_RISK, value: 0.5, weight: 25},
     {type: RiskType.COUNTERPARTY_RISK, value: 1, weight: 50},
     {type: RiskType.ORACLE_RISK, value: 0.5, weight: 25},
 ]
 /**
  * Represents the Vesu Rebalance Strategies.
  */
-export const VesuRebalanceStrategies: IStrategyMetadata[] = [{
+export const VesuRebalanceStrategies: IStrategyMetadata<void>[] = [{
     name: 'Vesu STRK',
     description: _description.replace('{{TOKEN}}', 'STRK'),
     address: ContractAddr.from('0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1'),
@@ -464,6 +464,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata[] = [{
     maxTVL: Web3Number.fromWei('0', 18),
     risk: {
         riskFactor: _riskFactor,
-        netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / 100,
-    }
+        netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+    },
+    additionalInfo: undefined,
 }]

@@ -1,6 +1,6 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import { Web3Number } from "@/dataTypes/bignumber";
+import { Web3Number } from "@/dataTypes/bignumber.browser";
 import { FatalError, Global, logger } from "@/global";
 import { TokenInfo } from "@/interfaces";
 import { ILending, ILendingPosition, LendingToken, MarginType } from "@/interfaces/lending";
@@ -36,7 +36,7 @@ export class ZkLend extends ILending implements ILending {
                 const token: LendingToken = {
                     name: pool.token.name,
                     symbol: pool.token.symbol,
-                    address: savedTokenInfo?.address || '',
+                    address: savedTokenInfo?.address || ContractAddr.from(''),
                     logo: '',
                     decimals: pool.token.decimals,
                     borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),

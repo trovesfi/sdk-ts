@@ -1,0 +1,333 @@
+[
+    {
+      "name": "MathLibImpl",
+      "type": "impl",
+      "interface_name": "ekubo::interfaces::mathlib::IMathLib"
+    },
+    {
+      "name": "core::integer::u256",
+      "type": "struct",
+      "members": [
+        {
+          "name": "low",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "high",
+          "type": "core::integer::u128"
+        }
+      ]
+    },
+    {
+      "name": "core::bool",
+      "type": "enum",
+      "variants": [
+        {
+          "name": "False",
+          "type": "()"
+        },
+        {
+          "name": "True",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "name": "ekubo::types::i129::i129",
+      "type": "struct",
+      "members": [
+        {
+          "name": "mag",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "sign",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "name": "ekubo::types::delta::Delta",
+      "type": "struct",
+      "members": [
+        {
+          "name": "amount0",
+          "type": "ekubo::types::i129::i129"
+        },
+        {
+          "name": "amount1",
+          "type": "ekubo::types::i129::i129"
+        }
+      ]
+    },
+    {
+      "name": "core::option::Option::<core::integer::u256>",
+      "type": "enum",
+      "variants": [
+        {
+          "name": "Some",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "None",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "name": "ekubo::interfaces::mathlib::IMathLib",
+      "type": "interface",
+      "items": [
+        {
+          "name": "amount0_delta",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio_a",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_b",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "liquidity",
+              "type": "core::integer::u128"
+            },
+            {
+              "name": "round_up",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u128"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "amount1_delta",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio_a",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_b",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "liquidity",
+              "type": "core::integer::u128"
+            },
+            {
+              "name": "round_up",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u128"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "liquidity_delta_to_amount_delta",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "liquidity_delta",
+              "type": "ekubo::types::i129::i129"
+            },
+            {
+              "name": "sqrt_ratio_lower",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_upper",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "ekubo::types::delta::Delta"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "max_liquidity_for_token0",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio_lower",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_upper",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "amount",
+              "type": "core::integer::u128"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u128"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "max_liquidity_for_token1",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio_lower",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_upper",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "amount",
+              "type": "core::integer::u128"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u128"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "max_liquidity",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_lower",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "sqrt_ratio_upper",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "amount0",
+              "type": "core::integer::u128"
+            },
+            {
+              "name": "amount1",
+              "type": "core::integer::u128"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u128"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "next_sqrt_ratio_from_amount0",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "liquidity",
+              "type": "core::integer::u128"
+            },
+            {
+              "name": "amount",
+              "type": "ekubo::types::i129::i129"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::option::Option::<core::integer::u256>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "next_sqrt_ratio_from_amount1",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "liquidity",
+              "type": "core::integer::u128"
+            },
+            {
+              "name": "amount",
+              "type": "ekubo::types::i129::i129"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::option::Option::<core::integer::u256>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "tick_to_sqrt_ratio",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "tick",
+              "type": "ekubo::types::i129::i129"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u256"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "sqrt_ratio_to_tick",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "sqrt_ratio",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "ekubo::types::i129::i129"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "name": "ekubo::mathlib::MathLib::Event",
+      "type": "event",
+      "variants": []
+    }
+  ]
