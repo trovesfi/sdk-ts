@@ -473,6 +473,7 @@ var _riskFactor = [
   { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
+var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 var VesuRebalanceStrategies = [{
   name: "Vesu Fusion STRK",
   description: _description.replace("{{TOKEN}}", "STRK"),
@@ -480,6 +481,7 @@ var VesuRebalanceStrategies = [{
   type: "ERC4626",
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
   protocols: [_protocol],
+  auditUrl: AUDIT_URL,
   maxTVL: Web3Number.fromWei("0", 18),
   risk: {
     riskFactor: _riskFactor,
@@ -493,6 +495,7 @@ var VesuRebalanceStrategies = [{
   description: _description.replace("{{TOKEN}}", "ETH"),
   address: ContractAddr.from("0x26ea414fdf74ace1df5bc5ac72cbac670d438ef19b31edf9d59f98718fc0ab2"),
   type: "ERC4626",
+  auditUrl: AUDIT_URL,
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "ETH")],
   protocols: [_protocol],
   maxTVL: Web3Number.fromWei("0", 18),
@@ -508,6 +511,7 @@ var VesuRebalanceStrategies = [{
   description: _description.replace("{{TOKEN}}", "USDC"),
   address: ContractAddr.from("0x3a69adeb993cddb266962d9c995e3d0641dab627df22b825fa31bda460c3c14"),
   type: "ERC4626",
+  auditUrl: AUDIT_URL,
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDC")],
   protocols: [_protocol],
   maxTVL: Web3Number.fromWei("0", 6),
