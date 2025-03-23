@@ -23,7 +23,7 @@ interface Change {
     isDeposit: boolean;
 }
 
-interface VesuRebalanceSettings {
+export interface VesuRebalanceSettings {
     feeBps: number;
 }
 
