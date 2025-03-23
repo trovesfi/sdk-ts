@@ -23,6 +23,10 @@ interface Change {
     isDeposit: boolean;
 }
 
+interface VesuRebalanceSettings {
+    feeBps: number;
+}
+
 interface PoolInfoFull {
     pool_id: ContractAddr;
     pool_name: string | undefined;
@@ -50,7 +54,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
     /** Pricer instance for token price calculations */
     readonly pricer: PricerBase;
     /** Metadata containing strategy information */
-    readonly metadata: IStrategyMetadata<void>;
+    readonly metadata: IStrategyMetadata<VesuRebalanceSettings>;
     /** Contract instance for interacting with the strategy */
     readonly contract: Contract;
     readonly BASE_WEIGHT = 10000; // 10000 bps = 100%
@@ -62,7 +66,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
      * @param metadata - Strategy metadata including deposit tokens and address
      * @throws {Error} If more than one deposit token is specified
      */
-    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<void>) {
+    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<VesuRebalanceSettings>) {
         super(config);
         this.pricer = pricer;
         
@@ -148,6 +152,24 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
             amount,
             usdValue
         }
+    }
+
+    static async getAllPossibleVerifiedPools(asset: ContractAddr) {
+        const data = await getAPIUsingHeadlessBrowser('https://api.vesu.xyz/pools');
+        const verifiedPools =data.data.filter((d: any) => d.isVerified);
+        const pools = verifiedPools.map((p: any) => {
+            const hasMyAsset = p.assets.find((a: any) => asset.eqString(a.address));
+            if (hasMyAsset) {
+                return {
+                    pool_id: ContractAddr.from(p.id),
+                    max_weight: 10000,
+                    v_token: ContractAddr.from(hasMyAsset.vToken.address),
+                    name: p.name,
+                }
+            }
+            return null;
+        }).filter((p: PoolProps | null) => p !== null);
+        return pools;
     }
 
     /**
@@ -298,7 +320,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
             return acc + (curr.APY.netApy * weight);
         }, 0);
         
-        return weightedApy;
+        return weightedApy * (1 - (this.metadata.additionalInfo.feeBps / 10000));
     }
 
     /**
@@ -454,10 +476,10 @@ const _riskFactor: RiskFactor[] = [
 /**
  * Represents the Vesu Rebalance Strategies.
  */
-export const VesuRebalanceStrategies: IStrategyMetadata<void>[] = [{
-    name: 'Vesu STRK',
+export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[] = [{
+    name: 'Vesu Fusion STRK',
     description: _description.replace('{{TOKEN}}', 'STRK'),
-    address: ContractAddr.from('0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1'),
+    address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
     type: 'ERC4626',
     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'STRK')!],
     protocols: [_protocol],
@@ -466,5 +488,67 @@ export const VesuRebalanceStrategies: IStrategyMetadata<void>[] = [{
         riskFactor: _riskFactor,
         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
     },
-    additionalInfo: undefined,
+    additionalInfo: {
+        feeBps: 1000,
+    },
+}, {
+    name: 'Vesu Fusion ETH',
+    description: _description.replace('{{TOKEN}}', 'ETH'),
+    address: ContractAddr.from('0x26ea414fdf74ace1df5bc5ac72cbac670d438ef19b31edf9d59f98718fc0ab2'),
+    type: 'ERC4626',
+    depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'ETH')!],
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei('0', 18),
+    risk: {
+        riskFactor: _riskFactor,
+        netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+    },
+    additionalInfo: {
+        feeBps: 1000,
+    },
+}, {
+    name: 'Vesu Fusion USDC',
+    description: _description.replace('{{TOKEN}}', 'USDC'),
+    address: ContractAddr.from('0x3a69adeb993cddb266962d9c995e3d0641dab627df22b825fa31bda460c3c14'),
+    type: 'ERC4626',
+    depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'USDC')!],
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei('0', 6),
+    risk: {
+        riskFactor: _riskFactor,
+        netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+    },
+    additionalInfo: {
+        feeBps: 1000,
+    },
+// }, {
+//     name: 'Vesu Fusion USDT',
+//     description: _description.replace('{{TOKEN}}', 'USDT'),
+//     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
+//     type: 'ERC4626',
+//     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'USDT')!],
+//     protocols: [_protocol],
+//     maxTVL: Web3Number.fromWei('0', 6),
+//     risk: {
+//         riskFactor: _riskFactor,
+//         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+//     },
+//     additionalInfo: {
+//         feeBps: 1000,
+//     },
+// }, {
+//     name: 'Vesu Fusion WBTC',
+//     description: _description.replace('{{TOKEN}}', 'WBTC'),
+//     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
+//     type: 'ERC4626',
+//     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
+//     protocols: [_protocol],
+//     maxTVL: Web3Number.fromWei('0', 8),
+//     risk: {
+//         riskFactor: _riskFactor,
+//         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+//     },
+//     additionalInfo: {
+//         feeBps: 1000,
+//     },
 }]

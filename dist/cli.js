@@ -148,8 +148,6 @@ var Web3Number = class _Web3Number2 extends _Web3Number {
     return this.toString();
   }
 };
-var amt = new Web3Number("1.2432", 18);
-console.log(amt, "checking inspect");
 
 // src/dataTypes/address.ts
 var import_starknet = require("starknet");
@@ -211,6 +209,34 @@ var defaultTokens = [{
   logo: "https://dashboard.endur.fi/endur-fi.svg",
   address: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
   decimals: 18,
+  coingeckId: void 0
+}, {
+  name: "ETH",
+  symbol: "ETH",
+  logo: "https://opbnb.bscscan.com/token/images/ether.svg",
+  address: ContractAddr.from("0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"),
+  decimals: 18,
+  coingeckId: void 0
+}, {
+  name: "USDC",
+  symbol: "USDC",
+  logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+  address: ContractAddr.from("0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"),
+  decimals: 6,
+  coingeckId: void 0
+}, {
+  name: "USDT",
+  symbol: "USDT",
+  logo: "https://assets.coingecko.com/coins/images/325/small/Tether.png",
+  address: ContractAddr.from("0x68f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"),
+  decimals: 6,
+  coingeckId: void 0
+}, {
+  name: "WBTC",
+  symbol: "WBTC",
+  logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+  address: ContractAddr.from("0x3fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"),
+  decimals: 8,
   coingeckId: void 0
 }];
 var tokens = defaultTokens;
@@ -471,9 +497,9 @@ var _riskFactor = [
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var VesuRebalanceStrategies = [{
-  name: "Vesu STRK",
+  name: "Vesu Fusion STRK",
   description: _description.replace("{{TOKEN}}", "STRK"),
-  address: ContractAddr.from("0xeeb729d554ae486387147b13a9c8871bc7991d454e8b5ff570d4bf94de71e1"),
+  address: ContractAddr.from("0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f"),
   type: "ERC4626",
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
   protocols: [_protocol],
@@ -482,7 +508,69 @@ var VesuRebalanceStrategies = [{
     riskFactor: _riskFactor,
     netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0)
   },
-  additionalInfo: void 0
+  additionalInfo: {
+    feeBps: 1e3
+  }
+}, {
+  name: "Vesu Fusion ETH",
+  description: _description.replace("{{TOKEN}}", "ETH"),
+  address: ContractAddr.from("0x26ea414fdf74ace1df5bc5ac72cbac670d438ef19b31edf9d59f98718fc0ab2"),
+  type: "ERC4626",
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "ETH")],
+  protocols: [_protocol],
+  maxTVL: Web3Number.fromWei("0", 18),
+  risk: {
+    riskFactor: _riskFactor,
+    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0)
+  },
+  additionalInfo: {
+    feeBps: 1e3
+  }
+}, {
+  name: "Vesu Fusion USDC",
+  description: _description.replace("{{TOKEN}}", "USDC"),
+  address: ContractAddr.from("0x3a69adeb993cddb266962d9c995e3d0641dab627df22b825fa31bda460c3c14"),
+  type: "ERC4626",
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDC")],
+  protocols: [_protocol],
+  maxTVL: Web3Number.fromWei("0", 6),
+  risk: {
+    riskFactor: _riskFactor,
+    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0)
+  },
+  additionalInfo: {
+    feeBps: 1e3
+  }
+  // }, {
+  //     name: 'Vesu Fusion USDT',
+  //     description: _description.replace('{{TOKEN}}', 'USDT'),
+  //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
+  //     type: 'ERC4626',
+  //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'USDT')!],
+  //     protocols: [_protocol],
+  //     maxTVL: Web3Number.fromWei('0', 6),
+  //     risk: {
+  //         riskFactor: _riskFactor,
+  //         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+  //     },
+  //     additionalInfo: {
+  //         feeBps: 1000,
+  //     },
+  // }, {
+  //     name: 'Vesu Fusion WBTC',
+  //     description: _description.replace('{{TOKEN}}', 'WBTC'),
+  //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
+  //     type: 'ERC4626',
+  //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
+  //     protocols: [_protocol],
+  //     maxTVL: Web3Number.fromWei('0', 8),
+  //     risk: {
+  //         riskFactor: _riskFactor,
+  //         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+  //     },
+  //     additionalInfo: {
+  //         feeBps: 1000,
+  //     },
 }];
 
 // src/strategies/ekubo-cl-vault.ts

@@ -399,6 +399,9 @@ interface Change {
     finalAmt: Web3Number;
     isDeposit: boolean;
 }
+interface VesuRebalanceSettings {
+    feeBps: number;
+}
 interface PoolInfoFull {
     pool_id: ContractAddr;
     pool_name: string | undefined;
@@ -426,7 +429,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
     /** Pricer instance for token price calculations */
     readonly pricer: PricerBase;
     /** Metadata containing strategy information */
-    readonly metadata: IStrategyMetadata<void>;
+    readonly metadata: IStrategyMetadata<VesuRebalanceSettings>;
     /** Contract instance for interacting with the strategy */
     readonly contract: Contract;
     readonly BASE_WEIGHT = 10000;
@@ -437,7 +440,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      * @param metadata - Strategy metadata including deposit tokens and address
      * @throws {Error} If more than one deposit token is specified
      */
-    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<void>);
+    constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<VesuRebalanceSettings>);
     /**
      * Creates a deposit call to the strategy contract.
      * @param assets - Amount of assets to deposit
@@ -482,6 +485,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
         amount: Web3Number;
         usdValue: number;
     }>;
+    static getAllPossibleVerifiedPools(asset: ContractAddr): Promise<any>;
     /**
      * Retrieves the list of allowed pools and their detailed information from multiple sources:
      * 1. Contract's allowed pools
@@ -564,7 +568,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
 /**
  * Represents the Vesu Rebalance Strategies.
  */
-declare const VesuRebalanceStrategies: IStrategyMetadata<void>[];
+declare const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[];
 
 interface EkuboPoolKey {
     token0: ContractAddr;

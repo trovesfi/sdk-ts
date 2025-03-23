@@ -20,6 +20,3 @@ export class Web3Number extends _Web3Number<Web3Number> {
         return this.toString();
     }
 }
-
-const amt = new Web3Number("1.2432", 18);
-console.log(amt, 'checking inspect');
