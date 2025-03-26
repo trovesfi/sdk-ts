@@ -3,7 +3,7 @@ import { FlowChartColors, getNoRiskTags, IConfig, IInvestmentFlow, IProtocol, IS
 import { Pricer } from "@/modules";
 import { CairoCustomEnum, Contract, num, uint256 } from "starknet";
 import VesuRebalanceAbi from '@/data/vesu-rebalance.abi.json';
-import { Global } from "@/global";
+import { Global, logger } from "@/global";
 import { assert } from "@/utils";
 import axios from "axios";
 import { PricerBase } from "@/modules/pricerBase";
@@ -264,7 +264,9 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
 
         const info = allowedPools.map(async (p) => {
             const vesuPosition = vesuPositions.find((d: any) => d.pool.id.toString() === num.getDecimalString(p.pool_id.address.toString()));
-            const pool = pools.find((d: any) => d.id == num.getDecimalString(p.pool_id.address));
+            const pool = pools.find((d: any) => {
+                return d.id == num.getDecimalString(p.pool_id.address.toString());
+            });
             const assetInfo = pool?.assets.find((d: any) => this.asset().address.eqString(d.address));
             let vTokenContract = new Contract(VesuRebalanceAbi, p.v_token.address, this.config.provider);
             const bal = await vTokenContract.balanceOf(this.address.address);
@@ -314,12 +316,13 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
      * Calculates the weighted average APY across all pools based on USD value.
      * @returns {Promise<number>} The weighted average APY across all pools
      */
-    netAPYGivenPools(pools: PoolInfoFull[]): number {
-        const weightedApy = pools.reduce((acc: number, curr) => {
+    async netAPYGivenPools(pools: PoolInfoFull[]): Promise<number> {
+        const weightedApyNumerator = pools.reduce((acc: number, curr) => {
             const weight = curr.current_weight;
-            return acc + (curr.APY.netApy * weight);
+            return acc + (curr.APY.netApy * Number(curr.amount.toString()));
         }, 0);
-        
+        const totalAssets = (await this.getTVL()).amount;
+        const weightedApy = weightedApyNumerator / Number(totalAssets.toString());
         return weightedApy * (1 - (this.metadata.additionalInfo.feeBps / 10000));
     }
 
@@ -351,18 +354,25 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
 
         // assert sum of pools.amount <= totalAssets
         const sumPools = pools.reduce((acc, curr) => acc.plus(curr.amount.toString()), Web3Number.fromWei("0", this.decimals()));
-        assert(sumPools.lte(totalAssets), 'Sum of pools.amount must be less than or equal to totalAssets'); 
+        logger.verbose(`Sum of pools: ${sumPools.toString()}`);
+        logger.verbose(`Total assets: ${totalAssets.toString()}`);
+        assert(sumPools.lte(totalAssets.multipliedBy(1.00001).toString()), 'Sum of pools.amount must be less than or equal to totalAssets'); 
         
         // Sort pools by APY and calculate target amounts
         const sortedPools = [...pools].sort((a, b) => b.APY.netApy - a.APY.netApy);
         const targetAmounts: Record<string, Web3Number> = {};
         let remainingAssets = totalAssets;
+        logger.verbose(`Remaining assets: ${remainingAssets.toString()}`);
 
         // First pass: Allocate to high APY pools up to their max weight
         let isAnyPoolOverMaxWeight = false;
         for (const pool of sortedPools) {
-            const maxAmount = totalAssets.multipliedBy(pool.max_weight * 0.9); // 10% tolerance
+            const maxAmount = totalAssets.multipliedBy(pool.max_weight * 0.98); // some tolerance
             const targetAmount = remainingAssets.gte(maxAmount) ? maxAmount : remainingAssets;
+            logger.verbose(`Target amount: ${targetAmount.toString()}`);
+            logger.verbose(`Remaining assets: ${remainingAssets.toString()}`);
+            logger.verbose(`Max amount: ${maxAmount.toString()}`);
+            logger.verbose(`pool.max_weight: ${pool.max_weight}`);
             targetAmounts[pool.pool_id.address.toString()] = targetAmount;
             remainingAssets = remainingAssets.minus(targetAmount.toString());
             if (pool.current_weight > pool.max_weight) {
@@ -384,13 +394,17 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
             };
         });
 
+        logger.verbose(`Changes: ${JSON.stringify(changes)}`);
         // Validate changes
         const sumChanges = changes.reduce((sum, c) => sum.plus(c.changeAmt.toString()), Web3Number.fromWei("0", this.decimals()));
         const sumFinal = changes.reduce((sum, c) => sum.plus(c.finalAmt.toString()), Web3Number.fromWei("0", this.decimals()));
         const hasChanges = changes.some(c => !c.changeAmt.eq(0));
 
         if (!sumChanges.eq(0)) throw new Error('Sum of changes must be zero');
-        if (!sumFinal.eq(totalAssets)) throw new Error('Sum of final amounts must equal total assets');
+        logger.verbose(`Sum of changes: ${sumChanges.toString()}`);
+        logger.verbose(`Sum of final: ${sumFinal.toString()}`);
+        logger.verbose(`Total assets: ${totalAssets.toString()}`);
+        if (!sumFinal.eq(totalAssets.toString())) throw new Error('Sum of final amounts must equal total assets');
         if (!hasChanges) throw new Error('No changes required');
 
         const finalPools: PoolInfoFull[] = pools.map((p) => {
@@ -420,13 +434,12 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
         const actions: any[] = [];
         // sort to put withdrawals first
         pools.sort((a, b) => b.isDeposit ? -1 : 1);
-        console.log('pools', pools);
         pools.forEach((p) => {
             if (p.changeAmt.eq(0)) return null;
             actions.push({
                 pool_id: p.pool_id.address,
                 feature: new CairoCustomEnum(p.isDeposit ? {DEPOSIT: {}} : {WITHDRAW: {}}),
-                token: this.asset().address,
+                token: this.asset().address.address,
                 amount: uint256.bnToUint256(p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei()),
             });
         });
@@ -438,7 +451,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
     }
 
     async getInvestmentFlows(pools: PoolInfoFull[]) {
-        const netYield = this.netAPYGivenPools(pools);
+        const netYield = await this.netAPYGivenPools(pools);
        
         const baseFlow: IInvestmentFlow = {
             title: "Your Deposit",

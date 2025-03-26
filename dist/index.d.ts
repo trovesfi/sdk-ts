@@ -14,9 +14,10 @@ declare class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     plus(value: string | number | T): T;
     minus(n: number | string | T, base?: number): T;
     protected construct(value: string | number, decimals: number): T;
-    toString(base?: number | undefined): string;
+    toString(decimals?: number | undefined): string;
     toJSON(): string;
     valueOf(): string;
+    private maxToFixedDecimals;
 }
 
 declare class Web3Number extends _Web3Number<Web3Number> {
@@ -530,7 +531,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      * Calculates the weighted average APY across all pools based on USD value.
      * @returns {Promise<number>} The weighted average APY across all pools
      */
-    netAPYGivenPools(pools: PoolInfoFull[]): number;
+    netAPYGivenPools(pools: PoolInfoFull[]): Promise<number>;
     /**
      * Calculates optimal position changes to maximize APY while respecting max weights.
      * The algorithm:

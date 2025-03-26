@@ -18507,32 +18507,35 @@ var strkfarm_risk_engine = (() => {
       return this.mul(10 ** this.decimals).toFixed(0);
     }
     multipliedBy(value) {
-      let _value = Number(value).toFixed(13);
+      let _value = Number(value).toFixed(this.maxToFixedDecimals());
       return this.construct(this.mul(_value).toString(), this.decimals);
     }
     dividedBy(value) {
-      let _value = Number(value).toFixed(13);
+      let _value = Number(value).toFixed(this.maxToFixedDecimals());
       return this.construct(this.div(_value).toString(), this.decimals);
     }
     plus(value) {
-      const _value = Number(value).toFixed(13);
+      const _value = Number(value).toFixed(this.maxToFixedDecimals());
       return this.construct(this.add(_value).toString(), this.decimals);
     }
     minus(n, base2) {
-      const _value = Number(n).toFixed(13);
+      const _value = Number(n).toFixed(this.maxToFixedDecimals());
       return this.construct(super.minus(_value, base2).toString(), this.decimals);
     }
     construct(value, decimals) {
       return new this.constructor(value, decimals);
     }
-    toString(base2) {
-      return super.toString(base2);
+    toString(decimals = this.maxToFixedDecimals()) {
+      return super.toFixed(decimals);
     }
     toJSON() {
       return this.toString();
     }
     valueOf() {
       return this.toString();
+    }
+    maxToFixedDecimals() {
+      return Math.min(this.decimals, 13);
     }
   };
   import_bignumber.default.config({ DECIMAL_PLACES: 18 });
@@ -38698,7 +38701,9 @@ var strkfarm_risk_engine = (() => {
       const totalAssets = (await this.getTVL()).amount;
       const info = allowedPools.map(async (p) => {
         const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === num_exports.getDecimalString(p.pool_id.address.toString()));
-        const pool = pools.find((d) => d.id == num_exports.getDecimalString(p.pool_id.address));
+        const pool = pools.find((d) => {
+          return d.id == num_exports.getDecimalString(p.pool_id.address.toString());
+        });
         const assetInfo = pool?.assets.find((d) => this.asset().address.eqString(d.address));
         let vTokenContract = new Contract(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
         const bal = await vTokenContract.balanceOf(this.address.address);
@@ -38746,11 +38751,13 @@ var strkfarm_risk_engine = (() => {
      * Calculates the weighted average APY across all pools based on USD value.
      * @returns {Promise<number>} The weighted average APY across all pools
      */
-    netAPYGivenPools(pools) {
-      const weightedApy = pools.reduce((acc, curr) => {
+    async netAPYGivenPools(pools) {
+      const weightedApyNumerator = pools.reduce((acc, curr) => {
         const weight = curr.current_weight;
-        return acc + curr.APY.netApy * weight;
+        return acc + curr.APY.netApy * Number(curr.amount.toString());
       }, 0);
+      const totalAssets = (await this.getTVL()).amount;
+      const weightedApy = weightedApyNumerator / Number(totalAssets.toString());
       return weightedApy * (1 - this.metadata.additionalInfo.feeBps / 1e4);
     }
     /**
@@ -38779,14 +38786,21 @@ var strkfarm_risk_engine = (() => {
         finalPools: []
       };
       const sumPools = pools.reduce((acc, curr) => acc.plus(curr.amount.toString()), Web3Number.fromWei("0", this.decimals()));
-      assert3(sumPools.lte(totalAssets), "Sum of pools.amount must be less than or equal to totalAssets");
+      logger.verbose(`Sum of pools: ${sumPools.toString()}`);
+      logger.verbose(`Total assets: ${totalAssets.toString()}`);
+      assert3(sumPools.lte(totalAssets.multipliedBy(1.00001).toString()), "Sum of pools.amount must be less than or equal to totalAssets");
       const sortedPools = [...pools].sort((a, b) => b.APY.netApy - a.APY.netApy);
       const targetAmounts = {};
       let remainingAssets = totalAssets;
+      logger.verbose(`Remaining assets: ${remainingAssets.toString()}`);
       let isAnyPoolOverMaxWeight = false;
       for (const pool of sortedPools) {
-        const maxAmount = totalAssets.multipliedBy(pool.max_weight * 0.9);
+        const maxAmount = totalAssets.multipliedBy(pool.max_weight * 0.98);
         const targetAmount = remainingAssets.gte(maxAmount) ? maxAmount : remainingAssets;
+        logger.verbose(`Target amount: ${targetAmount.toString()}`);
+        logger.verbose(`Remaining assets: ${remainingAssets.toString()}`);
+        logger.verbose(`Max amount: ${maxAmount.toString()}`);
+        logger.verbose(`pool.max_weight: ${pool.max_weight}`);
         targetAmounts[pool.pool_id.address.toString()] = targetAmount;
         remainingAssets = remainingAssets.minus(targetAmount.toString());
         if (pool.current_weight > pool.max_weight) {
@@ -38804,11 +38818,15 @@ var strkfarm_risk_engine = (() => {
           isDeposit: change.gt(0)
         };
       });
+      logger.verbose(`Changes: ${JSON.stringify(changes)}`);
       const sumChanges = changes.reduce((sum, c) => sum.plus(c.changeAmt.toString()), Web3Number.fromWei("0", this.decimals()));
       const sumFinal = changes.reduce((sum, c) => sum.plus(c.finalAmt.toString()), Web3Number.fromWei("0", this.decimals()));
       const hasChanges = changes.some((c) => !c.changeAmt.eq(0));
       if (!sumChanges.eq(0)) throw new Error("Sum of changes must be zero");
-      if (!sumFinal.eq(totalAssets)) throw new Error("Sum of final amounts must equal total assets");
+      logger.verbose(`Sum of changes: ${sumChanges.toString()}`);
+      logger.verbose(`Sum of final: ${sumFinal.toString()}`);
+      logger.verbose(`Total assets: ${totalAssets.toString()}`);
+      if (!sumFinal.eq(totalAssets.toString())) throw new Error("Sum of final amounts must equal total assets");
       if (!hasChanges) throw new Error("No changes required");
       const finalPools = pools.map((p) => {
         const target = targetAmounts[p.pool_id.address.toString()] || Web3Number.fromWei("0", this.decimals());
@@ -38832,13 +38850,12 @@ var strkfarm_risk_engine = (() => {
     async getRebalanceCall(pools, isOverWeightAdjustment) {
       const actions = [];
       pools.sort((a, b) => b.isDeposit ? -1 : 1);
-      console.log("pools", pools);
       pools.forEach((p) => {
         if (p.changeAmt.eq(0)) return null;
         actions.push({
           pool_id: p.pool_id.address,
           feature: new CairoCustomEnum(p.isDeposit ? { DEPOSIT: {} } : { WITHDRAW: {} }),
-          token: this.asset().address,
+          token: this.asset().address.address,
           amount: uint256_exports.bnToUint256(p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei())
         });
       });
@@ -38849,7 +38866,7 @@ var strkfarm_risk_engine = (() => {
       return this.contract.populate("rebalance", [actions]);
     }
     async getInvestmentFlows(pools) {
-      const netYield = this.netAPYGivenPools(pools);
+      const netYield = await this.netAPYGivenPools(pools);
       const baseFlow = {
         title: "Your Deposit",
         subItems: [{ key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%` }],

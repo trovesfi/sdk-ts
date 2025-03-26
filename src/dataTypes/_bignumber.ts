@@ -13,22 +13,22 @@ export class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     }
 
     multipliedBy(value: string | number | T): T {
-        let _value = Number(value).toFixed(13);
+        let _value = Number(value).toFixed(this.maxToFixedDecimals());
         return this.construct(this.mul(_value).toString(), this.decimals);
     }
 
     dividedBy(value: string | number | T): T {
-        let _value = Number(value).toFixed(13);
+        let _value = Number(value).toFixed(this.maxToFixedDecimals());
         return this.construct(this.div(_value).toString(), this.decimals);
     }
 
     plus(value: string | number | T): T {
-        const _value = Number(value).toFixed(13);
+        const _value = Number(value).toFixed(this.maxToFixedDecimals());
         return this.construct(this.add(_value).toString(), this.decimals);
     }
 
     minus(n: number | string | T, base?: number): T {
-        const _value = Number(n).toFixed(13);
+        const _value = Number(n).toFixed(this.maxToFixedDecimals());
         return this.construct(super.minus(_value, base).toString(), this.decimals);
     }
 
@@ -36,16 +36,20 @@ export class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
         return new (this.constructor as { new (value: string | number, decimals: number): T })(value, decimals);
     }
 
-    toString(base?: number | undefined): string {
-        return super.toString(base);
+    toString(decimals: number | undefined = this.maxToFixedDecimals()): string {
+        return super.toFixed(decimals);
     }
-    
+
     toJSON() {
         return this.toString();
     }
 
     valueOf() {
         return this.toString();
+    }
+
+    private maxToFixedDecimals() {
+        return Math.min(this.decimals, 13);
     }
 }
 

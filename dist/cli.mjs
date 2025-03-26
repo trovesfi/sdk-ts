@@ -78,32 +78,35 @@ var _Web3Number = class extends BigNumber {
     return this.mul(10 ** this.decimals).toFixed(0);
   }
   multipliedBy(value) {
-    let _value = Number(value).toFixed(13);
+    let _value = Number(value).toFixed(this.maxToFixedDecimals());
     return this.construct(this.mul(_value).toString(), this.decimals);
   }
   dividedBy(value) {
-    let _value = Number(value).toFixed(13);
+    let _value = Number(value).toFixed(this.maxToFixedDecimals());
     return this.construct(this.div(_value).toString(), this.decimals);
   }
   plus(value) {
-    const _value = Number(value).toFixed(13);
+    const _value = Number(value).toFixed(this.maxToFixedDecimals());
     return this.construct(this.add(_value).toString(), this.decimals);
   }
   minus(n, base) {
-    const _value = Number(n).toFixed(13);
+    const _value = Number(n).toFixed(this.maxToFixedDecimals());
     return this.construct(super.minus(_value, base).toString(), this.decimals);
   }
   construct(value, decimals) {
     return new this.constructor(value, decimals);
   }
-  toString(base) {
-    return super.toString(base);
+  toString(decimals = this.maxToFixedDecimals()) {
+    return super.toFixed(decimals);
   }
   toJSON() {
     return this.toString();
   }
   valueOf() {
     return this.toString();
+  }
+  maxToFixedDecimals() {
+    return Math.min(this.decimals, 13);
   }
 };
 BigNumber.config({ DECIMAL_PLACES: 18 });
