@@ -97,6 +97,7 @@ interface IStrategyMetadata<T> {
     risk: {
         riskFactor: RiskFactor[];
         netRisk: number;
+        notARisks: string[];
     };
     additionalInfo: T;
 }

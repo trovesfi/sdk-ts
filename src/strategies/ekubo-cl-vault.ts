@@ -1,5 +1,5 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
-import { IConfig, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
+import { getNoRiskTags, IConfig, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
 import { PricerBase } from "@/modules/pricerBase";
 import { assert } from "@/utils";
 import { Call, Contract, uint256 } from "starknet";
@@ -524,6 +524,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
     risk: {
         riskFactor: _riskFactor,
         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) /  _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+        notARisks: getNoRiskTags(_riskFactor)
     },
     additionalInfo: {
         newBounds: {

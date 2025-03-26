@@ -70,7 +70,8 @@ export interface IStrategyMetadata<T> {
     maxTVL: Web3Number,
     risk: {
         riskFactor: RiskFactor[],
-        netRisk: number
+        netRisk: number,
+        notARisks: string[]
     },
     additionalInfo: T
 }
