@@ -38701,16 +38701,23 @@ var strkfarm_risk_engine = (() => {
       const totalAssets = (await this.getTVL()).amount;
       const info = allowedPools.map(async (p) => {
         const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === num_exports.getDecimalString(p.pool_id.address.toString()));
-        const pool = pools.find((d) => {
+        const _pool = pools.find((d) => {
+          logger.verbose(`pool check: ${d.id == num_exports.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${num_exports.getDecimalString(p.pool_id.address.toString())}`);
           return d.id == num_exports.getDecimalString(p.pool_id.address.toString());
         });
-        const assetInfo = pool?.assets.find((d) => this.asset().address.eqString(d.address));
+        logger.verbose(`pool: ${JSON.stringify(_pool)}`);
+        logger.verbose(typeof _pool);
+        logger.verbose(`name: ${_pool?.name}`);
+        if (!_pool) {
+          throw new Error(`Pool ${p.pool_id.address.toString()} not found`);
+        }
+        const assetInfo = _pool?.assets.find((d) => this.asset().address.eqString(d.address));
         let vTokenContract = new Contract(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
         const bal = await vTokenContract.balanceOf(this.address.address);
         const assets = await vTokenContract.convert_to_assets(uint256_exports.bnToUint256(bal.toString()));
         const item = {
           pool_id: p.pool_id,
-          pool_name: pool.name,
+          pool_name: _pool?.name,
           max_weight: p.max_weight,
           current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
           v_token: p.v_token,
