@@ -36,11 +36,11 @@ export class BaseStrategy<TVLInfo, ActionInfo> {
         throw new Error("Not implemented");
     }   
 
-    depositCall(amountInfo: ActionInfo, receiver: ContractAddr): Call[] {
+    async depositCall(amountInfo: ActionInfo, receiver: ContractAddr): Promise<Call[]> {
         throw new Error("Not implemented");
     }
 
-    withdrawCall(amountInfo: ActionInfo, receiver: ContractAddr, owner: ContractAddr): Call[] {
+    async withdrawCall(amountInfo: ActionInfo, receiver: ContractAddr, owner: ContractAddr): Promise<Call[]> {
         throw new Error("Not implemented");
     }
     

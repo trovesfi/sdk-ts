@@ -18,6 +18,7 @@ declare class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     toJSON(): string;
     valueOf(): string;
     private maxToFixedDecimals;
+    private getStandardString;
 }
 
 declare class Web3Number extends _Web3Number<Web3Number> {
@@ -276,7 +277,7 @@ interface SwapInfo {
     routes: Route[];
 }
 declare class AvnuWrapper {
-    getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string): Promise<Quote>;
+    getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string, retry?: number): Promise<Quote>;
     getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount: string): Promise<SwapInfo>;
 }
 
@@ -391,10 +392,15 @@ declare class BaseStrategy<TVLInfo, ActionInfo> {
     constructor(config: IConfig);
     getUserTVL(user: ContractAddr): Promise<TVLInfo>;
     getTVL(): Promise<TVLInfo>;
-    depositCall(amountInfo: ActionInfo, receiver: ContractAddr): Call[];
-    withdrawCall(amountInfo: ActionInfo, receiver: ContractAddr, owner: ContractAddr): Call[];
+    depositCall(amountInfo: ActionInfo, receiver: ContractAddr): Promise<Call[]>;
+    withdrawCall(amountInfo: ActionInfo, receiver: ContractAddr, owner: ContractAddr): Promise<Call[]>;
 }
 
+interface PoolProps {
+    pool_id: ContractAddr;
+    max_weight: number;
+    v_token: ContractAddr;
+}
 interface Change {
     pool_id: ContractAddr;
     changeAmt: Web3Number;
@@ -449,7 +455,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      * @param receiver - Address that will receive the strategy tokens
      * @returns Populated contract call for deposit
      */
-    depositCall(amountInfo: SingleActionAmount, receiver: ContractAddr): starknet.Call[];
+    depositCall(amountInfo: SingleActionAmount, receiver: ContractAddr): Promise<starknet.Call[]>;
     /**
      * Creates a withdrawal call to the strategy contract.
      * @param assets - Amount of assets to withdraw
@@ -457,7 +463,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      * @param owner - Address that owns the strategy tokens
      * @returns Populated contract call for withdrawal
      */
-    withdrawCall(amountInfo: SingleActionAmount, receiver: ContractAddr, owner: ContractAddr): starknet.Call[];
+    withdrawCall(amountInfo: SingleActionAmount, receiver: ContractAddr, owner: ContractAddr): Promise<starknet.Call[]>;
     /**
      * Returns the underlying asset token of the strategy.
      * @returns The deposit token supported by this strategy
@@ -488,6 +494,22 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
         usdValue: number;
     }>;
     static getAllPossibleVerifiedPools(asset: ContractAddr): Promise<any>;
+    getPoolInfo(p: PoolProps, pools: any[], vesuPositions: any[], totalAssets: Web3Number, isErrorPositionsAPI: boolean, isErrorPoolsAPI: boolean): Promise<{
+        pool_id: ContractAddr;
+        pool_name: any;
+        max_weight: number;
+        current_weight: number;
+        v_token: ContractAddr;
+        amount: Web3Number;
+        usdValue: Web3Number;
+        APY: {
+            baseApy: number;
+            defiSpringApy: number;
+            netApy: number;
+        };
+        currentUtilization: number;
+        maxUtilization: number;
+    }>;
     /**
      * Retrieves the list of allowed pools and their detailed information from multiple sources:
      * 1. Contract's allowed pools
@@ -596,6 +618,7 @@ interface CLVaultStrategySettings {
         upper: number;
     };
     lstContract: ContractAddr;
+    feeBps: number;
 }
 declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> {
     /** Contract address of the strategy */
@@ -620,28 +643,39 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * @throws {Error} If more than one deposit token is specified
      */
     constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<CLVaultStrategySettings>);
-    depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Call[];
-    withdrawCall(amountInfo: DualActionAmount, receiver: ContractAddr, owner: ContractAddr): Call[];
+    getDepositAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount>;
+    depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Promise<Call[]>;
+    tokensToShares(amountInfo: DualActionAmount): Promise<Web3Number>;
+    withdrawCall(amountInfo: DualActionAmount, receiver: ContractAddr, owner: ContractAddr): Promise<Call[]>;
     rebalanceCall(newBounds: EkuboBounds, swapParams: SwapInfo): Call[];
     handleUnusedCall(swapParams: SwapInfo): Call[];
     handleFeesCall(): Call[];
-    getUserTVL(user: ContractAddr): Promise<DualTokenInfo>;
-    getTVL(): Promise<DualTokenInfo>;
+    /**
+     * Calculates assets before and now in a given token of TVL per share to observe growth
+     * @returns {Promise<number>} The weighted average APY across all pools
+     */
+    netAPY(blockIdentifier?: BlockIdentifier): Promise<number>;
+    getHarvestRewardShares(fromBlock: number, toBlock: number): Promise<Web3Number>;
+    balanceOf(user: ContractAddr, blockIdentifier?: BlockIdentifier): Promise<Web3Number>;
+    getUserTVL(user: ContractAddr, blockIdentifier?: BlockIdentifier): Promise<DualTokenInfo>;
+    private _getTVL;
+    totalSupply(blockIdentifier?: BlockIdentifier): Promise<Web3Number>;
+    getTVL(blockIdentifier?: BlockIdentifier): Promise<DualTokenInfo>;
     getUncollectedFees(): Promise<DualTokenInfo>;
     getCurrentNFTID(): Promise<number>;
     truePrice(): Promise<number>;
-    getCurrentPrice(): Promise<{
+    getCurrentPrice(blockIdentifier?: BlockIdentifier): Promise<{
         price: number;
         tick: number;
     }>;
     private _getCurrentPrice;
-    getCurrentBounds(): Promise<EkuboBounds>;
+    getCurrentBounds(blockIdentifier?: BlockIdentifier): Promise<EkuboBounds>;
     static div2Power128(num: BigInt): number;
     static priceToTick(price: number, isRoundDown: boolean, tickSpacing: number): {
         mag: number;
         sign: number;
     };
-    getPoolKey(): Promise<EkuboPoolKey>;
+    getPoolKey(blockIdentifier?: BlockIdentifier): Promise<EkuboPoolKey>;
     getNewBounds(): Promise<EkuboBounds>;
     /**
      * Computes the expected amounts to fully utilize amount in
@@ -653,6 +687,21 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
     private _getExpectedAmountsForLiquidity;
     private _solveExpectedAmountsEq;
     getSwapInfoToHandleUnused(considerRebalance?: boolean): Promise<SwapInfo>;
+    getSwapInfoGivenAmounts(poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number, bounds: EkuboBounds): Promise<SwapInfo>;
+    /**
+     * Attempts to rebalance the vault by iteratively adjusting swap amounts if initial attempt fails.
+     * Uses binary search approach to find optimal swap amount.
+     *
+     * @param newBounds - The new tick bounds to rebalance to
+     * @param swapInfo - Initial swap parameters for rebalancing
+     * @param acc - Account to estimate gas fees with
+     * @param retry - Current retry attempt number (default 0)
+     * @param adjustmentFactor - Percentage to adjust swap amount by (default 1)
+     * @param isToken0Deficit - Whether token0 balance needs increasing (default true)
+     * @returns Array of contract calls needed for rebalancing
+     * @throws Error if max retries reached without successful rebalance
+     */
+    rebalanceIter(newBounds: EkuboBounds, swapInfo: SwapInfo, acc: Account, estimateCall: () => Promise<Call[]>, retry?: number, adjustmentFactor?: number, isToken0Deficit?: boolean): Promise<Call[]>;
     static tickToi129(tick: number): {
         mag: number;
         sign: number;
@@ -663,10 +712,12 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
         sign: number;
     }): bigint;
     static tickToPrice(tick: bigint): number;
-    getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds): Promise<{
+    getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds, blockIdentifier?: BlockIdentifier): Promise<{
         amount0: Web3Number;
         amount1: Web3Number;
     }>;
+    harvest(acc: Account): Promise<Call[]>;
+    getInvestmentFlows(): Promise<IInvestmentFlow[]>;
 }
 /**
  * Represents the Vesu Rebalance Strategies.
@@ -782,4 +833,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, type CLVaultStrategySettings, ContractAddr, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, type VesuRebalanceSettings, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, BaseStrategy, type CLVaultStrategySettings, ContractAddr, type DualActionAmount, type DualTokenInfo, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, type SingleActionAmount, type SingleTokenInfo, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, type VesuRebalanceSettings, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };

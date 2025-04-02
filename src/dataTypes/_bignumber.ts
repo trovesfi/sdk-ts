@@ -1,3 +1,4 @@
+import { logger } from "@/global";
 import BigNumber from "bignumber.js";
 
 export class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
@@ -13,22 +14,22 @@ export class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     }
 
     multipliedBy(value: string | number | T): T {
-        let _value = Number(value).toFixed(this.maxToFixedDecimals());
+        const _value = this.getStandardString(value);
         return this.construct(this.mul(_value).toString(), this.decimals);
     }
 
     dividedBy(value: string | number | T): T {
-        let _value = Number(value).toFixed(this.maxToFixedDecimals());
+        const _value = this.getStandardString(value);
         return this.construct(this.div(_value).toString(), this.decimals);
     }
 
     plus(value: string | number | T): T {
-        const _value = Number(value).toFixed(this.maxToFixedDecimals());
+        const _value = this.getStandardString(value);
         return this.construct(this.add(_value).toString(), this.decimals);
     }
 
     minus(n: number | string | T, base?: number): T {
-        const _value = Number(n).toFixed(this.maxToFixedDecimals());
+        const _value = this.getStandardString(n);
         return this.construct(super.minus(_value, base).toString(), this.decimals);
     }
 
@@ -49,9 +50,16 @@ export class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     }
 
     private maxToFixedDecimals() {
-        return Math.min(this.decimals, 13);
+        return Math.min(this.decimals, 18);
+    }
+
+    private getStandardString(value: string | number | T): string {
+        if (typeof value == 'string') {
+            return value
+        }
+        return value.toFixed(this.maxToFixedDecimals())
     }
 }
 
-BigNumber.config({ DECIMAL_PLACES: 18 })
-_Web3Number.config({ DECIMAL_PLACES: 18 })
+BigNumber.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN })
+_Web3Number.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN })

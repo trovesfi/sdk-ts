@@ -29,7 +29,7 @@ var import_inquirer = __toESM(require("inquirer"));
 
 // src/utils/store.ts
 var import_fs = __toESM(require("fs"));
-var import_starknet9 = require("starknet");
+var import_starknet10 = require("starknet");
 var crypto2 = __toESM(require("crypto"));
 
 // src/utils/encrypt.ts
@@ -101,19 +101,19 @@ var _Web3Number = class extends import_bignumber.default {
     return this.mul(10 ** this.decimals).toFixed(0);
   }
   multipliedBy(value) {
-    let _value = Number(value).toFixed(this.maxToFixedDecimals());
+    const _value = this.getStandardString(value);
     return this.construct(this.mul(_value).toString(), this.decimals);
   }
   dividedBy(value) {
-    let _value = Number(value).toFixed(this.maxToFixedDecimals());
+    const _value = this.getStandardString(value);
     return this.construct(this.div(_value).toString(), this.decimals);
   }
   plus(value) {
-    const _value = Number(value).toFixed(this.maxToFixedDecimals());
+    const _value = this.getStandardString(value);
     return this.construct(this.add(_value).toString(), this.decimals);
   }
   minus(n, base) {
-    const _value = Number(n).toFixed(this.maxToFixedDecimals());
+    const _value = this.getStandardString(n);
     return this.construct(super.minus(_value, base).toString(), this.decimals);
   }
   construct(value, decimals) {
@@ -129,11 +129,17 @@ var _Web3Number = class extends import_bignumber.default {
     return this.toString();
   }
   maxToFixedDecimals() {
-    return Math.min(this.decimals, 13);
+    return Math.min(this.decimals, 18);
+  }
+  getStandardString(value) {
+    if (typeof value == "string") {
+      return value;
+    }
+    return value.toFixed(this.maxToFixedDecimals());
   }
 };
-import_bignumber.default.config({ DECIMAL_PLACES: 18 });
-_Web3Number.config({ DECIMAL_PLACES: 18 });
+import_bignumber.default.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: import_bignumber.default.ROUND_DOWN });
+_Web3Number.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: import_bignumber.default.ROUND_DOWN });
 
 // src/dataTypes/bignumber.node.ts
 var Web3Number = class _Web3Number2 extends _Web3Number {
@@ -574,6 +580,7 @@ var VesuRebalanceStrategies = [{
   address: ContractAddr.from("0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"),
   type: "ERC4626",
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDT")],
+  auditUrl: AUDIT_URL,
   protocols: [_protocol],
   maxTVL: Web3Number.fromWei("0", 6),
   risk: {
@@ -590,6 +597,7 @@ var VesuRebalanceStrategies = [{
   //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
   //     type: 'ERC4626',
   //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
+  // auditUrl: AUDIT_URL,
   //     protocols: [_protocol],
   //     maxTVL: Web3Number.fromWei('0', 8),
   //     risk: {
@@ -602,13 +610,19 @@ var VesuRebalanceStrategies = [{
 }];
 
 // src/strategies/ekubo-cl-vault.ts
+var import_starknet9 = require("starknet");
+
+// src/modules/harvests.ts
 var import_starknet8 = require("starknet");
+
+// src/strategies/ekubo-cl-vault.ts
 var _description2 = "Automatically rebalances liquidity near current price to maximize yield while reducing the necessity to manually rebalance positions frequently. Fees earn and Defi spring rewards are automatically re-invested.";
 var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
 var _riskFactor2 = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
   { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
 ];
+var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 var EkuboCLVaultStrategies = [{
   name: "Ekubo xSTRK/STRK",
   description: _description2,
@@ -616,6 +630,7 @@ var EkuboCLVaultStrategies = [{
   type: "Other",
   depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK"), Global.getDefaultTokens().find((t) => t.symbol === "xSTRK")],
   protocols: [_protocol2],
+  auditUrl: AUDIT_URL2,
   maxTVL: Web3Number.fromWei("0", 18),
   risk: {
     riskFactor: _riskFactor2,
@@ -627,7 +642,8 @@ var EkuboCLVaultStrategies = [{
       lower: -1,
       upper: 1
     },
-    lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a")
+    lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
+    feeBps: 1e3
   }
 }];
 
@@ -670,7 +686,7 @@ var Store = class _Store {
     logger.warn(`This not stored anywhere, please you backup this password for future use`);
     logger.warn(`\u26A0\uFE0F=========================================\u26A0\uFE0F`);
   }
-  getAccount(accountKey, txVersion = import_starknet9.constants.TRANSACTION_VERSION.V2) {
+  getAccount(accountKey, txVersion = import_starknet10.constants.TRANSACTION_VERSION.V2) {
     const accounts = this.loadAccounts();
     logger.verbose(`nAccounts loaded for network: ${Object.keys(accounts).length}`);
     const data = accounts[accountKey];
@@ -679,7 +695,7 @@ var Store = class _Store {
     }
     logger.verbose(`Account loaded: ${accountKey} from network: ${this.config.network}`);
     logger.verbose(`Address: ${data.address}`);
-    const acc = new import_starknet9.Account(this.config.provider, data.address, data.pk, void 0, txVersion);
+    const acc = new import_starknet10.Account(this.config.provider, data.address, data.pk, void 0, txVersion);
     return acc;
   }
   addAccount(accountKey, address, pk) {
@@ -743,11 +759,11 @@ var Store = class _Store {
 
 // src/cli.ts
 var import_chalk = __toESM(require("chalk"));
-var import_starknet10 = require("starknet");
+var import_starknet11 = require("starknet");
 var program = new import_commander.Command();
 var getConfig = (network) => {
   return {
-    provider: new import_starknet10.RpcProvider({
+    provider: new import_starknet11.RpcProvider({
       nodeUrl: "https://starknet-mainnet.public.blastapi.io"
     }),
     network,

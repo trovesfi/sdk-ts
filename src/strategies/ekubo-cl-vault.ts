@@ -1,8 +1,8 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
-import { getNoRiskTags, IConfig, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
+import { FlowChartColors, getNoRiskTags, IConfig, IInvestmentFlow, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
 import { PricerBase } from "@/modules/pricerBase";
 import { assert } from "@/utils";
-import { Call, Contract, uint256 } from "starknet";
+import { Account, BlockIdentifier, Call, Contract, num, uint256 } from "starknet";
 import CLVaultAbi from '@/data/cl-vault.abi.json';
 import EkuboPositionsAbi from '@/data/ekubo-positions.abi.json';
 import EkuboMathAbi from '@/data/ekubo-math.abi.json';
@@ -13,6 +13,7 @@ import { BaseStrategy } from "./base-strategy";
 import { DualActionAmount } from "./base-strategy";
 import { DualTokenInfo } from "./base-strategy";
 import { log } from "winston";
+import { EkuboHarvests } from "@/modules/harvests";
 
 export interface EkuboPoolKey {
     token0: ContractAddr,
@@ -40,7 +41,8 @@ export interface CLVaultStrategySettings {
         upper: number
     },
     // to get true price
-    lstContract: ContractAddr
+    lstContract: ContractAddr,
+    feeBps: number
 }
 
 export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> {
@@ -87,12 +89,55 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         this.avnu = new AvnuWrapper();
     }
 
-    depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Call[] {
-        return []
+    async getDepositAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount> {
+        const shares = await this.tokensToShares(amountInfo);
+
+        // get actual amounts now
+        const { amount0, amount1 }: any = await this.contract.call('convert_to_assets', [uint256.bnToUint256(shares.toWei())])
+
+        // todo use user balances to compute what is required to be swapped
+        return {
+            token0: {
+                tokenInfo: amountInfo.token0.tokenInfo,
+                amount: Web3Number.fromWei(amount0.toString(), amountInfo.token0.tokenInfo.decimals)
+            },
+            token1: {
+                tokenInfo: amountInfo.token1.tokenInfo,
+                amount: Web3Number.fromWei(amount1.toString(), amountInfo.token1.tokenInfo.decimals)
+            },
+        }
     }
 
-    withdrawCall(amountInfo: DualActionAmount, receiver: ContractAddr, owner: ContractAddr): Call[] {
-        return []
+    async depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Promise<Call[]> {
+        const updateAmountInfo = await this.getDepositAmounts(amountInfo);
+        // Technically its not erc4626 abi, but we just need approve call
+        // so, its ok to use it
+        const token0Contract = new Contract(ERC4626Abi, amountInfo.token0.tokenInfo.address.address, this.config.provider);
+        const token1Contract = new Contract(ERC4626Abi, amountInfo.token1.tokenInfo.address.address, this.config.provider);
+        const call1 = token0Contract.populate('approve', [this.address.address, uint256.bnToUint256(updateAmountInfo.token0.amount.toWei())])
+        const call2 = token1Contract.populate('approve', [this.address.address, uint256.bnToUint256(updateAmountInfo.token1.amount.toWei())])
+        const call3 = this.contract.populate('deposit', [uint256.bnToUint256(updateAmountInfo.token0.amount.toWei()), uint256.bnToUint256(updateAmountInfo.token1.amount.toWei()), receiver.address]);
+        const calls: Call[] = [];
+        if (updateAmountInfo.token0.amount.greaterThan(0)) calls.push(call1);
+        if (updateAmountInfo.token1.amount.greaterThan(0)) calls.push(call2);
+        return [...calls, call3];
+    }
+
+    async tokensToShares(amountInfo: DualActionAmount) {
+        const shares = await this.contract.call('convert_to_shares', [
+            uint256.bnToUint256(amountInfo.token0.amount.toWei()),
+            uint256.bnToUint256(amountInfo.token1.amount.toWei())
+        ])
+        return Web3Number.fromWei(shares.toString(), 18);
+    }
+
+    async withdrawCall(amountInfo: DualActionAmount, receiver: ContractAddr, owner: ContractAddr): Promise<Call[]> {
+        const shares = await this.tokensToShares(amountInfo);
+        logger.verbose(`${EkuboCLVault.name}: withdrawCall: shares=${shares.toString()}`);
+        return [this.contract.populate('withdraw', [
+            uint256.bnToUint256(shares.toWei()),
+            receiver.address
+        ])];
     }
 
     rebalanceCall(newBounds: EkuboBounds, swapParams: SwapInfo): Call[] {
@@ -115,15 +160,119 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return [this.contract.populate('handle_fees', [])]
     }
 
-    async getUserTVL(user: ContractAddr): Promise<DualTokenInfo> {
-        throw new Error('Not implemented');
+    /**
+     * Calculates assets before and now in a given token of TVL per share to observe growth
+     * @returns {Promise<number>} The weighted average APY across all pools
+     */
+    async netAPY(blockIdentifier: BlockIdentifier = 'pending'): Promise<number> {
+        // no special provisions required to account for defi spring rewards
+        // or strategy fees, bcz this returns realisitic apy based on 7day performance
+
+        const tvlNow = await this._getTVL(blockIdentifier);
+        const supplyNow = await this.totalSupply(blockIdentifier);
+        const priceNow = await this.getCurrentPrice(blockIdentifier);
+        let blockNow = typeof blockIdentifier == 'number' ? blockIdentifier : (await this.config.provider.getBlockLatestAccepted()).block_number;
+        const blockNowTime = typeof blockIdentifier == 'number' ? (await this.config.provider.getBlockWithTxs(blockIdentifier)).timestamp : new Date().getTime() / 1000;
+        const blockBefore = blockNow - 20000;
+        const adjustedSupplyNow = supplyNow.minus(await this.getHarvestRewardShares(blockBefore, blockNow))
+        let blockBeforeInfo = await this.config.provider.getBlockWithTxs(blockBefore);
+        const tvlBefore = await this._getTVL(blockBefore);
+        const supplyBefore = await this.totalSupply(blockBefore);
+        const priceBefore = await this.getCurrentPrice(blockBefore);
+
+        const tvlInToken0Now = tvlNow.amount0.multipliedBy(priceNow.price).plus(tvlNow.amount1);
+        const tvlPerShareNow = tvlInToken0Now.multipliedBy(1e18).dividedBy(adjustedSupplyNow)
+        const tvlInToken0Bf = tvlBefore.amount0.multipliedBy(priceBefore.price).plus(tvlBefore.amount1);
+        const tvlPerShareBf = tvlInToken0Bf.multipliedBy(1e18).dividedBy(supplyBefore)
+        const timeDiffSeconds = blockNowTime - blockBeforeInfo.timestamp;
+        logger.verbose(`tvlInToken0Now: ${tvlInToken0Now.toString()}`);
+        logger.verbose(`tvlInToken0Bf: ${tvlInToken0Bf.toString()}`);
+        logger.verbose(`tvlPerShareNow: ${tvlPerShareNow.toString()}`);
+        logger.verbose(`tvlPerShareBf: ${tvlPerShareBf.toString()}`);
+        logger.verbose(`Price before: ${priceBefore.price.toString()}`);
+        logger.verbose(`Price now: ${priceNow.price.toString()}`);
+        logger.verbose(`Supply before: ${supplyBefore.toString()}`);
+        logger.verbose(`Supply now: ${adjustedSupplyNow.toString()}`);
+        logger.verbose(`Time diff in seconds: ${timeDiffSeconds}`);
+       const apyForGivenBlocks = Number((tvlPerShareNow.minus(tvlPerShareBf).multipliedBy(10000).dividedBy(tvlPerShareBf))) / 100;
+       return apyForGivenBlocks * (365 * 24 * 3600) / (timeDiffSeconds)
     }
 
-    async getTVL(): Promise<DualTokenInfo> {
-        const result = await this.contract.call('total_liquidity', []); 
-        const bounds = await this.getCurrentBounds();
-        const {amount0, amount1} = await this.getLiquidityToAmounts(Web3Number.fromWei(result.toString(), 18), bounds);
-        const poolKey = await this.getPoolKey();
+    async getHarvestRewardShares(fromBlock: number, toBlock: number) {
+        const len = Number(await this.contract.call('get_total_rewards'));
+        let shares = Web3Number.fromWei(0, 18);
+        for (let i = len - 1; i > 0; --i) {
+            let record: any = await this.contract.call('get_rewards_info', [i]);
+            logger.verbose(`${EkuboCLVault.name}: getHarvestRewardShares: ${i}`);
+            console.log(record)
+            const block = Number(record.block_number);
+            if (block < fromBlock) {
+                return shares
+            } else if (block > toBlock) {
+                continue;
+            } else {
+                shares = shares.plus(Web3Number.fromWei(record.shares.toString(), 18));
+            }
+            logger.verbose(`${EkuboCLVault.name}: getHarvestRewardShares: ${i} => ${shares.toWei()}`);
+        }
+        return shares;
+    }
+
+    async balanceOf(user: ContractAddr, blockIdentifier: BlockIdentifier = 'pending'): Promise<Web3Number> {
+        let bal = await this.contract.call('balance_of', [user.address]);
+        return Web3Number.fromWei(bal.toString(), 18);
+    }
+
+    async getUserTVL(user: ContractAddr, blockIdentifier: BlockIdentifier = 'pending'): Promise<DualTokenInfo> {
+        let bal = await this.balanceOf(user, blockIdentifier);
+        const assets: any = await this.contract.call('convert_to_assets', [uint256.bnToUint256(bal.toWei())], {
+            blockIdentifier
+        })
+        const poolKey = await this.getPoolKey(blockIdentifier);
+        const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+        const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+        const amount0 = Web3Number.fromWei(assets.amount0.toString(), token0Info.decimals);
+        const amount1 = Web3Number.fromWei(assets.amount1.toString(), token1Info.decimals);
+        const P0 = await this.pricer.getPrice(token0Info.symbol);
+        const P1 = await this.pricer.getPrice(token1Info.symbol);
+        const token0Usd = Number(amount0.toFixed(13)) * P0.price;
+        const token1Usd = Number(amount1.toFixed(13)) * P1.price;
+
+        return {
+            netUsdValue: token0Usd + token1Usd,
+            token0: {
+                tokenInfo: token0Info,
+                amount: amount0,
+                usdValue: token0Usd
+            },
+            token1: {
+                tokenInfo: token1Info,
+                amount: amount1, 
+                usdValue: token1Usd
+            }
+        }
+    }
+
+    private async _getTVL(blockIdentifier: BlockIdentifier = 'pending') {
+        const result = await this.contract.call('total_liquidity', [], {
+            blockIdentifier
+        }); 
+        const bounds = await this.getCurrentBounds(blockIdentifier);
+        const {amount0, amount1} = await this.getLiquidityToAmounts(Web3Number.fromWei(result.toString(), 18), bounds, blockIdentifier);
+
+        return { amount0, amount1 }
+    }
+
+    async totalSupply(blockIdentifier: BlockIdentifier = 'pending'): Promise<Web3Number> {
+        const res = await this.contract.call('total_supply', [], {
+            blockIdentifier
+        });
+        return Web3Number.fromWei(res.toString(), 18);
+    }
+
+    async getTVL(blockIdentifier: BlockIdentifier = 'pending'): Promise<DualTokenInfo> {
+        const { amount0, amount1 } = await this._getTVL(blockIdentifier);
+        const poolKey = await this.getPoolKey(blockIdentifier);
         const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
         const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
         const P0 = await this.pricer.getPrice(token0Info.symbol);
@@ -197,12 +346,12 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return truePrice;
     }
 
-    async getCurrentPrice() {
-        const poolKey = await this.getPoolKey();
-        return this._getCurrentPrice(poolKey);
+    async getCurrentPrice(blockIdentifier: BlockIdentifier = 'pending') {
+        const poolKey = await this.getPoolKey(blockIdentifier);
+        return this._getCurrentPrice(poolKey, blockIdentifier);
     }
 
-    private async _getCurrentPrice(poolKey: EkuboPoolKey) {
+    private async _getCurrentPrice(poolKey: EkuboPoolKey, blockIdentifier: BlockIdentifier = 'pending') {
         const priceInfo: any = await this.ekuboPositionsContract.call('get_pool_price', [
             {
                 token0: poolKey.token0.address,
@@ -211,7 +360,9 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
                 tick_spacing: poolKey.tick_spacing,
                 extension: poolKey.extension
             }
-        ])
+        ], {
+            blockIdentifier
+        })
         const sqrtRatio = EkuboCLVault.div2Power128(BigInt(priceInfo.sqrt_ratio.toString()));
         const price = sqrtRatio * sqrtRatio;
         const tick = EkuboCLVault.priceToTick(price, true, Number(poolKey.tick_spacing));
@@ -221,8 +372,10 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         }
     }
 
-    async getCurrentBounds(): Promise<EkuboBounds> {
-        const result: any = await this.contract.call('get_position_key', []);
+    async getCurrentBounds(blockIdentifier: BlockIdentifier = 'pending'): Promise<EkuboBounds> {
+        const result: any = await this.contract.call('get_position_key', [], {
+            blockIdentifier
+        })
         return {
           lowerTick: EkuboCLVault.i129ToNumber(result.bounds.lower),
           upperTick: EkuboCLVault.i129ToNumber(result.bounds.upper)
@@ -239,11 +392,13 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return this.tickToi129(tick);
     }
 
-    async getPoolKey(): Promise<EkuboPoolKey> {
+    async getPoolKey(blockIdentifier: BlockIdentifier = 'pending'): Promise<EkuboPoolKey> {
         if (this.poolKey) {
             return this.poolKey;
         }
-        const result: any = await this.contract.call('get_settings', []);
+        const result: any = await this.contract.call('get_settings', [], {
+            blockIdentifier
+        });
         const poolKey: EkuboPoolKey = {
           token0: ContractAddr.from(result.pool_key.token0.toString()),
           token1: ContractAddr.from(result.pool_key.token1.toString()),
@@ -293,7 +448,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const {amount0: sampleAmount0, amount1: sampleAmount1} = await this.getLiquidityToAmounts(Web3Number.fromWei(sampleLiq.toString(), 18), bounds);
         logger.verbose(`${EkuboCLVault.name}: _getExpectedAmountsForLiquidity => sampleAmount0: ${sampleAmount0.toString()}, sampleAmount1: ${sampleAmount1.toString()}`);
 
-        assert(!sampleAmount0.eq(0) && !sampleAmount1.eq(0), 'Sample amount is 0');
+        assert(!sampleAmount0.eq(0) || !sampleAmount1.eq(0), 'Sample amount is 0');
 
         // notation: P = P0 / P1
         const price = await (await this.getCurrentPrice()).price;
@@ -304,13 +459,13 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             if (sampleAmount1.eq(0)) {
                 return {
                     amount0: amount0,
-                    amount1: Web3Number.fromWei('0', 18),
+                    amount1: Web3Number.fromWei('0', amount1.decimals),
                     ratio: Infinity
                 }
             } else if (sampleAmount0.eq(0)) {
                 // swap all to token1
                 return {
-                    amount0: Web3Number.fromWei('0', 18),
+                    amount0: Web3Number.fromWei('0', amount0.decimals),
                     amount1: amount0.multipliedBy(price),
                     ratio: 0
                 }
@@ -318,7 +473,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         } else if (amount0.eq(0) && amount1.greaterThan(0)) {
             if (sampleAmount0.eq(0)) {
                 return {
-                    amount0: Web3Number.fromWei('0', 18),
+                    amount0: Web3Number.fromWei('0', amount0.decimals),
                     amount1: amount1,
                     ratio: 0
                 }
@@ -326,7 +481,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
                 // swap all to token0
                 return {
                     amount0: amount1.dividedBy(price),
-                    amount1: Web3Number.fromWei('0', 18),
+                    amount1: Web3Number.fromWei('0', amount1.decimals),
                     ratio: Infinity
                 }
             }
@@ -360,12 +515,12 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         
         // fetch current unused balances of vault
         const erc20Mod = new ERC20(this.config);
-        const token0Bal1 = await erc20Mod.balanceOf(poolKey.token0, this.address.address, 18);
-        const token1Bal1 = await erc20Mod.balanceOf(poolKey.token1, this.address.address, 18);
-
-        // if both tokens are non-zero and above $1 throw error
         const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
-        const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);   
+        const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1); 
+        const token0Bal1 = await erc20Mod.balanceOf(poolKey.token0, this.address.address, token0Info.decimals);
+        const token1Bal1 = await erc20Mod.balanceOf(poolKey.token1, this.address.address, token1Info.decimals);
+
+        // if both tokens are non-zero and above $1 throw error  
         const token0Price = await this.pricer.getPrice(token0Info.symbol);
         const token1Price = await this.pricer.getPrice(token1Info.symbol);
         const token0PriceUsd = token0Price.price * Number(token0Bal1.toFixed(13));
@@ -396,7 +551,12 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         // get expected amounts for liquidity
         const newBounds = await this.getNewBounds();
         logger.verbose(`${EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${newBounds.lowerTick}, ${newBounds.upperTick}`);
-        let expectedAmounts = await this._getExpectedAmountsForLiquidity(token0Bal, token1Bal, newBounds);
+
+        return await this.getSwapInfoGivenAmounts(poolKey, token0Bal, token1Bal, newBounds)
+    }
+
+    async getSwapInfoGivenAmounts(poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number, bounds: EkuboBounds): Promise<SwapInfo> {
+        let expectedAmounts = await this._getExpectedAmountsForLiquidity(token0Bal, token1Bal, bounds);
         logger.verbose(`${EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`);
 
         // get swap info
@@ -424,6 +584,19 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             logger.verbose(`${EkuboCLVault.name}: getSwapInfoToHandleUnused => remainingSellAmount: ${remainingSellAmount.toString()}`);
             logger.verbose(`${EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedRatio: ${expectedRatio}`);
 
+            if (amountToSell.eq(0)) {
+                return {
+                    token_from_address: tokenToSell.address,
+                    token_from_amount: uint256.bnToUint256(0),
+                    token_to_address: tokenToSell.address,
+                    token_to_amount: uint256.bnToUint256(0),
+                    token_to_min_amount: uint256.bnToUint256(0),
+                    beneficiary: this.address.address,
+                    integrator_fee_amount_bps: 0,
+                    integrator_fee_recipient: this.address.address,
+                    routes: []
+                }
+            }
             const quote = await this.avnu.getQuotes(tokenToSell.address, tokenToBuy.address, amountToSell.toWei(), this.address.address);
             if (remainingSellAmount.eq(0)) {
                 const minAmountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals).multipliedBy(0.9999);
@@ -448,6 +621,97 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         }
 
         throw new Error('Failed to get swap info');
+    }
+
+    /**
+     * Attempts to rebalance the vault by iteratively adjusting swap amounts if initial attempt fails.
+     * Uses binary search approach to find optimal swap amount.
+     * 
+     * @param newBounds - The new tick bounds to rebalance to 
+     * @param swapInfo - Initial swap parameters for rebalancing
+     * @param acc - Account to estimate gas fees with
+     * @param retry - Current retry attempt number (default 0)
+     * @param adjustmentFactor - Percentage to adjust swap amount by (default 1)
+     * @param isToken0Deficit - Whether token0 balance needs increasing (default true)
+     * @returns Array of contract calls needed for rebalancing
+     * @throws Error if max retries reached without successful rebalance
+     */
+    async rebalanceIter(
+        newBounds: EkuboBounds, 
+        swapInfo: SwapInfo,
+        acc: Account,
+        estimateCall: () => Promise<Call[]>,
+        retry = 0,
+        adjustmentFactor = 1,
+        isToken0Deficit = true
+    ): Promise<Call[]> {
+        const MAX_RETRIES = 10;
+        const MIN_ADJUSTMENT = 0.1; // Minimum adjustment factor
+
+        logger.verbose(
+            `Rebalancing ${this.metadata.name}: ` +
+            `retry=${retry}, adjustment=${adjustmentFactor}%, token0Deficit=${isToken0Deficit}`
+        );
+
+        const fromAmount = uint256.uint256ToBN(swapInfo.token_from_amount);
+        logger.verbose(
+            `Selling ${fromAmount.toString()} of token ${swapInfo.token_from_address}`
+        );
+
+        try {
+            const calls = await estimateCall();
+            await acc.estimateInvokeFee(calls);
+            return calls;
+        } catch(err: any) {
+            if (retry >= MAX_RETRIES) {
+                logger.error(`Rebalance failed after ${MAX_RETRIES} retries`);
+                throw err;
+            }
+
+            if (adjustmentFactor < MIN_ADJUSTMENT) {
+                logger.error('Adjustment factor too small, likely oscillating');
+                throw new Error('Failed to converge on valid swap amount');
+            }
+
+            logger.error(`Rebalance attempt ${retry + 1} failed, adjusting swap amount...`);
+
+            const newSwapInfo = { ...swapInfo };
+            const currentAmount = Web3Number.fromWei(fromAmount.toString(), 18); // 18 is ok, as its toWei eventually anyways
+
+            if (err.message.includes('invalid token0 balance')) {
+                // Too much token0, decrease swap amount
+                logger.verbose('Reducing swap amount - excess token0');
+                newSwapInfo.token_from_amount = uint256.bnToUint256(
+                    currentAmount.multipliedBy((100 - adjustmentFactor)/100).toWei()
+                );
+                adjustmentFactor = isToken0Deficit ? adjustmentFactor : adjustmentFactor / 2;
+                isToken0Deficit = true;
+
+            } else if (err.message.includes('invalid token1 balance')) {
+                // Too much token1, increase swap amount  
+                logger.verbose('Increasing swap amount - excess token1');
+                newSwapInfo.token_from_amount = uint256.bnToUint256(
+                    currentAmount.multipliedBy((100 + adjustmentFactor)/100).toWei()
+                );
+                adjustmentFactor = isToken0Deficit ? adjustmentFactor / 2 : adjustmentFactor;
+                isToken0Deficit = false;
+
+            } else {
+                logger.error('Unexpected error:', err);
+            }
+
+            newSwapInfo.token_to_min_amount = uint256.bnToUint256('0');
+
+            return this.rebalanceIter(
+                newBounds,
+                newSwapInfo, 
+                acc,
+                estimateCall,
+                retry + 1,
+                adjustmentFactor,
+                isToken0Deficit
+            );
+        }
     }
 
     static tickToi129(tick: number) {
@@ -476,8 +740,8 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return Math.pow(1.000001, Number(tick));
     }
 
-    async getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds) {
-        const currentPrice = await this.getCurrentPrice();
+    async getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds, blockIdentifier: BlockIdentifier = 'pending') {
+        const currentPrice = await this.getCurrentPrice(blockIdentifier);
         const lowerPrice = await EkuboCLVault.tickToPrice(bounds.lowerTick);
         const upperPrice = await EkuboCLVault.tickToPrice(bounds.upperTick);
         logger.verbose(`${EkuboCLVault.name}: getLiquidityToAmounts => currentPrice: ${currentPrice.price}, lowerPrice: ${lowerPrice}, upperPrice: ${upperPrice}`);
@@ -489,8 +753,10 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             },
             uint256.bnToUint256(EkuboCLVault.priceToSqrtRatio(lowerPrice).toString()),
             uint256.bnToUint256(EkuboCLVault.priceToSqrtRatio(upperPrice).toString())
-        ] as any);
-        const poolKey = await this.getPoolKey();
+        ] as any, {
+            blockIdentifier
+        });
+        const poolKey = await this.getPoolKey(blockIdentifier);
         const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
         const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
         const amount0 = Web3Number.fromWei(EkuboCLVault.i129ToNumber(result.amount0).toString(), token0Info.decimals);
@@ -499,6 +765,70 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return {
             amount0, amount1
         }
+    }
+
+    async harvest(acc: Account) {
+        const ekuboHarvests = new EkuboHarvests(this.config);
+        const unClaimedRewards = await ekuboHarvests.getUnHarvestedRewards(this.address);
+        const poolKey = await this.getPoolKey();
+        const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+        const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+        const bounds = await this.getCurrentBounds();
+        const calls: Call[] = [];
+        for (let claim of unClaimedRewards) {
+            const isToken1 = claim.token.eq(poolKey.token1);
+            logger.verbose(`${EkuboCLVault.name}: harvest => Processing claim, isToken1: ${isToken1} amount: ${claim.claim.amount.toWei()}`);
+            const token0Amt = isToken1 ? new Web3Number(0, token0Info.decimals) : claim.claim.amount;
+            const token1Amt = isToken1 ? claim.claim.amount : new Web3Number(0, token0Info.decimals);
+            logger.verbose(`${EkuboCLVault.name}: harvest => token0Amt: ${token0Amt.toString()}, token1Amt: ${token1Amt.toString()}`);
+            const swapInfo = await this.getSwapInfoGivenAmounts(poolKey, token0Amt, token1Amt, bounds);
+            swapInfo.token_to_address = token0Info.address.address;
+            logger.verbose(`${EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(swapInfo)}`);
+            const fee = claim.claim.amount.multipliedBy(this.metadata.additionalInfo.feeBps).dividedBy(10000);
+            const postFeeAmount = claim.claim.amount.minus(fee);
+            const swapInfo2 = {...swapInfo, token_from_amount: uint256.bnToUint256(postFeeAmount.toWei()) }
+            swapInfo2.token_to_address = token1Info.address.address;
+            logger.verbose(`${EkuboCLVault.name}: harvest => claim: ${JSON.stringify(claim)}`);
+            const harvestEstimateCall = async () => {
+                const calldata = [
+                    claim.rewardsContract.address,
+                    {
+                        id: claim.claim.id,
+                        amount: claim.claim.amount.toWei(),
+                        claimee: claim.claim.claimee.address
+                    },
+                    claim.proof.map((p) => num.getDecimalString(p)),
+                    swapInfo,
+                    swapInfo2
+                ];
+                logger.verbose(`${EkuboCLVault.name}: harvest => calldata: ${JSON.stringify(calldata)}`);
+                return [this.contract.populate('harvest', calldata)]
+            }
+            const _callsFinal = await this.rebalanceIter(bounds, swapInfo, acc, harvestEstimateCall);
+            logger.verbose(`${EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(_callsFinal)}`);
+            calls.push(..._callsFinal);
+        }
+        return calls;
+    }
+
+    async getInvestmentFlows() {
+        const netYield = await this.netAPY();
+        const poolKey = await this.getPoolKey();
+        const baseFlow: IInvestmentFlow = {
+            title: "Your Deposit",
+            subItems: [{key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%`}, {key: `Performance Fee`, value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%`}],
+            linkedFlows: [],
+            style: {backgroundColor: FlowChartColors.Purple.valueOf()},
+        };
+
+        baseFlow.linkedFlows.push({
+            title: this.metadata.name,
+            subItems: [{key: "Pool", value: `${poolKey.fee}%, ${poolKey.tick_spacing} tick spacing`}],
+            linkedFlows: [],
+            style: {backgroundColor: FlowChartColors.Blue.valueOf()},
+        })
+
+        return [baseFlow];
     }
 }
 
@@ -510,6 +840,8 @@ const _riskFactor: RiskFactor[] = [
     {type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25},
     {type: RiskType.IMPERMANENT_LOSS, value: 1, weight: 75}
 ]
+const AUDIT_URL = 'https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf';
+
 /**
  * Represents the Vesu Rebalance Strategies.
  */
@@ -520,6 +852,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
     type: 'Other',
     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'STRK')!, Global.getDefaultTokens().find(t => t.symbol === 'xSTRK')!],
     protocols: [_protocol],
+    auditUrl: AUDIT_URL,
     maxTVL: Web3Number.fromWei('0', 18),
     risk: {
         riskFactor: _riskFactor,
@@ -531,6 +864,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
             lower: -1,
             upper: 1
         },
-        lstContract: ContractAddr.from('0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a')
+        lstContract: ContractAddr.from('0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a'),
+        feeBps: 1000
     }
 }]

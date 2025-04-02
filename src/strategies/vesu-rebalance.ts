@@ -83,7 +83,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
      * @param receiver - Address that will receive the strategy tokens
      * @returns Populated contract call for deposit
      */
-    depositCall(amountInfo: SingleActionAmount, receiver: ContractAddr) {
+    async depositCall(amountInfo: SingleActionAmount, receiver: ContractAddr) {
         // Technically its not erc4626 abi, but we just need approve call
         // so, its ok to use it
         assert(amountInfo.tokenInfo.address.eq(this.asset().address), 'Deposit token mismatch');
@@ -100,7 +100,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
      * @param owner - Address that owns the strategy tokens
      * @returns Populated contract call for withdrawal
      */
-    withdrawCall(amountInfo: SingleActionAmount, receiver: ContractAddr, owner: ContractAddr) {
+    async withdrawCall(amountInfo: SingleActionAmount, receiver: ContractAddr, owner: ContractAddr) {
         return [this.contract.populate('withdraw', [uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address, owner.address])];
     }
 
@@ -170,6 +170,58 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
             return null;
         }).filter((p: PoolProps | null) => p !== null);
         return pools;
+    }
+
+    async getPoolInfo(
+        p: PoolProps,
+        pools: any[],
+        vesuPositions: any[],
+        totalAssets: Web3Number,
+        isErrorPositionsAPI: boolean,
+        isErrorPoolsAPI: boolean,
+    ) {
+        const vesuPosition = vesuPositions.find((d: any) => d.pool.id.toString() === num.getDecimalString(p.pool_id.address.toString()));
+        const _pool = pools.find((d: any) => {
+            logger.verbose(`pool check: ${d.id == num.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${num.getDecimalString(p.pool_id.address.toString())}`);
+            return d.id == num.getDecimalString(p.pool_id.address.toString());
+        });
+        logger.verbose(`pool: ${JSON.stringify(_pool)}`);
+        logger.verbose(typeof _pool);
+        logger.verbose(`name: ${_pool?.name}`);
+        const name = _pool?.name;
+        logger.verbose(`name2: ${name}`);
+        const assetInfo = _pool?.assets.find((d: any) => this.asset().address.eqString(d.address));
+        if (!name) {
+            throw new Error(`Pool name ${p.pool_id.address.toString()} not found`);
+        }
+        if (!assetInfo) {
+            throw new Error(`Asset ${this.asset().address.toString()} not found in pool ${p.pool_id.address.toString()}`);
+        }
+        let vTokenContract = new Contract(VesuRebalanceAbi, p.v_token.address, this.config.provider);
+        const bal = await vTokenContract.balanceOf(this.address.address);
+        const assets = await vTokenContract.convert_to_assets(uint256.bnToUint256(bal.toString()));
+        const item = {
+            pool_id: p.pool_id,
+            pool_name: _pool?.name,
+            max_weight: p.max_weight,
+            current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
+            v_token: p.v_token,
+            amount: Web3Number.fromWei(assets.toString(), this.decimals()),
+            usdValue: isErrorPositionsAPI || !vesuPosition ? Web3Number.fromWei("0", this.decimals()) : Web3Number.fromWei(vesuPosition.collateral.usdPrice.value, vesuPosition.collateral.usdPrice.decimals),
+            APY: isErrorPoolsAPI || !assetInfo ? {
+                baseApy: 0,
+                defiSpringApy: 0,
+                netApy: 0,
+            } : {
+                baseApy: Number(Web3Number.fromWei(assetInfo.stats.supplyApy.value, assetInfo.stats.supplyApy.decimals).toFixed(6)),
+                defiSpringApy: Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)),
+                netApy: 0,
+            },
+            currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.stats.currentUtilization.value, assetInfo.stats.currentUtilization.decimals).toFixed(6)),
+            maxUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.config.maxUtilization.value, assetInfo.config.maxUtilization.decimals).toFixed(6)),
+        }
+        item.APY.netApy = item.APY.baseApy + item.APY.defiSpringApy;
+        return item;
     }
 
     /**
@@ -262,45 +314,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
 
         const totalAssets = (await this.getTVL()).amount;
 
-        const info = allowedPools.map(async (p) => {
-            const vesuPosition = vesuPositions.find((d: any) => d.pool.id.toString() === num.getDecimalString(p.pool_id.address.toString()));
-            const _pool = pools.find((d: any) => {
-                logger.verbose(`pool check: ${d.id == num.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${num.getDecimalString(p.pool_id.address.toString())}`);
-                return d.id == num.getDecimalString(p.pool_id.address.toString());
-            });
-            logger.verbose(`pool: ${JSON.stringify(_pool)}`);
-            logger.verbose(typeof _pool);
-            logger.verbose(`name: ${_pool?.name}`);
-            if (!_pool) {
-                throw new Error(`Pool ${p.pool_id.address.toString()} not found`);
-            }
-            const assetInfo = _pool?.assets.find((d: any) => this.asset().address.eqString(d.address));
-            let vTokenContract = new Contract(VesuRebalanceAbi, p.v_token.address, this.config.provider);
-            const bal = await vTokenContract.balanceOf(this.address.address);
-            const assets = await vTokenContract.convert_to_assets(uint256.bnToUint256(bal.toString()));
-            const item = {
-                pool_id: p.pool_id,
-                pool_name: _pool?.name,
-                max_weight: p.max_weight,
-                current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
-                v_token: p.v_token,
-                amount: Web3Number.fromWei(assets.toString(), this.decimals()),
-                usdValue: isErrorPositionsAPI || !vesuPosition ? Web3Number.fromWei("0", this.decimals()) : Web3Number.fromWei(vesuPosition.collateral.usdPrice.value, vesuPosition.collateral.usdPrice.decimals),
-                APY: isErrorPoolsAPI || !assetInfo ? {
-                    baseApy: 0,
-                    defiSpringApy: 0,
-                    netApy: 0,
-                } : {
-                    baseApy: Number(Web3Number.fromWei(assetInfo.stats.supplyApy.value, assetInfo.stats.supplyApy.decimals).toFixed(6)),
-                    defiSpringApy: Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)),
-                    netApy: 0,
-                },
-                currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.stats.currentUtilization.value, assetInfo.stats.currentUtilization.decimals).toFixed(6)),
-                maxUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.config.maxUtilization.value, assetInfo.config.maxUtilization.decimals).toFixed(6)),
-            }
-            item.APY.netApy = item.APY.baseApy + item.APY.defiSpringApy;
-            return item;
-        });
+        const info = allowedPools.map(p => this.getPoolInfo(p, pools, vesuPositions, totalAssets, isErrorPositionsAPI, isErrorPoolsAPI));
         const data = await Promise.all(info);
         return {
             data,
@@ -462,7 +476,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
        
         const baseFlow: IInvestmentFlow = {
             title: "Your Deposit",
-            subItems: [{key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%`}],
+            subItems: [{key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%`}, {key: `Performance Fee`, value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%`}],
             linkedFlows: [],
             style: {backgroundColor: FlowChartColors.Purple.valueOf()},
         };
@@ -554,6 +568,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
     address: ContractAddr.from('0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c'),
     type: 'ERC4626',
     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'USDT')!],
+    auditUrl: AUDIT_URL,
     protocols: [_protocol],
     maxTVL: Web3Number.fromWei('0', 6),
     risk: {
@@ -570,6 +585,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
 //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
 //     type: 'ERC4626',
 //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
+// auditUrl: AUDIT_URL,
 //     protocols: [_protocol],
 //     maxTVL: Web3Number.fromWei('0', 8),
 //     risk: {
