@@ -41,6 +41,8 @@ export class AvnuWrapper {
       buyTokenAddress: toToken,
       sellAmount: amountWei,
       takerAddress: taker,
+    //   excludeSources: ['Nostra', 'Haiko(Solvers)']
+      excludeSources: ['Haiko(Solvers)'] // to resolve InvalidOraclePrice error
     };
     assert(fromToken != toToken, "From and to tokens are the same");
 

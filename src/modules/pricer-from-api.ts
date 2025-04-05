@@ -12,8 +12,8 @@ export class PricerFromApi extends PricerBase {
     async getPrice(tokenSymbol: string): Promise<PriceInfo> {
         try {
             return await this.getPriceFromMyAPI(tokenSymbol);
-        } catch (e) {
-            logger.warn('getPriceFromMyAPI error', e);
+        } catch (e: any) {
+            logger.warn('getPriceFromMyAPI error', JSON.stringify(e.message || e));
         }
         logger.log('getPrice coinbase', tokenSymbol);
         let retry = 0;
@@ -32,8 +32,8 @@ export class PricerFromApi extends PricerBase {
                     price,
                     timestamp: new Date()
                 }
-            } catch (e) {
-                logger.warn('getPrice coinbase error', e, retry);
+            } catch (e: any) {
+                logger.warn('getPrice coinbase error', JSON.stringify(e.message || e));
                 await new Promise((resolve) => setTimeout(resolve, retry * 1000));
             }
         }
@@ -48,10 +48,11 @@ export class PricerFromApi extends PricerBase {
         const priceInfo = await priceInfoRes.json();
         const now = new Date();
         const priceTime = new Date(priceInfo.timestamp);
-        if (now.getTime() - priceTime.getTime() > 900000) {
-          // 15 mins
-          throw new Error('Price is stale');
-        }
+        // if (now.getTime() - priceTime.getTime() > 900000) {
+        //   // 15 mins
+        //   logger.verbose(`Price is stale: ${tokenSymbol}, timestamp: ${priceInfo.timestamp}, price: ${priceInfo.price}`);
+        //   throw new Error('Price is stale');
+        // }
         const price = Number(priceInfo.price);
         return {
             price,

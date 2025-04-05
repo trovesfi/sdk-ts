@@ -211,42 +211,48 @@ var defaultTokens = [{
   logo: "https://assets.coingecko.com/coins/images/26433/small/starknet.png",
   address: ContractAddr.from("0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
   decimals: 18,
-  coingeckId: "starknet"
+  coingeckId: "starknet",
+  displayDecimals: 2
 }, {
   name: "xSTRK",
   symbol: "xSTRK",
   logo: "https://dashboard.endur.fi/endur-fi.svg",
   address: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
   decimals: 18,
-  coingeckId: void 0
+  coingeckId: void 0,
+  displayDecimals: 2
 }, {
   name: "ETH",
   symbol: "ETH",
   logo: "https://opbnb.bscscan.com/token/images/ether.svg",
   address: ContractAddr.from("0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"),
   decimals: 18,
-  coingeckId: void 0
+  coingeckId: void 0,
+  displayDecimals: 4
 }, {
   name: "USDC",
   symbol: "USDC",
   logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
   address: ContractAddr.from("0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"),
   decimals: 6,
-  coingeckId: void 0
+  coingeckId: void 0,
+  displayDecimals: 2
 }, {
   name: "USDT",
   symbol: "USDT",
   logo: "https://assets.coingecko.com/coins/images/325/small/Tether.png",
   address: ContractAddr.from("0x68f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"),
   decimals: 6,
-  coingeckId: void 0
+  coingeckId: void 0,
+  displayDecimals: 2
 }, {
   name: "WBTC",
   symbol: "WBTC",
   logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
   address: ContractAddr.from("0x3fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"),
   decimals: 8,
-  coingeckId: void 0
+  coingeckId: void 0,
+  displayDecimals: 6
 }];
 var tokens = defaultTokens;
 var Global = class _Global {
@@ -278,7 +284,8 @@ var Global = class _Global {
         address: ContractAddr.from(token.address),
         decimals: token.decimals,
         logo: token.logoUri,
-        coingeckId: token.extensions.coingeckoId
+        coingeckId: token.extensions.coingeckoId,
+        displayDecimals: 2
       });
     });
     console.log(tokens);
@@ -368,7 +375,8 @@ var _ZkLend = class _ZkLend extends ILending {
           logo: "",
           decimals: pool.token.decimals,
           borrowFactor: Web3Number2.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
-          collareralFactor
+          collareralFactor,
+          displayDecimals: 2
         };
         this.tokens.push(token);
       });
@@ -616,7 +624,7 @@ var import_starknet9 = require("starknet");
 var import_starknet8 = require("starknet");
 
 // src/strategies/ekubo-cl-vault.ts
-var _description2 = "Automatically rebalances liquidity near current price to maximize yield while reducing the necessity to manually rebalance positions frequently. Fees earn and Defi spring rewards are automatically re-invested.";
+var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
 var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
 var _riskFactor2 = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
@@ -625,10 +633,11 @@ var _riskFactor2 = [
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 var EkuboCLVaultStrategies = [{
   name: "Ekubo xSTRK/STRK",
-  description: _description2,
+  description: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK"),
   address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
   type: "Other",
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK"), Global.getDefaultTokens().find((t) => t.symbol === "xSTRK")],
+  // must be same order as poolKey token0 and token1
+  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"), Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
   protocols: [_protocol2],
   auditUrl: AUDIT_URL2,
   maxTVL: Web3Number.fromWei("0", 18),
@@ -637,6 +646,7 @@ var EkuboCLVaultStrategies = [{
     netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
     notARisks: getNoRiskTags(_riskFactor2)
   },
+  apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
   additionalInfo: {
     newBounds: {
       lower: -1,

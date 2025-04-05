@@ -16,7 +16,7 @@ export interface DualActionAmount {
     token1: SingleActionAmount
 }
 export interface DualTokenInfo {
-    netUsdValue: number,
+    usdValue: number,
     token0: SingleTokenInfo,
     token1: SingleTokenInfo
 }

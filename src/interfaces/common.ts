@@ -29,6 +29,7 @@ export interface TokenInfo {
     decimals: number,
     logo: string,
     coingeckId?: string,
+    displayDecimals: number
 }
 
 export enum Network {
@@ -73,10 +74,12 @@ export interface IStrategyMetadata<T> {
         netRisk: number,
         notARisks: string[]
     },
+    apyMethodology?: string,
     additionalInfo: T
 }
 
 export interface IInvestmentFlow {
+    id?: string, // used to link flows
     title: string,
     subItems: {key: string, value: string}[],
     linkedFlows: IInvestmentFlow[],

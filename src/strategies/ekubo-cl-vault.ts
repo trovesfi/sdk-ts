@@ -89,7 +89,28 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         this.avnu = new AvnuWrapper();
     }
 
-    async getDepositAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount> {
+    async matchInputAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount> {
+        const bounds = await this.getCurrentBounds();
+        const res = await this._getExpectedAmountsForLiquidity(
+            amountInfo.token0.amount,
+            amountInfo.token1.amount,
+            bounds,
+            false
+        );
+        return {
+            token0: {
+                tokenInfo: amountInfo.token0.tokenInfo,
+                amount: res.amount0
+            },
+            token1: {
+                tokenInfo: amountInfo.token1.tokenInfo,
+                amount: res.amount1
+            }
+        }
+    }
+
+    /** Returns minimum amounts give given two amounts based on what can be added for liq */
+    async getMinDepositAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount> {
         const shares = await this.tokensToShares(amountInfo);
 
         // get actual amounts now
@@ -109,7 +130,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
     }
 
     async depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Promise<Call[]> {
-        const updateAmountInfo = await this.getDepositAmounts(amountInfo);
+        const updateAmountInfo = await this.getMinDepositAmounts(amountInfo);
         // Technically its not erc4626 abi, but we just need approve call
         // so, its ok to use it
         const token0Contract = new Contract(ERC4626Abi, amountInfo.token0.tokenInfo.address.address, this.config.provider);
@@ -164,7 +185,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
      * Calculates assets before and now in a given token of TVL per share to observe growth
      * @returns {Promise<number>} The weighted average APY across all pools
      */
-    async netAPY(blockIdentifier: BlockIdentifier = 'pending'): Promise<number> {
+    async netAPY(blockIdentifier: BlockIdentifier = 'pending', sinceBlocks = 20000): Promise<number> {
         // no special provisions required to account for defi spring rewards
         // or strategy fees, bcz this returns realisitic apy based on 7day performance
 
@@ -173,7 +194,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const priceNow = await this.getCurrentPrice(blockIdentifier);
         let blockNow = typeof blockIdentifier == 'number' ? blockIdentifier : (await this.config.provider.getBlockLatestAccepted()).block_number;
         const blockNowTime = typeof blockIdentifier == 'number' ? (await this.config.provider.getBlockWithTxs(blockIdentifier)).timestamp : new Date().getTime() / 1000;
-        const blockBefore = blockNow - 20000;
+        const blockBefore = blockNow - sinceBlocks;
         const adjustedSupplyNow = supplyNow.minus(await this.getHarvestRewardShares(blockBefore, blockNow))
         let blockBeforeInfo = await this.config.provider.getBlockWithTxs(blockBefore);
         const tvlBefore = await this._getTVL(blockBefore);
@@ -194,7 +215,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         logger.verbose(`Supply before: ${supplyBefore.toString()}`);
         logger.verbose(`Supply now: ${adjustedSupplyNow.toString()}`);
         logger.verbose(`Time diff in seconds: ${timeDiffSeconds}`);
-       const apyForGivenBlocks = Number((tvlPerShareNow.minus(tvlPerShareBf).multipliedBy(10000).dividedBy(tvlPerShareBf))) / 100;
+       const apyForGivenBlocks = Number((tvlPerShareNow.minus(tvlPerShareBf).multipliedBy(10000).dividedBy(tvlPerShareBf))) / 10000;
        return apyForGivenBlocks * (365 * 24 * 3600) / (timeDiffSeconds)
     }
 
@@ -229,6 +250,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             blockIdentifier
         })
         const poolKey = await this.getPoolKey(blockIdentifier);
+        this.assertValidDepositTokens(poolKey);
         const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
         const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
         const amount0 = Web3Number.fromWei(assets.amount0.toString(), token0Info.decimals);
@@ -239,7 +261,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const token1Usd = Number(amount1.toFixed(13)) * P1.price;
 
         return {
-            netUsdValue: token0Usd + token1Usd,
+            usdValue: token0Usd + token1Usd,
             token0: {
                 tokenInfo: token0Info,
                 amount: amount0,
@@ -270,9 +292,17 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return Web3Number.fromWei(res.toString(), 18);
     }
 
+    assertValidDepositTokens(poolKey: EkuboPoolKey) {
+        // given this is called by UI, if wrong config is done, it will throw error; 
+        assert(poolKey.token0.eq(this.metadata.depositTokens[0].address), 'Expected token0 in depositTokens[0]');
+        assert(poolKey.token1.eq(this.metadata.depositTokens[1].address), 'Expected token1 in depositTokens[1]');
+    }
+
     async getTVL(blockIdentifier: BlockIdentifier = 'pending'): Promise<DualTokenInfo> {
         const { amount0, amount1 } = await this._getTVL(blockIdentifier);
         const poolKey = await this.getPoolKey(blockIdentifier);
+        this.assertValidDepositTokens(poolKey);
+
         const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
         const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
         const P0 = await this.pricer.getPrice(token0Info.symbol);
@@ -280,7 +310,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const token0Usd = Number(amount0.toFixed(13)) * P0.price;
         const token1Usd = Number(amount1.toFixed(13)) * P1.price;
         return {
-            netUsdValue: token0Usd + token1Usd,
+            usdValue: token0Usd + token1Usd,
             token0: {
                 tokenInfo: token0Info,
                 amount: amount0,
@@ -321,7 +351,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const token0Usd = Number(token0Web3.toFixed(13)) * P0.price;
         const token1Usd = Number(token1Web3.toFixed(13)) * P1.price;
         return {
-            netUsdValue: token0Usd + token1Usd,
+            usdValue: token0Usd + token1Usd,
             token0: {
                 tokenInfo: token0Info,
                 amount: token0Web3,
@@ -364,11 +394,14 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             blockIdentifier
         })
         const sqrtRatio = EkuboCLVault.div2Power128(BigInt(priceInfo.sqrt_ratio.toString()));
+        console.log(`EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, sqrtRatio: ${sqrtRatio}, ${priceInfo.sqrt_ratio.toString()}`);
         const price = sqrtRatio * sqrtRatio;
         const tick = EkuboCLVault.priceToTick(price, true, Number(poolKey.tick_spacing));
+        console.log(`EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, price: ${price}, tick: ${tick.mag}, ${tick.sign}`);
         return {
             price,
-            tick: tick.mag * (tick.sign == 0 ? 1 : -1)
+            tick: tick.mag * (tick.sign == 0 ? 1 : -1),
+            sqrtRatio: priceInfo.sqrt_ratio.toString()
         }
     }
 
@@ -436,15 +469,13 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
     private async _getExpectedAmountsForLiquidity(
         amount0: Web3Number,
         amount1: Web3Number,
-        bounds: EkuboBounds
+        bounds: EkuboBounds,
+        justUseInputAmount = true
     ) {
         assert(amount0.greaterThan(0) || amount1.greaterThan(0), 'Amount is 0');
 
-        // token is token0 or token1
-        const poolKey = await this.getPoolKey();
-
         // get amount ratio for 1e18 liquidity
-        const sampleLiq = 1e18;
+        const sampleLiq = 1e20;
         const {amount0: sampleAmount0, amount1: sampleAmount1} = await this.getLiquidityToAmounts(Web3Number.fromWei(sampleLiq.toString(), 18), bounds);
         logger.verbose(`${EkuboCLVault.name}: _getExpectedAmountsForLiquidity => sampleAmount0: ${sampleAmount0.toString()}, sampleAmount1: ${sampleAmount1.toString()}`);
 
@@ -487,10 +518,39 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             }
         }
 
-        const ratio = (sampleAmount0.multipliedBy(1e18).dividedBy(sampleAmount1.toString())).dividedBy(1e18);
+        // must make it general later
+        assert(sampleAmount0.decimals == sampleAmount1.decimals, 'Sample amounts have different decimals');
+        const ratioWeb3Number = (sampleAmount0.multipliedBy(1e18).dividedBy(sampleAmount1.toString())).dividedBy(1e18);
+        const ratio: number = Number(ratioWeb3Number.toFixed(18));
         logger.verbose(`${EkuboCLVault.name}: ${this.metadata.name} => ratio: ${ratio.toString()}`);
         
-        return this._solveExpectedAmountsEq(amount0, amount1, ratio, price);
+        if (justUseInputAmount)
+            return this._solveExpectedAmountsEq(amount0, amount1, ratioWeb3Number, price);
+
+        // we are at liberty to propose amounts outside the propsed amount
+        // assuming amount0 and amount1 as independent values, compute other amounts
+        // Also, if code came till here, it means both sample amounts are non-zero
+        if (amount1.eq(0) && amount0.greaterThan(0)) {
+            // use amount0 as base and compute amount1 using ratio
+            const _amount1 = amount0.dividedBy(ratioWeb3Number);
+            return {
+                amount0: amount0,
+                amount1: _amount1,
+                ratio
+            };
+        } else if (amount0.eq(0) && amount1.greaterThan(0)) {
+            // use amount1 as base and compute amount0 using ratio
+            const _amount0 = amount1.multipliedBy(ratio);
+            return {
+                amount0: _amount0,
+                amount1: amount1,
+                ratio,
+            };
+        } else {
+            // ambiguous case
+            // can lead to diverging results
+            throw new Error('Both amounts are non-zero, cannot compute expected amounts');
+        }
     }
 
     private _solveExpectedAmountsEq(availableAmount0: Web3Number, availableAmount1: Web3Number, ratio: Web3Number, price: number) {
@@ -519,7 +579,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1); 
         const token0Bal1 = await erc20Mod.balanceOf(poolKey.token0, this.address.address, token0Info.decimals);
         const token1Bal1 = await erc20Mod.balanceOf(poolKey.token1, this.address.address, token1Info.decimals);
-
+        logger.verbose(`${EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal1: ${token0Bal1.toString()}, token1Bal1: ${token1Bal1.toString()}`);
         // if both tokens are non-zero and above $1 throw error  
         const token0Price = await this.pricer.getPrice(token0Info.symbol);
         const token1Price = await this.pricer.getPrice(token1Info.symbol);
@@ -540,6 +600,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
 
         // if rebalancing, consider whole TVL as available
         if (considerRebalance) {
+            logger.verbose(`${EkuboCLVault.name}: getSwapInfoToHandleUnused => considerRebalance: true`);
             const tvl = await this.getTVL();
             token0Bal = token0Bal.plus(tvl.token0.amount.toString());
             token1Bal = token1Bal.plus(tvl.token1.amount.toString());
@@ -566,6 +627,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         while (retry < maxRetry) {
             retry++;
             // assert one token is increased and other is decreased
+
             if (expectedAmounts.amount0.lessThan(token0Bal) && expectedAmounts.amount1.lessThan(token1Bal)) {
                 throw new Error('Both tokens are decreased, something is wrong');
             }
@@ -637,16 +699,15 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
      * @throws Error if max retries reached without successful rebalance
      */
     async rebalanceIter(
-        newBounds: EkuboBounds, 
         swapInfo: SwapInfo,
         acc: Account,
-        estimateCall: () => Promise<Call[]>,
+        estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>,
         retry = 0,
         adjustmentFactor = 1,
         isToken0Deficit = true
     ): Promise<Call[]> {
-        const MAX_RETRIES = 10;
-        const MIN_ADJUSTMENT = 0.1; // Minimum adjustment factor
+        const MAX_RETRIES = 20;
+        const MIN_ADJUSTMENT = 0.001; // Minimum adjustment factor
 
         logger.verbose(
             `Rebalancing ${this.metadata.name}: ` +
@@ -659,7 +720,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         );
 
         try {
-            const calls = await estimateCall();
+            const calls = await estimateCall(swapInfo);
             await acc.estimateInvokeFee(calls);
             return calls;
         } catch(err: any) {
@@ -678,22 +739,22 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             const newSwapInfo = { ...swapInfo };
             const currentAmount = Web3Number.fromWei(fromAmount.toString(), 18); // 18 is ok, as its toWei eventually anyways
 
-            if (err.message.includes('invalid token0 balance')) {
+            if (err.message.includes('invalid token0 balance') || err.message.includes('invalid token0 amount')) {
                 // Too much token0, decrease swap amount
                 logger.verbose('Reducing swap amount - excess token0');
                 newSwapInfo.token_from_amount = uint256.bnToUint256(
                     currentAmount.multipliedBy((100 - adjustmentFactor)/100).toWei()
                 );
-                adjustmentFactor = isToken0Deficit ? adjustmentFactor : adjustmentFactor / 2;
+                adjustmentFactor = isToken0Deficit ? adjustmentFactor * 2: adjustmentFactor / 2;
                 isToken0Deficit = true;
 
-            } else if (err.message.includes('invalid token1 balance')) {
+            } else if (err.message.includes('invalid token1 balance') || err.message.includes('invalid token1 amount')) {
                 // Too much token1, increase swap amount  
                 logger.verbose('Increasing swap amount - excess token1');
                 newSwapInfo.token_from_amount = uint256.bnToUint256(
                     currentAmount.multipliedBy((100 + adjustmentFactor)/100).toWei()
                 );
-                adjustmentFactor = isToken0Deficit ? adjustmentFactor / 2 : adjustmentFactor;
+                adjustmentFactor = isToken0Deficit ? adjustmentFactor / 2 : adjustmentFactor * 2;
                 isToken0Deficit = false;
 
             } else {
@@ -703,7 +764,6 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
             newSwapInfo.token_to_min_amount = uint256.bnToUint256('0');
 
             return this.rebalanceIter(
-                newBounds,
                 newSwapInfo, 
                 acc,
                 estimateCall,
@@ -740,13 +800,21 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         return Math.pow(1.000001, Number(tick));
     }
 
-    async getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds, blockIdentifier: BlockIdentifier = 'pending') {
-        const currentPrice = await this.getCurrentPrice(blockIdentifier);
-        const lowerPrice = await EkuboCLVault.tickToPrice(bounds.lowerTick);
-        const upperPrice = await EkuboCLVault.tickToPrice(bounds.upperTick);
+    async getLiquidityToAmounts(
+        liquidity: Web3Number, 
+        bounds: EkuboBounds, 
+        blockIdentifier: BlockIdentifier = 'pending',
+        _poolKey: EkuboPoolKey | null = null,
+        _currentPrice: {
+            price: number, tick: number, sqrtRatio: string
+        } | null = null
+    ) {
+        const currentPrice = _currentPrice || await this.getCurrentPrice(blockIdentifier);
+        const lowerPrice = EkuboCLVault.tickToPrice(bounds.lowerTick);
+        const upperPrice = EkuboCLVault.tickToPrice(bounds.upperTick);
         logger.verbose(`${EkuboCLVault.name}: getLiquidityToAmounts => currentPrice: ${currentPrice.price}, lowerPrice: ${lowerPrice}, upperPrice: ${upperPrice}`);
         const result: any = await this.ekuboMathContract.call('liquidity_delta_to_amount_delta', [
-            uint256.bnToUint256(EkuboCLVault.priceToSqrtRatio(currentPrice.price).toString()),
+            uint256.bnToUint256(currentPrice.sqrtRatio),
             {
                 mag: liquidity.toWei(),
                 sign: 0
@@ -756,7 +824,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         ] as any, {
             blockIdentifier
         });
-        const poolKey = await this.getPoolKey(blockIdentifier);
+        const poolKey = _poolKey || await this.getPoolKey(blockIdentifier);
         const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
         const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
         const amount0 = Web3Number.fromWei(EkuboCLVault.i129ToNumber(result.amount0).toString(), token0Info.decimals);
@@ -776,20 +844,25 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         const bounds = await this.getCurrentBounds();
         const calls: Call[] = [];
         for (let claim of unClaimedRewards) {
+            const fee = claim.claim.amount.multipliedBy(this.metadata.additionalInfo.feeBps).dividedBy(10000);
+            const postFeeAmount = claim.claim.amount.minus(fee);
+          
             const isToken1 = claim.token.eq(poolKey.token1);
-            logger.verbose(`${EkuboCLVault.name}: harvest => Processing claim, isToken1: ${isToken1} amount: ${claim.claim.amount.toWei()}`);
-            const token0Amt = isToken1 ? new Web3Number(0, token0Info.decimals) : claim.claim.amount;
-            const token1Amt = isToken1 ? claim.claim.amount : new Web3Number(0, token0Info.decimals);
+            logger.verbose(`${EkuboCLVault.name}: harvest => Processing claim, isToken1: ${isToken1} amount: ${postFeeAmount.toWei()}`);
+            const token0Amt = isToken1 ? new Web3Number(0, token0Info.decimals) : postFeeAmount;
+            const token1Amt = isToken1 ? postFeeAmount : new Web3Number(0, token0Info.decimals);
             logger.verbose(`${EkuboCLVault.name}: harvest => token0Amt: ${token0Amt.toString()}, token1Amt: ${token1Amt.toString()}`);
+       
             const swapInfo = await this.getSwapInfoGivenAmounts(poolKey, token0Amt, token1Amt, bounds);
             swapInfo.token_to_address = token0Info.address.address;
             logger.verbose(`${EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(swapInfo)}`);
-            const fee = claim.claim.amount.multipliedBy(this.metadata.additionalInfo.feeBps).dividedBy(10000);
-            const postFeeAmount = claim.claim.amount.minus(fee);
-            const swapInfo2 = {...swapInfo, token_from_amount: uint256.bnToUint256(postFeeAmount.toWei()) }
-            swapInfo2.token_to_address = token1Info.address.address;
+          
             logger.verbose(`${EkuboCLVault.name}: harvest => claim: ${JSON.stringify(claim)}`);
-            const harvestEstimateCall = async () => {
+            const harvestEstimateCall = async (swapInfo1: SwapInfo) => {
+                const swap1Amount = Web3Number.fromWei(uint256.uint256ToBN(swapInfo1.token_from_amount).toString(), 18);
+                const remainingAmount = postFeeAmount.minus(swap1Amount);
+                const swapInfo2 = {...swapInfo, token_from_amount: uint256.bnToUint256(remainingAmount.toWei()) }
+                swapInfo2.token_to_address = token1Info.address.address;
                 const calldata = [
                     claim.rewardsContract.address,
                     {
@@ -804,7 +877,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
                 logger.verbose(`${EkuboCLVault.name}: harvest => calldata: ${JSON.stringify(calldata)}`);
                 return [this.contract.populate('harvest', calldata)]
             }
-            const _callsFinal = await this.rebalanceIter(bounds, swapInfo, acc, harvestEstimateCall);
+            const _callsFinal = await this.rebalanceIter(swapInfo, acc, harvestEstimateCall);
             logger.verbose(`${EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(_callsFinal)}`);
             calls.push(..._callsFinal);
         }
@@ -814,26 +887,39 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
     async getInvestmentFlows() {
         const netYield = await this.netAPY();
         const poolKey = await this.getPoolKey();
+     
+        const linkedFlow: IInvestmentFlow = {
+            title: this.metadata.name,
+            subItems: [{key: "Pool", value: `${(EkuboCLVault.div2Power128(BigInt(poolKey.fee)) * 100).toFixed(2)}%, ${poolKey.tick_spacing} tick spacing`}],
+            linkedFlows: [],
+            style: {backgroundColor: FlowChartColors.Blue.valueOf()},
+        }
+
         const baseFlow: IInvestmentFlow = {
+            id: 'base',
             title: "Your Deposit",
             subItems: [{key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%`}, {key: `Performance Fee`, value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%`}],
-            linkedFlows: [],
+            linkedFlows: [linkedFlow],
             style: {backgroundColor: FlowChartColors.Purple.valueOf()},
         };
 
-        baseFlow.linkedFlows.push({
-            title: this.metadata.name,
-            subItems: [{key: "Pool", value: `${poolKey.fee}%, ${poolKey.tick_spacing} tick spacing`}],
-            linkedFlows: [],
-            style: {backgroundColor: FlowChartColors.Blue.valueOf()},
-        })
+        const rebalanceFlow: IInvestmentFlow = {
+            id: 'rebalance',
+            title: "Automated Rebalance",
+            subItems: [{
+                key: 'Range selection',
+                value: `${this.metadata.additionalInfo.newBounds.lower * Number(poolKey.tick_spacing)} to ${this.metadata.additionalInfo.newBounds.upper * Number(poolKey.tick_spacing)} ticks`
+            }],
+            linkedFlows: [linkedFlow],
+            style: {backgroundColor: FlowChartColors.Green.valueOf()},
+        }
 
-        return [baseFlow];
+        return [baseFlow, rebalanceFlow];
     }
 }
 
 
-const _description = 'Automatically rebalances liquidity near current price to maximize yield while reducing the necessity to manually rebalance positions frequently. Fees earn and Defi spring rewards are automatically re-invested.'
+const _description = 'Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.'
 const _protocol: IProtocol = {name: 'Ekubo', logo: 'https://app.ekubo.org/favicon.ico'}
 // need to fine tune better
 const _riskFactor: RiskFactor[] = [
@@ -847,10 +933,11 @@ const AUDIT_URL = 'https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ek
  */
 export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[] = [{
     name: 'Ekubo xSTRK/STRK',
-    description: _description,
+    description: _description.replace('{{POOL_NAME}}', 'xSTRK/STRK'),
     address: ContractAddr.from('0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324'),
     type: 'Other',
-    depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'STRK')!, Global.getDefaultTokens().find(t => t.symbol === 'xSTRK')!],
+    // must be same order as poolKey token0 and token1
+    depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'xSTRK')!, Global.getDefaultTokens().find(t => t.symbol === 'STRK')!],
     protocols: [_protocol],
     auditUrl: AUDIT_URL,
     maxTVL: Web3Number.fromWei('0', 18),
@@ -859,6 +946,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) /  _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
         notARisks: getNoRiskTags(_riskFactor)
     },
+    apyMethodology: 'APY based on 7-day historical performance, including fees and rewards.',
     additionalInfo: {
         newBounds: {
             lower: -1,

@@ -62,6 +62,7 @@ interface TokenInfo {
     decimals: number;
     logo: string;
     coingeckId?: string;
+    displayDecimals: number;
 }
 declare enum Network {
     mainnet = "mainnet",
@@ -101,9 +102,11 @@ interface IStrategyMetadata<T> {
         netRisk: number;
         notARisks: string[];
     };
+    apyMethodology?: string;
     additionalInfo: T;
 }
 interface IInvestmentFlow {
+    id?: string;
     title: string;
     subItems: {
         key: string;
@@ -383,7 +386,7 @@ interface DualActionAmount {
     token1: SingleActionAmount;
 }
 interface DualTokenInfo {
-    netUsdValue: number;
+    usdValue: number;
     token0: SingleTokenInfo;
     token1: SingleTokenInfo;
 }
@@ -643,7 +646,9 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * @throws {Error} If more than one deposit token is specified
      */
     constructor(config: IConfig, pricer: PricerBase, metadata: IStrategyMetadata<CLVaultStrategySettings>);
-    getDepositAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount>;
+    matchInputAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount>;
+    /** Returns minimum amounts give given two amounts based on what can be added for liq */
+    getMinDepositAmounts(amountInfo: DualActionAmount): Promise<DualActionAmount>;
     depositCall(amountInfo: DualActionAmount, receiver: ContractAddr): Promise<Call[]>;
     tokensToShares(amountInfo: DualActionAmount): Promise<Web3Number>;
     withdrawCall(amountInfo: DualActionAmount, receiver: ContractAddr, owner: ContractAddr): Promise<Call[]>;
@@ -654,12 +659,13 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * Calculates assets before and now in a given token of TVL per share to observe growth
      * @returns {Promise<number>} The weighted average APY across all pools
      */
-    netAPY(blockIdentifier?: BlockIdentifier): Promise<number>;
+    netAPY(blockIdentifier?: BlockIdentifier, sinceBlocks?: number): Promise<number>;
     getHarvestRewardShares(fromBlock: number, toBlock: number): Promise<Web3Number>;
     balanceOf(user: ContractAddr, blockIdentifier?: BlockIdentifier): Promise<Web3Number>;
     getUserTVL(user: ContractAddr, blockIdentifier?: BlockIdentifier): Promise<DualTokenInfo>;
     private _getTVL;
     totalSupply(blockIdentifier?: BlockIdentifier): Promise<Web3Number>;
+    assertValidDepositTokens(poolKey: EkuboPoolKey): void;
     getTVL(blockIdentifier?: BlockIdentifier): Promise<DualTokenInfo>;
     getUncollectedFees(): Promise<DualTokenInfo>;
     getCurrentNFTID(): Promise<number>;
@@ -667,6 +673,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
     getCurrentPrice(blockIdentifier?: BlockIdentifier): Promise<{
         price: number;
         tick: number;
+        sqrtRatio: any;
     }>;
     private _getCurrentPrice;
     getCurrentBounds(blockIdentifier?: BlockIdentifier): Promise<EkuboBounds>;
@@ -701,7 +708,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * @returns Array of contract calls needed for rebalancing
      * @throws Error if max retries reached without successful rebalance
      */
-    rebalanceIter(newBounds: EkuboBounds, swapInfo: SwapInfo, acc: Account, estimateCall: () => Promise<Call[]>, retry?: number, adjustmentFactor?: number, isToken0Deficit?: boolean): Promise<Call[]>;
+    rebalanceIter(swapInfo: SwapInfo, acc: Account, estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>, retry?: number, adjustmentFactor?: number, isToken0Deficit?: boolean): Promise<Call[]>;
     static tickToi129(tick: number): {
         mag: number;
         sign: number;
@@ -712,7 +719,11 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
         sign: number;
     }): bigint;
     static tickToPrice(tick: bigint): number;
-    getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds, blockIdentifier?: BlockIdentifier): Promise<{
+    getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds, blockIdentifier?: BlockIdentifier, _poolKey?: EkuboPoolKey | null, _currentPrice?: {
+        price: number;
+        tick: number;
+        sqrtRatio: string;
+    } | null): Promise<{
         amount0: Web3Number;
         amount1: Web3Number;
     }>;

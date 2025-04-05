@@ -40,7 +40,8 @@ export class ZkLend extends ILending implements ILending {
                     logo: '',
                     decimals: pool.token.decimals,
                     borrowFactor: Web3Number.fromWei(pool.borrow_factor.value, pool.borrow_factor.decimals),
-                    collareralFactor
+                    collareralFactor,
+                    displayDecimals: 2
                 }
                 this.tokens.push(token);
             });
