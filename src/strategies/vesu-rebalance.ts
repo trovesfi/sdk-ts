@@ -1,7 +1,7 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
 import { FlowChartColors, getNoRiskTags, IConfig, IInvestmentFlow, IProtocol, IStrategyMetadata, RiskFactor, RiskType } from "@/interfaces";
-import { Pricer } from "@/modules";
-import { CairoCustomEnum, Contract, num, uint256 } from "starknet";
+import { AvnuWrapper, Pricer, SwapInfo } from "@/modules";
+import { Account, CairoCustomEnum, Contract, num, uint256 } from "starknet";
 import VesuRebalanceAbi from '@/data/vesu-rebalance.abi.json';
 import { Global, logger } from "@/global";
 import { assert } from "@/utils";
@@ -9,6 +9,7 @@ import axios from "axios";
 import { PricerBase } from "@/modules/pricerBase";
 import { BaseStrategy, SingleActionAmount, SingleTokenInfo } from "./base-strategy";
 import { getAPIUsingHeadlessBrowser } from "@/node/headless";
+import { VesuHarvests } from "@/modules/harvests";
 
 interface PoolProps {
     pool_id: ContractAddr;
@@ -496,6 +497,46 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
             baseFlow.linkedFlows.push(flow);
         });
         return [baseFlow];
+    }
+
+    async harvest(acc: Account) { 
+        const vesuHarvest = new VesuHarvests(this.config);
+        const harvests = await vesuHarvest.getUnHarvestedRewards(this.address);
+        const harvest = harvests[0];
+        const avnu = new AvnuWrapper();
+        let swapInfo: SwapInfo = {
+            token_from_address: harvest.token.address,
+            token_from_amount: uint256.bnToUint256(harvest.actualReward.toWei()),
+            token_to_address: this.asset().address.address,
+            token_to_amount: uint256.bnToUint256(0),
+            token_to_min_amount: uint256.bnToUint256(0),
+            beneficiary: this.address.address,
+            integrator_fee_amount_bps: 0,
+            integrator_fee_recipient: this.address.address,
+            routes: []
+        }
+        if (!this.asset().address.eqString(harvest.token.address)) {
+            const quote = await avnu.getQuotes(
+                harvest.token.address, 
+                this.asset().address.address,
+                harvest.actualReward.toWei(),
+                this.address.address
+            );
+            swapInfo = await avnu.getSwapInfo(quote, this.address.address, 0, this.address.address);
+        }
+        
+        return [
+            this.contract.populate('harvest', [
+                harvest.rewardsContract.address,
+                {
+                    id: harvest.claim.id,
+                    amount: harvest.claim.amount.toWei(),
+                    claimee: harvest.claim.claimee.address
+                },
+                harvest.proof,
+                swapInfo
+            ])
+        ]
     }
 }
 

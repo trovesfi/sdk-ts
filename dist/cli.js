@@ -517,10 +517,13 @@ var getNoRiskTags = (risks) => {
 var import_starknet6 = require("starknet");
 
 // src/strategies/vesu-rebalance.ts
-var import_starknet7 = require("starknet");
+var import_starknet8 = require("starknet");
 
 // src/node/headless.browser.ts
 var import_axios5 = __toESM(require("axios"));
+
+// src/modules/harvests.ts
+var import_starknet7 = require("starknet");
 
 // src/strategies/vesu-rebalance.ts
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
@@ -619,11 +622,6 @@ var VesuRebalanceStrategies = [{
 
 // src/strategies/ekubo-cl-vault.ts
 var import_starknet9 = require("starknet");
-
-// src/modules/harvests.ts
-var import_starknet8 = require("starknet");
-
-// src/strategies/ekubo-cl-vault.ts
 var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
 var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
 var _riskFactor2 = [

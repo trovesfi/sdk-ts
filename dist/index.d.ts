@@ -281,7 +281,7 @@ interface SwapInfo {
 }
 declare class AvnuWrapper {
     getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string, retry?: number): Promise<Quote>;
-    getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount: string): Promise<SwapInfo>;
+    getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount?: string): Promise<SwapInfo>;
 }
 
 declare const logger: {
@@ -591,6 +591,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      */
     getRebalanceCall(pools: Awaited<ReturnType<typeof this.getRebalancedPositions>>['changes'], isOverWeightAdjustment: boolean): Promise<starknet.Call | null>;
     getInvestmentFlows(pools: PoolInfoFull[]): Promise<IInvestmentFlow[]>;
+    harvest(acc: Account): Promise<starknet.Call[]>;
 }
 /**
  * Represents the Vesu Rebalance Strategies.
@@ -663,7 +664,10 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
     getHarvestRewardShares(fromBlock: number, toBlock: number): Promise<Web3Number>;
     balanceOf(user: ContractAddr, blockIdentifier?: BlockIdentifier): Promise<Web3Number>;
     getUserTVL(user: ContractAddr, blockIdentifier?: BlockIdentifier): Promise<DualTokenInfo>;
-    private _getTVL;
+    _getTVL(blockIdentifier?: BlockIdentifier): Promise<{
+        amount0: Web3Number;
+        amount1: Web3Number;
+    }>;
     totalSupply(blockIdentifier?: BlockIdentifier): Promise<Web3Number>;
     assertValidDepositTokens(poolKey: EkuboPoolKey): void;
     getTVL(blockIdentifier?: BlockIdentifier): Promise<DualTokenInfo>;

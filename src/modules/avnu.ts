@@ -62,7 +62,7 @@ export class AvnuWrapper {
     taker: string,
     integratorFeeBps: number,
     integratorFeeRecipient: string,
-    minAmount: string
+    minAmount?: string
   ) {
     const calldata = await fetchBuildExecuteTransaction(quote.quoteId);
     // its the multi swap function call
@@ -91,12 +91,16 @@ export class AvnuWrapper {
     }
 
     // swapInfo as expected by the strategy
+    // fallback, max 1% slippage
+    const _minAmount = minAmount || (quote.buyAmount * 95n / 100n).toString();
+    logger.verbose(`${AvnuWrapper.name}: getSwapInfo => buyToken: ${quote.buyTokenAddress}`);
+    logger.verbose(`${AvnuWrapper.name}: getSwapInfo => buyAmount: ${quote.buyAmount}, minAmount: ${_minAmount}`);
     const swapInfo: SwapInfo = {
       token_from_address: quote.sellTokenAddress,
       token_from_amount: uint256.bnToUint256(quote.sellAmount),
       token_to_address: quote.buyTokenAddress,
-      token_to_amount: uint256.bnToUint256(quote.buyAmount),
-      token_to_min_amount: uint256.bnToUint256(minAmount),
+      token_to_amount: uint256.bnToUint256(_minAmount),
+      token_to_min_amount: uint256.bnToUint256(_minAmount),
       beneficiary: taker,
       integrator_fee_amount_bps: integratorFeeBps,
       integrator_fee_recipient: integratorFeeRecipient,

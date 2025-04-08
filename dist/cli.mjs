@@ -6,7 +6,7 @@ import inquirer from "inquirer";
 
 // src/utils/store.ts
 import fs, { readFileSync, writeFileSync } from "fs";
-import { Account as Account2, constants } from "starknet";
+import { Account as Account3, constants } from "starknet";
 import * as crypto2 from "crypto";
 
 // src/utils/encrypt.ts
@@ -494,10 +494,13 @@ var getNoRiskTags = (risks) => {
 import { Contract as Contract3, uint256 as uint2562 } from "starknet";
 
 // src/strategies/vesu-rebalance.ts
-import { CairoCustomEnum, Contract as Contract4, num as num2, uint256 as uint2563 } from "starknet";
+import { CairoCustomEnum, Contract as Contract5, num as num3, uint256 as uint2563 } from "starknet";
 
 // src/node/headless.browser.ts
 import axios5 from "axios";
+
+// src/modules/harvests.ts
+import { Contract as Contract4, num as num2 } from "starknet";
 
 // src/strategies/vesu-rebalance.ts
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
@@ -595,12 +598,7 @@ var VesuRebalanceStrategies = [{
 }];
 
 // src/strategies/ekubo-cl-vault.ts
-import { Contract as Contract6, num as num3, uint256 as uint2564 } from "starknet";
-
-// src/modules/harvests.ts
-import { Contract as Contract5 } from "starknet";
-
-// src/strategies/ekubo-cl-vault.ts
+import { Contract as Contract6, num as num4, uint256 as uint2564 } from "starknet";
 var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
 var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
 var _riskFactor2 = [
@@ -682,7 +680,7 @@ var Store = class _Store {
     }
     logger.verbose(`Account loaded: ${accountKey} from network: ${this.config.network}`);
     logger.verbose(`Address: ${data.address}`);
-    const acc = new Account2(this.config.provider, data.address, data.pk, void 0, txVersion);
+    const acc = new Account3(this.config.provider, data.address, data.pk, void 0, txVersion);
     return acc;
   }
   addAccount(accountKey, address, pk) {

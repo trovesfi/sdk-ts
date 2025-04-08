@@ -275,7 +275,7 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         }
     }
 
-    private async _getTVL(blockIdentifier: BlockIdentifier = 'pending') {
+    async _getTVL(blockIdentifier: BlockIdentifier = 'pending') {
         const result = await this.contract.call('total_liquidity', [], {
             blockIdentifier
         }); 

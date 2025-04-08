@@ -29336,12 +29336,15 @@ ${JSON.stringify(data, null, 2)}`;
         routes.push(route);
         startIndex += 5 + swap_params_len;
       }
+      const _minAmount = minAmount || (quote.buyAmount * 95n / 100n).toString();
+      logger2.verbose(`${_AvnuWrapper.name}: getSwapInfo => buyToken: ${quote.buyTokenAddress}`);
+      logger2.verbose(`${_AvnuWrapper.name}: getSwapInfo => buyAmount: ${quote.buyAmount}, minAmount: ${_minAmount}`);
       const swapInfo = {
         token_from_address: quote.sellTokenAddress,
         token_from_amount: uint256_exports.bnToUint256(quote.sellAmount),
         token_to_address: quote.buyTokenAddress,
-        token_to_amount: uint256_exports.bnToUint256(quote.buyAmount),
-        token_to_min_amount: uint256_exports.bnToUint256(minAmount),
+        token_to_amount: uint256_exports.bnToUint256(_minAmount),
+        token_to_min_amount: uint256_exports.bnToUint256(_minAmount),
         beneficiary: taker,
         integrator_fee_amount_bps: integratorFeeBps,
         integrator_fee_recipient: integratorFeeRecipient,
@@ -30995,6 +30998,88 @@ ${JSON.stringify(data, null, 2)}`;
     return res.data;
   }
 
+  // src/modules/harvests.ts
+  var Harvests = class _Harvests {
+    constructor(config3) {
+      this.config = config3;
+    }
+    getHarvests(addr) {
+      throw new Error("Not implemented");
+    }
+    async getUnHarvestedRewards(addr) {
+      const rewards = await this.getHarvests(addr);
+      if (rewards.length == 0) return [];
+      const unClaimed = [];
+      const cls = await this.config.provider.getClassAt(rewards[0].rewardsContract.address);
+      for (let reward of rewards) {
+        const contract = new Contract(cls.abi, reward.rewardsContract.address, this.config.provider);
+        const isClaimed = await contract.call("is_claimed", [reward.claim.id]);
+        logger2.verbose(`${_Harvests.name}: isClaimed: ${isClaimed}`);
+        if (isClaimed)
+          return unClaimed;
+        unClaimed.unshift(reward);
+      }
+      return unClaimed;
+    }
+  };
+  var STRK = "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
+  var EkuboHarvests = class extends Harvests {
+    async getHarvests(addr) {
+      const EKUBO_API = `https://starknet-mainnet-api.ekubo.org/airdrops/${addr.address}?token=${STRK}`;
+      const resultEkubo = await fetch(EKUBO_API);
+      const items = await resultEkubo.json();
+      const rewards = [];
+      for (let i = 0; i < items.length; ++i) {
+        const info = items[i];
+        assert3(info.token == STRK, "expected strk token only");
+        rewards.push({
+          rewardsContract: ContractAddr.from(info.contract_address),
+          token: ContractAddr.from(STRK),
+          startDate: new Date(info.start_date),
+          endDate: new Date(info.end_date),
+          claim: {
+            id: info.claim.id,
+            amount: Web3Number.fromWei(info.claim.amount, 18),
+            claimee: ContractAddr.from(info.claim.claimee)
+          },
+          actualReward: Web3Number.fromWei(info.claim.amount, 18),
+          proof: info.proof
+        });
+      }
+      return rewards.sort((a, b) => b.endDate.getTime() - a.endDate.getTime());
+    }
+  };
+  var VesuHarvests = class _VesuHarvests extends Harvests {
+    async getHarvests(addr) {
+      const result = await fetch(`https://api.vesu.xyz/users/${addr.address}/strk-rewards/calldata`);
+      const data = await result.json();
+      const rewardsContract = ContractAddr.from("0x0387f3eb1d98632fbe3440a9f1385Aec9d87b6172491d3Dd81f1c35A7c61048F");
+      const cls = await this.config.provider.getClassAt(rewardsContract.address);
+      const contract = new Contract(cls.abi, rewardsContract.address, this.config.provider);
+      const _claimed_amount = await contract.call("amount_already_claimed", [addr.address]);
+      const claimed_amount = Web3Number.fromWei(_claimed_amount.toString(), 18);
+      logger2.verbose(`${_VesuHarvests.name}: claimed_amount: ${claimed_amount.toString()}`);
+      const actualReward = Web3Number.fromWei(data.data.amount, 18).minus(claimed_amount);
+      logger2.verbose(`${_VesuHarvests.name}: actualReward: ${actualReward.toString()}`);
+      return [{
+        rewardsContract,
+        token: ContractAddr.from(STRK),
+        startDate: /* @__PURE__ */ new Date(0),
+        endDate: /* @__PURE__ */ new Date(0),
+        claim: {
+          id: 0,
+          amount: Web3Number.fromWei(num_exports.getDecimalString(data.data.amount), 18),
+          claimee: addr
+        },
+        actualReward,
+        proof: data.data.proof
+      }];
+    }
+    async getUnHarvestedRewards(addr) {
+      return await this.getHarvests(addr);
+    }
+  };
+
   // src/strategies/vesu-rebalance.ts
   var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     // 10000 bps = 100%
@@ -31340,6 +31425,44 @@ ${JSON.stringify(data, null, 2)}`;
         baseFlow.linkedFlows.push(flow);
       });
       return [baseFlow];
+    }
+    async harvest(acc) {
+      const vesuHarvest = new VesuHarvests(this.config);
+      const harvests = await vesuHarvest.getUnHarvestedRewards(this.address);
+      const harvest = harvests[0];
+      const avnu = new AvnuWrapper();
+      let swapInfo = {
+        token_from_address: harvest.token.address,
+        token_from_amount: uint256_exports.bnToUint256(harvest.actualReward.toWei()),
+        token_to_address: this.asset().address.address,
+        token_to_amount: uint256_exports.bnToUint256(0),
+        token_to_min_amount: uint256_exports.bnToUint256(0),
+        beneficiary: this.address.address,
+        integrator_fee_amount_bps: 0,
+        integrator_fee_recipient: this.address.address,
+        routes: []
+      };
+      if (!this.asset().address.eqString(harvest.token.address)) {
+        const quote = await avnu.getQuotes(
+          harvest.token.address,
+          this.asset().address.address,
+          harvest.actualReward.toWei(),
+          this.address.address
+        );
+        swapInfo = await avnu.getSwapInfo(quote, this.address.address, 0, this.address.address);
+      }
+      return [
+        this.contract.populate("harvest", [
+          harvest.rewardsContract.address,
+          {
+            id: harvest.claim.id,
+            amount: harvest.claim.amount.toWei(),
+            claimee: harvest.claim.claimee.address
+          },
+          harvest.proof,
+          swapInfo
+        ])
+      ];
     }
   };
   var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
@@ -36334,57 +36457,6 @@ ${JSON.stringify(data, null, 2)}`;
       ]
     }
   ];
-
-  // src/modules/harvests.ts
-  var Harvests = class _Harvests {
-    constructor(config3) {
-      this.config = config3;
-    }
-    getHarvests(addr) {
-      throw new Error("Not implemented");
-    }
-    async getUnHarvestedRewards(addr) {
-      const rewards = await this.getHarvests(addr);
-      if (rewards.length == 0) return [];
-      const unClaimed = [];
-      const cls = await this.config.provider.getClassAt(rewards[0].rewardsContract.address);
-      for (let reward of rewards) {
-        const contract = new Contract(cls.abi, reward.rewardsContract.address, this.config.provider);
-        const isClaimed = await contract.call("is_claimed", [reward.claim.id]);
-        logger2.verbose(`${_Harvests.name}: isClaimed: ${isClaimed}`);
-        if (isClaimed)
-          return unClaimed;
-        unClaimed.unshift(reward);
-      }
-      return unClaimed;
-    }
-  };
-  var EkuboHarvests = class extends Harvests {
-    async getHarvests(addr) {
-      const STRK = "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
-      const EKUBO_API = `https://starknet-mainnet-api.ekubo.org/airdrops/${addr.address}?token=${STRK}`;
-      const resultEkubo = await fetch(EKUBO_API);
-      const items = await resultEkubo.json();
-      const rewards = [];
-      for (let i = 0; i < items.length; ++i) {
-        const info = items[i];
-        assert3(info.token == STRK, "expected strk token only");
-        rewards.push({
-          rewardsContract: ContractAddr.from(info.contract_address),
-          token: ContractAddr.from(STRK),
-          startDate: new Date(info.start_date),
-          endDate: new Date(info.end_date),
-          claim: {
-            id: info.claim.id,
-            amount: Web3Number.fromWei(info.claim.amount, 18),
-            claimee: ContractAddr.from(info.claim.claimee)
-          },
-          proof: info.proof
-        });
-      }
-      return rewards.sort((a, b) => b.endDate.getTime() - a.endDate.getTime());
-    }
-  };
 
   // src/strategies/ekubo-cl-vault.ts
   var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {

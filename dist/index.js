@@ -2014,12 +2014,15 @@ var AvnuWrapper = class _AvnuWrapper {
       routes.push(route);
       startIndex += 5 + swap_params_len;
     }
+    const _minAmount = minAmount || (quote.buyAmount * 95n / 100n).toString();
+    logger.verbose(`${_AvnuWrapper.name}: getSwapInfo => buyToken: ${quote.buyTokenAddress}`);
+    logger.verbose(`${_AvnuWrapper.name}: getSwapInfo => buyAmount: ${quote.buyAmount}, minAmount: ${_minAmount}`);
     const swapInfo = {
       token_from_address: quote.sellTokenAddress,
       token_from_amount: import_starknet4.uint256.bnToUint256(quote.sellAmount),
       token_to_address: quote.buyTokenAddress,
-      token_to_amount: import_starknet4.uint256.bnToUint256(quote.buyAmount),
-      token_to_min_amount: import_starknet4.uint256.bnToUint256(minAmount),
+      token_to_amount: import_starknet4.uint256.bnToUint256(_minAmount),
+      token_to_min_amount: import_starknet4.uint256.bnToUint256(_minAmount),
       beneficiary: taker,
       integrator_fee_amount_bps: integratorFeeBps,
       integrator_fee_recipient: integratorFeeRecipient,
@@ -2176,7 +2179,7 @@ var AutoCompounderSTRK = class {
 };
 
 // src/strategies/vesu-rebalance.ts
-var import_starknet7 = require("starknet");
+var import_starknet8 = require("starknet");
 
 // src/data/vesu-rebalance.abi.json
 var vesu_rebalance_abi_default = [
@@ -3679,6 +3682,89 @@ async function getAPIUsingHeadlessBrowser(url) {
   return res.data;
 }
 
+// src/modules/harvests.ts
+var import_starknet7 = require("starknet");
+var Harvests = class _Harvests {
+  constructor(config) {
+    this.config = config;
+  }
+  getHarvests(addr) {
+    throw new Error("Not implemented");
+  }
+  async getUnHarvestedRewards(addr) {
+    const rewards = await this.getHarvests(addr);
+    if (rewards.length == 0) return [];
+    const unClaimed = [];
+    const cls = await this.config.provider.getClassAt(rewards[0].rewardsContract.address);
+    for (let reward of rewards) {
+      const contract = new import_starknet7.Contract(cls.abi, reward.rewardsContract.address, this.config.provider);
+      const isClaimed = await contract.call("is_claimed", [reward.claim.id]);
+      logger.verbose(`${_Harvests.name}: isClaimed: ${isClaimed}`);
+      if (isClaimed)
+        return unClaimed;
+      unClaimed.unshift(reward);
+    }
+    return unClaimed;
+  }
+};
+var STRK = "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
+var EkuboHarvests = class extends Harvests {
+  async getHarvests(addr) {
+    const EKUBO_API = `https://starknet-mainnet-api.ekubo.org/airdrops/${addr.address}?token=${STRK}`;
+    const resultEkubo = await fetch(EKUBO_API);
+    const items = await resultEkubo.json();
+    const rewards = [];
+    for (let i = 0; i < items.length; ++i) {
+      const info = items[i];
+      assert(info.token == STRK, "expected strk token only");
+      rewards.push({
+        rewardsContract: ContractAddr.from(info.contract_address),
+        token: ContractAddr.from(STRK),
+        startDate: new Date(info.start_date),
+        endDate: new Date(info.end_date),
+        claim: {
+          id: info.claim.id,
+          amount: Web3Number.fromWei(info.claim.amount, 18),
+          claimee: ContractAddr.from(info.claim.claimee)
+        },
+        actualReward: Web3Number.fromWei(info.claim.amount, 18),
+        proof: info.proof
+      });
+    }
+    return rewards.sort((a, b) => b.endDate.getTime() - a.endDate.getTime());
+  }
+};
+var VesuHarvests = class _VesuHarvests extends Harvests {
+  async getHarvests(addr) {
+    const result = await fetch(`https://api.vesu.xyz/users/${addr.address}/strk-rewards/calldata`);
+    const data = await result.json();
+    const rewardsContract = ContractAddr.from("0x0387f3eb1d98632fbe3440a9f1385Aec9d87b6172491d3Dd81f1c35A7c61048F");
+    const cls = await this.config.provider.getClassAt(rewardsContract.address);
+    const contract = new import_starknet7.Contract(cls.abi, rewardsContract.address, this.config.provider);
+    const _claimed_amount = await contract.call("amount_already_claimed", [addr.address]);
+    const claimed_amount = Web3Number.fromWei(_claimed_amount.toString(), 18);
+    logger.verbose(`${_VesuHarvests.name}: claimed_amount: ${claimed_amount.toString()}`);
+    const actualReward = Web3Number.fromWei(data.data.amount, 18).minus(claimed_amount);
+    logger.verbose(`${_VesuHarvests.name}: actualReward: ${actualReward.toString()}`);
+    return [{
+      rewardsContract,
+      token: ContractAddr.from(STRK),
+      startDate: /* @__PURE__ */ new Date(0),
+      endDate: /* @__PURE__ */ new Date(0),
+      claim: {
+        id: 0,
+        amount: Web3Number.fromWei(import_starknet7.num.getDecimalString(data.data.amount), 18),
+        claimee: addr
+      },
+      actualReward,
+      proof: data.data.proof
+    }];
+  }
+  async getUnHarvestedRewards(addr) {
+    return await this.getHarvests(addr);
+  }
+};
+
 // src/strategies/vesu-rebalance.ts
 var VesuRebalance = class _VesuRebalance extends BaseStrategy {
   // 10000 bps = 100%
@@ -3696,7 +3782,7 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     assert(metadata.depositTokens.length === 1, "VesuRebalance only supports 1 deposit token");
     this.metadata = metadata;
     this.address = metadata.address;
-    this.contract = new import_starknet7.Contract(vesu_rebalance_abi_default, this.address.address, this.config.provider);
+    this.contract = new import_starknet8.Contract(vesu_rebalance_abi_default, this.address.address, this.config.provider);
   }
   /**
    * Creates a deposit call to the strategy contract.
@@ -3706,9 +3792,9 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    */
   async depositCall(amountInfo, receiver) {
     assert(amountInfo.tokenInfo.address.eq(this.asset().address), "Deposit token mismatch");
-    const assetContract = new import_starknet7.Contract(vesu_rebalance_abi_default, this.asset().address.address, this.config.provider);
-    const call1 = assetContract.populate("approve", [this.address.address, import_starknet7.uint256.bnToUint256(amountInfo.amount.toWei())]);
-    const call2 = this.contract.populate("deposit", [import_starknet7.uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address]);
+    const assetContract = new import_starknet8.Contract(vesu_rebalance_abi_default, this.asset().address.address, this.config.provider);
+    const call1 = assetContract.populate("approve", [this.address.address, import_starknet8.uint256.bnToUint256(amountInfo.amount.toWei())]);
+    const call2 = this.contract.populate("deposit", [import_starknet8.uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address]);
     return [call1, call2];
   }
   /**
@@ -3719,7 +3805,7 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    * @returns Populated contract call for withdrawal
    */
   async withdrawCall(amountInfo, receiver, owner) {
-    return [this.contract.populate("withdraw", [import_starknet7.uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address, owner.address])];
+    return [this.contract.populate("withdraw", [import_starknet8.uint256.bnToUint256(amountInfo.amount.toWei()), receiver.address, owner.address])];
   }
   /**
    * Returns the underlying asset token of the strategy.
@@ -3742,7 +3828,7 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    */
   async getUserTVL(user) {
     const shares = await this.contract.balanceOf(user.address);
-    const assets = await this.contract.convert_to_assets(import_starknet7.uint256.bnToUint256(shares));
+    const assets = await this.contract.convert_to_assets(import_starknet8.uint256.bnToUint256(shares));
     const amount = Web3Number.fromWei(assets.toString(), this.metadata.depositTokens[0].decimals);
     let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
     const usdValue = Number(amount.toFixed(6)) * price.price;
@@ -3785,10 +3871,10 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     return pools;
   }
   async getPoolInfo(p, pools, vesuPositions, totalAssets, isErrorPositionsAPI, isErrorPoolsAPI) {
-    const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === import_starknet7.num.getDecimalString(p.pool_id.address.toString()));
+    const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === import_starknet8.num.getDecimalString(p.pool_id.address.toString()));
     const _pool = pools.find((d) => {
-      logger.verbose(`pool check: ${d.id == import_starknet7.num.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${import_starknet7.num.getDecimalString(p.pool_id.address.toString())}`);
-      return d.id == import_starknet7.num.getDecimalString(p.pool_id.address.toString());
+      logger.verbose(`pool check: ${d.id == import_starknet8.num.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${import_starknet8.num.getDecimalString(p.pool_id.address.toString())}`);
+      return d.id == import_starknet8.num.getDecimalString(p.pool_id.address.toString());
     });
     logger.verbose(`pool: ${JSON.stringify(_pool)}`);
     logger.verbose(typeof _pool);
@@ -3802,9 +3888,9 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     if (!assetInfo) {
       throw new Error(`Asset ${this.asset().address.toString()} not found in pool ${p.pool_id.address.toString()}`);
     }
-    let vTokenContract = new import_starknet7.Contract(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
+    let vTokenContract = new import_starknet8.Contract(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
     const bal = await vTokenContract.balanceOf(this.address.address);
-    const assets = await vTokenContract.convert_to_assets(import_starknet7.uint256.bnToUint256(bal.toString()));
+    const assets = await vTokenContract.convert_to_assets(import_starknet8.uint256.bnToUint256(bal.toString()));
     const item = {
       pool_id: p.pool_id,
       pool_name: _pool?.name,
@@ -3990,9 +4076,9 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       if (p.changeAmt.eq(0)) return null;
       actions.push({
         pool_id: p.pool_id.address,
-        feature: new import_starknet7.CairoCustomEnum(p.isDeposit ? { DEPOSIT: {} } : { WITHDRAW: {} }),
+        feature: new import_starknet8.CairoCustomEnum(p.isDeposit ? { DEPOSIT: {} } : { WITHDRAW: {} }),
         token: this.asset().address.address,
-        amount: import_starknet7.uint256.bnToUint256(p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei())
+        amount: import_starknet8.uint256.bnToUint256(p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei())
       });
     });
     if (actions.length === 0) return null;
@@ -4024,6 +4110,44 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       baseFlow.linkedFlows.push(flow);
     });
     return [baseFlow];
+  }
+  async harvest(acc) {
+    const vesuHarvest = new VesuHarvests(this.config);
+    const harvests = await vesuHarvest.getUnHarvestedRewards(this.address);
+    const harvest = harvests[0];
+    const avnu = new AvnuWrapper();
+    let swapInfo = {
+      token_from_address: harvest.token.address,
+      token_from_amount: import_starknet8.uint256.bnToUint256(harvest.actualReward.toWei()),
+      token_to_address: this.asset().address.address,
+      token_to_amount: import_starknet8.uint256.bnToUint256(0),
+      token_to_min_amount: import_starknet8.uint256.bnToUint256(0),
+      beneficiary: this.address.address,
+      integrator_fee_amount_bps: 0,
+      integrator_fee_recipient: this.address.address,
+      routes: []
+    };
+    if (!this.asset().address.eqString(harvest.token.address)) {
+      const quote = await avnu.getQuotes(
+        harvest.token.address,
+        this.asset().address.address,
+        harvest.actualReward.toWei(),
+        this.address.address
+      );
+      swapInfo = await avnu.getSwapInfo(quote, this.address.address, 0, this.address.address);
+    }
+    return [
+      this.contract.populate("harvest", [
+        harvest.rewardsContract.address,
+        {
+          id: harvest.claim.id,
+          amount: harvest.claim.amount.toWei(),
+          claimee: harvest.claim.claimee.address
+        },
+        harvest.proof,
+        swapInfo
+      ])
+    ];
   }
 };
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
@@ -9022,58 +9146,6 @@ var erc4626_abi_default = [
   }
 ];
 
-// src/modules/harvests.ts
-var import_starknet8 = require("starknet");
-var Harvests = class _Harvests {
-  constructor(config) {
-    this.config = config;
-  }
-  getHarvests(addr) {
-    throw new Error("Not implemented");
-  }
-  async getUnHarvestedRewards(addr) {
-    const rewards = await this.getHarvests(addr);
-    if (rewards.length == 0) return [];
-    const unClaimed = [];
-    const cls = await this.config.provider.getClassAt(rewards[0].rewardsContract.address);
-    for (let reward of rewards) {
-      const contract = new import_starknet8.Contract(cls.abi, reward.rewardsContract.address, this.config.provider);
-      const isClaimed = await contract.call("is_claimed", [reward.claim.id]);
-      logger.verbose(`${_Harvests.name}: isClaimed: ${isClaimed}`);
-      if (isClaimed)
-        return unClaimed;
-      unClaimed.unshift(reward);
-    }
-    return unClaimed;
-  }
-};
-var EkuboHarvests = class extends Harvests {
-  async getHarvests(addr) {
-    const STRK = "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
-    const EKUBO_API = `https://starknet-mainnet-api.ekubo.org/airdrops/${addr.address}?token=${STRK}`;
-    const resultEkubo = await fetch(EKUBO_API);
-    const items = await resultEkubo.json();
-    const rewards = [];
-    for (let i = 0; i < items.length; ++i) {
-      const info = items[i];
-      assert(info.token == STRK, "expected strk token only");
-      rewards.push({
-        rewardsContract: ContractAddr.from(info.contract_address),
-        token: ContractAddr.from(STRK),
-        startDate: new Date(info.start_date),
-        endDate: new Date(info.end_date),
-        claim: {
-          id: info.claim.id,
-          amount: Web3Number.fromWei(info.claim.amount, 18),
-          claimee: ContractAddr.from(info.claim.claimee)
-        },
-        proof: info.proof
-      });
-    }
-    return rewards.sort((a, b) => b.endDate.getTime() - a.endDate.getTime());
-  }
-};
-
 // src/strategies/ekubo-cl-vault.ts
 var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   /**
@@ -9388,8 +9460,8 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       upperTick: _EkuboCLVault.i129ToNumber(result.bounds.upper)
     };
   }
-  static div2Power128(num4) {
-    return Number(BigInt(num4.toString()) * 1000000n / BigInt(2 ** 128)) / 1e6;
+  static div2Power128(num5) {
+    return Number(BigInt(num5.toString()) * 1000000n / BigInt(2 ** 128)) / 1e6;
   }
   static priceToTick(price, isRoundDown, tickSpacing) {
     const value = isRoundDown ? Math.floor(Math.log(price) / Math.log(1.000001)) : Math.ceil(Math.log(price) / Math.log(1.000001));
