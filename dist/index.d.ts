@@ -547,6 +547,10 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
         isErrorPoolsAPI: boolean;
         isError: boolean;
     }>;
+    getVesuPools(retry?: number): Promise<{
+        pools: any[];
+        isErrorPoolsAPI: boolean;
+    }>;
     /**
      * Calculates the weighted average APY across all pools based on USD value.
      * @returns {Promise<number>} The weighted average APY across all pools

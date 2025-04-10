@@ -3676,6 +3676,9027 @@ var VesuHarvests = class _VesuHarvests extends Harvests {
   }
 };
 
+// src/data/vesu_pools.json
+var vesu_pools_default = {
+  data: [
+    {
+      id: "3592269722173619206547282200441502663108152440133676111551048111861909089850",
+      name: "Unknown",
+      extensionContractAddress: "0x002334189e831d804d4a11d3f71d4a982ec82614ac12ed2e9ca2f8da4e6374fa",
+      owner: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x0454904f43503a41882e5bc7600d161c82d8aba56d42f0f4b2695687502e8ae6",
+            name: "vEther",
+            symbol: "vETH",
+            decimals: 18
+          },
+          listedBlockNumber: 918582,
+          config: {
+            debtFloor: {
+              value: "1000000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "22284824652",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000387815702634657",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "0",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "0",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "0",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x053b1da8b8221588146617b7a69198b2fba742d36dab7906704e7f2e248ee2d4",
+            name: "vWrapped BTC",
+            symbol: "vWBTC",
+            decimals: 18
+          },
+          listedBlockNumber: 918582,
+          config: {
+            debtFloor: {
+              value: "1000000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "22284824652",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000387815702634657",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "0",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "0",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "0",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "400000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "533144972465446830773892583080325946324702730637763475927650793891202846521",
+      name: "Unknown",
+      extensionContractAddress: "0x002334189e831d804d4a11d3f71d4a982ec82614ac12ed2e9ca2f8da4e6374fa",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x027577aafa5fd67143882468e743215401c151fc5524d631b82ef81942e666b0",
+            name: "vEther",
+            symbol: "vETH",
+            decimals: 18
+          },
+          listedBlockNumber: 921222,
+          config: {
+            debtFloor: {
+              value: "1000000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "22284824652",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000385179722378073",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "0",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "0",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "0",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x040993609a86bfea6cba8b4e873a56d8fc515d61a178a924905a6de12daf7995",
+            name: "vWrapped BTC",
+            symbol: "vWBTC",
+            decimals: 18
+          },
+          listedBlockNumber: 921222,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000385179722378075",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "0",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "0",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "0",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "3052650897590517495160361655788186069302156761501841950875544829601534311039",
+      name: "Unknown",
+      extensionContractAddress: "0x002334189e831d804d4a11d3f71d4a982ec82614ac12ed2e9ca2f8da4e6374fa",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x04c4734c7d639f6d181a83c080dc37d277966985bd3332f8e817afb7fb7882e4",
+            name: "vUSD Coin",
+            symbol: "vUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 921268,
+          config: {
+            debtFloor: {
+              value: "1000000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "150000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "22284824652",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000385134331591183",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "0",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "0",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "0",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x04f8c48f0d97157162ec5b7f735ca9b89d23f84492dd2b4c64e8764cf5e6fd44",
+            name: "vWrapped BTC",
+            symbol: "vWBTC",
+            decimals: 18
+          },
+          listedBlockNumber: 921268,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "150000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "22284824652",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000385134331591183",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "0",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "0",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "0",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "425248635297453184651007479084623816685082127746675242420913558143189363659",
+      name: "NIGHT",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x0203086f833c84083147ccf59ce58ab2aaf1161eb829f8bca09a656d4e7bab11",
+            name: "Vesu Ether NIGHT",
+            symbol: "vETH-NIGHT",
+            decimals: 18
+          },
+          listedBlockNumber: 954825,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "100000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351775553366549",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x057b2aba127f238c2b3c83837b8a3f73645f6f9e9f473f0310eb3bae35b1b7cd",
+            name: "Vesu USD Coin NIGHT",
+            symbol: "vUSDC-NIGHT",
+            decimals: 18
+          },
+          listedBlockNumber: 954825,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "100000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351775553366545",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "750000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "1000000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "151108224134777757031930412902733397146249197271167109043815023206058966971",
+      name: "Brother Pools",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x03b405a98c9e795d427fe82cdeeeed803f221b52471e3a757574a2b4180793ee",
+          name: "STARKNET BROTHER",
+          symbol: "BROTHER",
+          decimals: 18,
+          vToken: {
+            address: "0x0483349dca8ae69eff6f3c12d5aec80e77357fd0d969aea8bf1f6620bd55ae2b",
+            name: "Vesu STARKNET BROTHER Brother",
+            symbol: "vBROTHER-Brother",
+            decimals: 18
+          },
+          listedBlockNumber: 963489,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000343135813420956",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "500000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x01415bdf70ffe60626b653945c60aa96909493b7025c3dee02360b9d6cca6c43",
+            name: "Vesu Ether Brother Pools",
+            symbol: "vETH-BrotherPools",
+            decimals: 18
+          },
+          listedBlockNumber: 963489,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000343135813420956",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x03b405a98c9e795d427fe82cdeeeed803f221b52471e3a757574a2b4180793ee",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "2553674781806235385475763491225202803829093496846204388866130609169683148867",
+      name: "Ekubo Pools",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x02a1748b8a16e97720f9dfcadce19d7eb6b7fc94d0cfaa91911c92aaa0e4358a",
+            name: "Vesu Ether Brother",
+            symbol: "vETH-Brother",
+            decimals: 18
+          },
+          listedBlockNumber: 963503,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000343121830302847",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          name: "Ekubo Protocol",
+          symbol: "EKUBO",
+          decimals: 18,
+          vToken: {
+            address: "0x0518c1795ae0eee2c0ac7e519260453945cb02e5eb59391e2ad13902c113b319",
+            name: "Vesu Ekubo Protocol Ekubo Pools",
+            symbol: "vEKUBO-EkuboPools",
+            decimals: 18
+          },
+          listedBlockNumber: 963503,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000343121830302847",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "500000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x02b15117ce7afda7e36d84ea2421cfa6542c099b06c44ead7725c4c6a2349e85",
+            name: "Vesu USD Coin Ekubo Pools",
+            symbol: "vUSDC-EkuboPools",
+            decimals: 18
+          },
+          listedBlockNumber: 963503,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000343121830302847",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1985822809855347709395094615970537244389350489856433399093735242497495846483",
+      name: "EKUBO/USDC",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x06a9293947aeba86f741d3df93a64cf20b8ea19833ec3c22a3f0139d0ce7aef5",
+            name: "Vesu USD Coin EKUBO/USDC",
+            symbol: "vUSDC-EKUBO/USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 976934,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000329646631323706",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          name: "Ekubo Protocol",
+          symbol: "EKUBO",
+          decimals: 18,
+          vToken: {
+            address: "0x0655169f2dc42c36061748a221f49f8ffb70def5d413bade40b42b037eaef4ca",
+            name: "Vesu Ekubo Protocol EKUBO/USDC",
+            symbol: "vEKUBO-EKUBO/USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 976934,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000329646631323706",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          maxLTV: {
+            value: "900000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "900000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "782484296706413140817565378981992256291686830987606336003410833363463392268",
+      name: "ETH/USDC Test",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x07a5c68b185b5d37eb857d1384392a0d63b99481b619afcd6612526371f51750",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x070e57fb72d41ebd3ede252f755835489bbf660662160105b75981b3305831a5",
+            name: "Vesu Ether ETH/USDC",
+            symbol: "vETH-ETH/USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1045647,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000260155427733507",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x066f4527be30499633375d392fa2066edbb1f366e213fc05293c810aed8dd48e",
+            name: "Vesu USD Coin ETH/USDC",
+            symbol: "vUSDC-ETH/USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1045647,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000260155427733507",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "259303787566998862271055602151197015359833688437739690331932331559568889607",
+      name: "reserve",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x0559b9fa9e2569787df496d43c7e4ffc283ae9b03862b1ba2affcabe982fd330",
+            name: "Vesu Ether reserve",
+            symbol: "vETH-reserv",
+            decimals: 18
+          },
+          listedBlockNumber: 1107800,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000196884117773641",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x048b064f0d44fce445f36b5f32f22782b04b355dfb5bda29ab9d59f118e078cd",
+            name: "Vesu Tether USD reserve",
+            symbol: "vUSDT-reserve",
+            decimals: 18
+          },
+          listedBlockNumber: 1107800,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000196884117773641",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x05b4b37036bea67dfac80b463af81dc57c15df01d62895d502e0ee7f59da0fc1",
+            name: "Vesu Starknet Token reserve",
+            symbol: "vSTRK-reserve",
+            decimals: 18
+          },
+          listedBlockNumber: 1124429,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000180055449664448",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "3125672915377342143909006614027791230693045604477635729801515778410103428153",
+      name: "add",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x050b4063b4173518878fba846391486f803b899d80372d79a58918a9d62831a6",
+            name: "Vesu USD Coin add",
+            symbol: "vUSDC-add",
+            decimals: 18
+          },
+          listedBlockNumber: 1124457,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000180027455847748",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "750000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x046aa486af7617bce0c543462dc9fca214cb6a4120c4ad4958bcfd418ab0f7a9",
+            name: "Vesu Tether USD add",
+            symbol: "vUSDT-add",
+            decimals: 18
+          },
+          listedBlockNumber: 1124457,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000180027455847748",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "750000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x04a8ba3ffeb9b647381a1024e0f102d869fe53c934fa508de97962fdda616ee1",
+            name: "Vesu Ether add",
+            symbol: "vETH-add",
+            decimals: 18
+          },
+          listedBlockNumber: 1124510,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179973268048646",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "750000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x03bcbe40f28686735e7690bda26852bd9213df33cbc983f27294daed9ab615f9",
+            name: "Vesu Starknet Token add",
+            symbol: "vSTRK-add",
+            decimals: 18
+          },
+          listedBlockNumber: 1124510,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179973268048646",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "500000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03b405a98c9e795d427fe82cdeeeed803f221b52471e3a757574a2b4180793ee",
+          name: "STARKNET BROTHER",
+          symbol: "BROTHER",
+          decimals: 18,
+          vToken: {
+            address: "0x042b6ed01077ed9a0bed223f5d873489de3c85272903adb5b6e3b144b0812f2e",
+            name: "Vesu STARKNET BROTHER add",
+            symbol: "vBROTHER-add",
+            decimals: 18
+          },
+          listedBlockNumber: 1124549,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179933382487834",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "750000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "400000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "1000000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03b405a98c9e795d427fe82cdeeeed803f221b52471e3a757574a2b4180793ee",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "400000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x03b405a98c9e795d427fe82cdeeeed803f221b52471e3a757574a2b4180793ee",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "2371147735370462546723246951334941826090854707186877477915656490055246094889",
+      name: "iPool",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x05250aacbfa2690e9573fbb74c9a6d2f9531be6e1bd85356ba16971e1c55a913",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x0100228d1d7c5dfd1c700b6a3c3f81de63d0aa2dadd67dea0eb90aaa2963f7dc",
+            name: "Vesu Starknet Token iPool",
+            symbol: "vSTRK-iPool",
+            decimals: 18
+          },
+          listedBlockNumber: 1124590,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179891247138859",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          name: "Endur xSTRK",
+          symbol: "xSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x05f69cf982200902355fe3a372173a4fdbed2407dd93d5b8a6211bd1419b306f",
+            name: "Vesu Endur xSTRK iPool",
+            symbol: "vxSTRK-iPool",
+            decimals: 18
+          },
+          listedBlockNumber: 1124590,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179891247138859",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "31569142064150416",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115119666655106208",
+              decimals: 18
+            }
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          name: "Wrapped Staked Ether",
+          symbol: "wstETH",
+          decimals: 18,
+          vToken: {
+            address: "0x016dbdb05298996d9a3dba51416f5b98cac9f43f87f24e2edebf37116d4ba36c",
+            name: "Vesu Wrapped Staked Ether iPool",
+            symbol: "vwstETH-iPool",
+            decimals: 18
+          },
+          listedBlockNumber: 1124612,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179868556402468",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "29135988945557660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "35791428571428564",
+              decimals: 18
+            }
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x04c278dd4ac53040a0ef3815a5f0fe3a706a130eabbf5a18654ea52df83b783f",
+            name: "Vesu USD Coin iPool",
+            symbol: "vUSDC-iPool",
+            decimals: 18
+          },
+          listedBlockNumber: 1124799,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "50000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000179677002897622",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1004836663776012053146929983717292045854472643888105827453844308307146422044",
+      name: "Alterscope xSTRK",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x022120e98b4ddbe31d3f618d0143e43a80ee3fd9ee5d678478d6f590af478254",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x06fd2ba91b417acec30d9110149fd421d161dd0b0e7f061fbb2195e69d112836",
+            name: "Vesu ETH Alterscope wstETH",
+            symbol: "vETH-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178967,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062071207586070",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x03bba9d5890e30080d671f828a2261a38c80641ad6966c6b7bae170abe319410",
+            name: "Vesu WBTC Alterscope wstETH",
+            symbol: "vWBTC-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178967,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062071207586070",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "20000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x037b8b8edb470611a89bed71304fc113c1e250b178b86eadb45bfa0262e522c6",
+            name: "Vesu USDC Alterscope wstETH",
+            symbol: "vUSDC-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178967,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062071207586070",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x0714fb3198062b13a5e2180713a422d2daf37b1d66fc424cacec96e8fb23a7f8",
+            name: "Vesu USDT Alterscope wstETH",
+            symbol: "vUSDT-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178967,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062071207586070",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x00a0a1aa1882682c04e7308c0807ef78197fb523b16b206f5211e6728667cf7a",
+            name: "Vesu STRK Alterscope wstETH",
+            symbol: "vSTRK-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178967,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062071207586070",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          name: "Endur xSTRK",
+          symbol: "xSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x0738dd944e418727c3825b2a1160e45aaee0b08e9f84d5bfd52fb01ca6b695b3",
+            name: "Vesu xSTRK Alterscope xSTRK",
+            symbol: "vxSTRK-AlterscopexSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1178967,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062071207586070",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "31569142064150416",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115119666655106208",
+              decimals: 18
+            }
+          },
+          risk: null,
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "830000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "700000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "550000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "720000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1129317009595740662798266590704690378283717359139782594834794341553978002262",
+      name: "Alterscope xSTRK",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x022120e98b4ddbe31d3f618d0143e43a80ee3fd9ee5d678478d6f590af478254",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x07050e1231cd1ab65447fa7adddd7038f36c0a7b46740d369cd3cfe925818c78",
+            name: "Vesu ETH Alterscope xSTRK",
+            symbol: "vETH-Alterscope xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1197971,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000052502639606330",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/eth"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x0050d54f68cbcaaba424b92666791d9755c52a636e8a709db977ed429f168a0e",
+            name: "Vesu WBTC Alterscope xSTRK",
+            symbol: "vWBTC-Alterscope xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1197971,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000052502639606330",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "20000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/wbtc"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x030ab9c447368fb18c9286f852fcf2082e6f64ec0be07fa08e6d63eb90524746",
+            name: "Vesu STRK Alterscope xSTRK",
+            symbol: "vSTRK-Alterscope xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1197971,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000052502639606330",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/strk"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x013ff7f2ad3e9ae7c94391b8271d5ab84f0ba7d59e33f781f3202829e41a028b",
+            name: "Vesu USDC Alterscope xSTRK",
+            symbol: "vUSDC-Alterscope xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1197971,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000052502639606330",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/usdc"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x02359a0f14fadc38d236f3ef0550240e8059f2d1c3100df708bbd19e9aff48af",
+            name: "Vesu USDT Alterscope xSTRK",
+            symbol: "vUSDT-Alterscope xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1197971,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000052502639606330",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/usdt.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/usdt"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          name: "Endur xSTRK",
+          symbol: "xSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x062b16a3c933bd60eddc9630c3d088f0a1e9dcd510fbbf4ff3fb3b6a3839fd8a",
+            name: "Vesu xSTRK Alterscope xSTRK",
+            symbol: "vxSTRK-Alterscope xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 1197971,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000052502639606350",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "32452407923310972130667",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "32452407923310972130667",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "32452407923310972130667",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "31569142064150416",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115119666655106208",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/xstrk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1129317009595740662798266590704690378283717359139782594834794341553978002262/xstrk"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "830000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "700000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "550000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "720000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1159811069645890520539813878756846008647087829665407214583864910459307655916",
+      name: "Alterscope Cornerstone",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x022120e98b4ddbe31d3f618d0143e43a80ee3fd9ee5d678478d6f590af478254",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x007e00dc3acb051de65ae4af053faa11840d003507d279e5c779f87adbf681f4",
+            name: "Vesu ETH Alterscope CornerSt",
+            symbol: "vETH-Alterscope CornerSt",
+            decimals: 18
+          },
+          listedBlockNumber: 1179163,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/eth"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x035dce04586d74503e5e3751d726daf90b515d5badd84f24b4fa92013cb36816",
+            name: "Vesu WBTC Alterscope CornerSt",
+            symbol: "vWBTC-Alterscope CornerSt",
+            decimals: 18
+          },
+          listedBlockNumber: 1179163,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "20000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/wbtc"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x07b207a4f928f1b729c9ad26da5e99d6a13b3a23216c597ad545390048cd051f",
+            name: "Vesu USDC Alterscope CornerSt",
+            symbol: "vUSDC-Alterscope CornerSt",
+            decimals: 18
+          },
+          listedBlockNumber: 1179163,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/usdc"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x05d28fb04a9432a755d495df1d14c209d298834eac1b02a06c5dbf7e4db9e5a5",
+            name: "Vesu USDT Alterscope CornerSt",
+            symbol: "vUSDT-Alterscope CornerSt",
+            decimals: 18
+          },
+          listedBlockNumber: 1179163,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/usdt.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/usdt"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x00430ec0c793e5da2a567c663ab72337f22dd59040ef9d0a28b9d60c4b784e7d",
+            name: "Vesu STRK Alterscope CornerSt",
+            symbol: "vSTRK-Alterscope CornerSt",
+            decimals: 18
+          },
+          listedBlockNumber: 1179163,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1159811069645890520539813878756846008647087829665407214583864910459307655916/strk"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "730000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "650000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "700000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "670000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "770000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "830000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "800000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "500000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "770000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "730000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "700000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "650000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "770000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "930000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "770000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "930000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1301140954640322725373945719229815062445705809076381949099585786202465661889",
+      name: "Re7 sSTRK",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c8989018428469248f9f722a95b77702e9eb51254bcfd663fb21cb876fce59",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x05afdf4d18501d1d9d4664390df8c0786a6db8f28e66caa8800f1c2f51396492",
+            name: "Vesu Starknet Token Re7 sSTRK",
+            symbol: "vSTRK-Re7sSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 954842,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1025895911630068444",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "305649179312405935946041",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "591144037811419131335152",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "287591832882947136055656",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "600688464885219283106365",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "295039285572813347160324",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "491168555449437548",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "22682233946787235",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "45145571346432000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1301140954640322725373945719229815062445705809076381949099585786202465661889/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1301140954640322725373945719229815062445705809076381949099585786202465661889/strk"
+          },
+          interestRate: {
+            value: "1451439408",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0356f304b154d29d2a8fe22f1cb9107a9b564a733cf6b4cc47fd121ac1af90c9",
+          name: "Staked Starknet Token",
+          symbol: "sSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x047b7947c36be505131384540cb52e869db715b359b98099ade4015bfc8be341",
+            name: "Vesu Staked Starknet Token",
+            symbol: "vsSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 954842,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351758644897725",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "925391149302088266375309",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "925391149302088266375309",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "925391149302088266375309",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115100000000000000",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1301140954640322725373945719229815062445705809076381949099585786202465661889/sstrk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1301140954640322725373945719229815062445705809076381949099585786202465661889/sstrk"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x0356f304b154d29d2a8fe22f1cb9107a9b564a733cf6b4cc47fd121ac1af90c9",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1749206066145585665304376624725901901307432885480056836110792804696449290137",
+      name: "Re7 rUSDC",
+      extensionContractAddress: "0x06ffa060b96fd027a7f5c32eb3c9b15505c089cf83b6fd318e3ce61fd8c3fac8",
+      owner: "0x01c8989018428469248f9f722a95b77702e9eb51254bcfd663fb21cb876fce59",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x013ec1d99495bd24f035d5b1b4b557776e6914cc1305c5dc3a89fcc1478cc7f9",
+            name: "Vesu Ether Re7 rUSDC",
+            symbol: "vETH-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1003052492877653633",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "10000000000002000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "10000000000002000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "10000000000002000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "48790166901120000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/eth"
+          },
+          interestRate: {
+            value: "1568613905",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          name: "Relend Network USDC - Starknet",
+          symbol: "rUSDC-stark",
+          decimals: 6,
+          vToken: {
+            address: "0x00c0cae460e74a70cb7d8828b99f1147612c33bfb490f72f17356935af1540de",
+            name: "Vesu Relend Re7 rUSDC",
+            symbol: "vrUSDC-stark-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "7174111083",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1002391988892795305",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "14989754388275",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "14998391827934623553782808",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "10246065834940110543277",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "15000024962585",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "10270574310",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "684703814534855",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "17138640812521",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "24722599068288000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/rusdc-stark.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/rusdc-stark"
+          },
+          interestRate: {
+            value: "794836647",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x02a88a39089b710236066f08e2cb5119fd8827b41a210f6591b7c7c5f3b0be87",
+            name: "Vesu wBTC Re7 rUSDC",
+            symbol: "vWBTC-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1003052492877653627",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "20000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "48790166901120000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/wbtc"
+          },
+          interestRate: {
+            value: "1568613905",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x07d7b4fa4701a6e065e9bb1a6dc927b1513cea42dbdafd0168ed64070d136fc6",
+            name: "Vesu USD Coin Re7 rUSDC",
+            symbol: "vUSDC-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1003052492877653632",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "48790166901120000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/usdc"
+          },
+          interestRate: {
+            value: "1568613905",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          name: "Wrapped Staked Ether",
+          symbol: "wstETH",
+          decimals: 18,
+          vToken: {
+            address: "0x05caa6da8f447af4426eb2c636eb7b908cd682690b5d128a7dc17ea3d0d36e4f",
+            name: "Vesu wstETH Re7 rUSDC",
+            symbol: "vwstETH-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1003052492877653625",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "29135988945557660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "48790166901120000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "35791428571428564",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/wsteth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/wsteth"
+          },
+          interestRate: {
+            value: "1568613905",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x07a377f3d47f2d806e660065835b2c66c8ba212337a00aa556713eb3e28035f9",
+            name: "Vesu STRK Re7 rUSDC",
+            symbol: "vSTRK-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1003052492877653627",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "4700000000000000002000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "4700000000000000002000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "4700000000000000002000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "48790166901120000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/strk"
+          },
+          interestRate: {
+            value: "1568613905",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          name: "Endur xSTRK",
+          symbol: "xSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x069d2c197680bd60bafe1804239968275a1c85a1cad921809277306634b332b5",
+            name: "Vesu xSTRK Re7 rUSDC",
+            symbol: "vxSTRK-Re7rUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1240391,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1003052492877653649",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "199655495109356002286887",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "199655495109356002286887",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "199655495109356002286887",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "31569142064150416",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "48790166901120000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115119666655106208",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/xstrk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1749206066145585665304376624725901901307432885480056836110792804696449290137/xstrk"
+          },
+          interestRate: {
+            value: "1568613905",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x02019e47a0bc54ea6b4853c6123ffc8158ea3ae2af4166928b0de6e89f06de6c",
+          maxLTV: {
+            value: "940000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "2198503327643286920898110335698706244522220458610657370981979460625005526824",
+      name: "Genesis",
+      extensionContractAddress: "0x002334189e831d804d4a11d3f71d4a982ec82614ac12ed2e9ca2f8da4e6374fa",
+      owner: "0x040ba3ce5615a5c605e0caa592b4883052c804f8b1b326c1cab2d5820f003aa1",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x021fe2ca1b7e731e4a5ef7df2881356070c5d72db4b2d19f9195f6b641f75df0",
+            name: "Vesu Ether",
+            symbol: "vETH",
+            decimals: 18
+          },
+          listedBlockNumber: 654244,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000990128141626599",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "1260460515310079805825",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2716231015769749650037",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "1454800639114204207278",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2716701593477527348627",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "1456241078167447542802",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "536032769172627063",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "822865304078279",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "1533925548288000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/eth"
+          },
+          interestRate: {
+            value: "49316022",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x06b0ef784eb49c85f4d9447f30d7f7212be65ce1e553c18d516c87131e81dbd6",
+            name: "Vesu Wrapped BTC",
+            symbol: "vWBTC",
+            decimals: 18
+          },
+          listedBlockNumber: 654244,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000906411687960806",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "122656673",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "1289089335972998787",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "62612686943806255",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "128923616",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "6266943",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "48609736481483733",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "50967414780348",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "1047952888704000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/wbtc"
+          },
+          interestRate: {
+            value: "33691901",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x01610abab2ff987cdfb5e73cccbf7069cbb1a02bbfa5ee31d97cc30e29d89090",
+            name: "Vesu USD Coin",
+            symbol: "vUSDC",
+            decimals: 18
+          },
+          listedBlockNumber: 654244,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1017784782312210095",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "1949500482775",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "5192592370745786239829803",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "3254915124644517443057961",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "5262303564356",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "3312803081581",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "629534773330093965",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "1025178804870918",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "1627145978112000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/usdc"
+          },
+          interestRate: {
+            value: "52313078",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x032dd20efeb027ee51e676280df60c609ac6f6dcff798e4523515bc1668ed715",
+            name: "Vesu Tether USD",
+            symbol: "vUSDT",
+            decimals: 18
+          },
+          listedBlockNumber: 654244,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1023637241848385276",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "169325782076",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "280238210746765988218232",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "113335021818642467452524",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "285339731215",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "116013949139",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "406581826670275045",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "571593004111053",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "1404862579584000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/usdt.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/usdt"
+          },
+          interestRate: {
+            value: "45166621",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x037ae3f583c8d644b7556c93a04b83b52fa96159b2b0cbd83c14d3122aef80a2",
+            name: "Vesu Starknet",
+            symbol: "vSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 654244,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000913347750086920",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "4177241752356957751345133",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "4361427225013712662058458",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "184488602644930758503654",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "4361898857252030937155314",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "184657104895073185810181",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "42334109739400516",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "44122488662081",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "1041701637888000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/strk"
+          },
+          interestRate: {
+            value: "33490922",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          name: "Wrapped Staked Ether",
+          symbol: "wstETH",
+          decimals: 18,
+          vToken: {
+            address: "0x0159133f57b09260c707ff9d3ce93abdedee740795cc64a9233a0d61f15af923",
+            name: "Vesu Wrapped Staked Ether",
+            symbol: "vWSTETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1122698,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000193211200345708",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "3838576956991241815008",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "3966243768998817832617",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "127671974731479272321",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "3966273599378209463340",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "127696642386967648332",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "32195621201468950",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "33229880068453",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "29135988945557660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "1031591935872000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "35791428571428564",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/wsteth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/wsteth"
+          },
+          interestRate: {
+            value: "33165893",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          name: "Legacy Wrapped Staked Ether",
+          symbol: "wstETH (legacy)",
+          decimals: 18,
+          vToken: {
+            address: "0x044a8304cd9d00a1730e4acbc31fb3a2f8cf1272d95c39c76e338841026fd001",
+            name: "Vesu Wrapped Staked Ether",
+            symbol: "vWSTETH",
+            decimals: 18
+          },
+          listedBlockNumber: 654244,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "160350400",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1016819831519622763",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "1816609340241574841",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "1927670174041987488",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "133239381298940827",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "1952089785485742628",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "135480445244167787",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "69402773505346682",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "74209745315571",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "1068690703104000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/wsteth (legacy).mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2198503327643286920898110335698706244522220458610657370981979460625005526824/wsteth (legacy)"
+          },
+          interestRate: {
+            value: "34358626",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "820000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "740000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "740000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "710000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "820000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "740000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "740000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "590000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "930000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "720000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "660000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "650000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "930000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "630000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "580000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          maxLTV: {
+            value: "810000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          maxLTV: {
+            value: "710000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          maxLTV: {
+            value: "730000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "570000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "460000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "590000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "570000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "550000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "720000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "630000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          maxLTV: {
+            value: "810000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          maxLTV: {
+            value: "710000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          maxLTV: {
+            value: "730000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "550000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "2345856225134458665876812536882617294246962319062565703131100435311373119841",
+      name: "Re7 xSTRK",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c8989018428469248f9f722a95b77702e9eb51254bcfd663fb21cb876fce59",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x01f876e2da54266911d8a7409cba487414d318a2b6540149520bf7e2af56b93c",
+            name: "Vesu Starknet Token Re7 xSTRK",
+            symbol: "vSTRK-Re7xSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 954847,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "14353601013",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1031070481018800531",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "872173308935007980325649",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "8695718719271202198030607",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "7759143565261811300488312",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "8872397197063434667983523",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "8000223888128426687657874",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "901698121763115173",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "85006047297413919",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "90090479746944000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2345856225134458665876812536882617294246962319062565703131100435311373119841/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2345856225134458665876812536882617294246962319062565703131100435311373119841/strk"
+          },
+          interestRate: {
+            value: "2896427461",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          name: "Endur xSTRK",
+          symbol: "xSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x037ff012710c5175004687bc4d9e4c6e86d6ce5ca6fb6afee72ea02b1208fdb7",
+            name: "Vesu Endur xSTRK",
+            symbol: "vxSTRK",
+            decimals: 18
+          },
+          listedBlockNumber: 954847,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351753598072668",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "18465159504716621728848378",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "18465159504716621728848378",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "18465159504716621728848378",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "31569142064150416",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115119666655106208",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2345856225134458665876812536882617294246962319062565703131100435311373119841/xstrk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2345856225134458665876812536882617294246962319062565703131100435311373119841/xstrk"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "2535243615249328221060622268479728814680175138265908305094759253778126318519",
+      name: "Re7 wstETH",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c8989018428469248f9f722a95b77702e9eb51254bcfd663fb21cb876fce59",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x07bf0e1b5aabaa681cd3dba25c4e0db42fb4f0f564eb275949628435d337fae1",
+            name: "Vesu Ether Re7 wstETH",
+            symbol: "vETH-Re7wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1125655,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1001762211610567276",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "162985052965624957635",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "311909629766495279717",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "148908379421911720417",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "312155840462664728123",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "149170787497039770488",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "477872806339118558",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "4861256492659068",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "10121305923072000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2535243615249328221060622268479728814680175138265908305094759253778126318519/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2535243615249328221060622268479728814680175138265908305094759253778126318519/eth"
+          },
+          interestRate: {
+            value: "325402068",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          name: "Wrapped Staked Ether",
+          symbol: "wstETH",
+          decimals: 18,
+          vToken: {
+            address: "0x06deac5804db38126cf33a245ad2a775cbf74d2978ef24c1112bc1218bf4e22b",
+            name: "Vesu wstETH Re7 wstETH",
+            symbol: "vwstETH-Re7wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1125655,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000178815108999249",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "159615278069544959422",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "159615278069544959422",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "159615278069544959422",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "29135988945557660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "35791428571428564",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2535243615249328221060622268479728814680175138265908305094759253778126318519/wsteth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2535243615249328221060622268479728814680175138265908305094759253778126318519/wsteth"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "2612229586214495842527551768232431476062656055007024497123940017576986139174",
+      name: "Alterscope wstETH",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x022120e98b4ddbe31d3f618d0143e43a80ee3fd9ee5d678478d6f590af478254",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          name: "Wrapped Staked Ether",
+          symbol: "wstETH",
+          decimals: 18,
+          vToken: {
+            address: "0x05fcb6c1732396efa054c66909beeb1d3bca94501153c1a6584b48d6e8463f20",
+            name: "Vesu wstETH Alterscope wstETH",
+            symbol: "vwstETH-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178905,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062086010028539",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "29135988945557660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "35791428571428564",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/wsteth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/wsteth"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x07e89e7f1bc528785a5f14f0126b3cffd39f53db63d8bb60125b29f70f8b37bc",
+            name: "Vesu ETH Alterscope wstETH",
+            symbol: "vETH-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178905,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062086010028539",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/eth"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x057f0d0684968135afecdaac60fe9f9ccf8a276d6f5ac17b71212bc3bb4f5c01",
+            name: "Vesu WBTC Alterscope wstETH",
+            symbol: "vWBTC-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178905,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062086010028539",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "20000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/wbtc"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x0383c278dac0a6f2dae49960dfd189af5ded9a42b4a1f7c2b00b8d11ff82ff5d",
+            name: "Vesu USDC Alterscope wstETH",
+            symbol: "vUSDC-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178905,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062086010028539",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/usdc"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x06713e4ce7d33342208551c67eece4bce950df9fa9fe233f39561eac9d0cabae",
+            name: "Vesu USDT Alterscope wstETH",
+            symbol: "vUSDT-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178905,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062086010028539",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/usdt.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/usdt"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x02eed5de96c7bc425c0e3d92ba16957e66484dca2b9ad7a1ea76d37410950bfa",
+            name: "Vesu STRK Alterscope wstETH",
+            symbol: "vSTRK-Alterscope wstETH",
+            decimals: 18
+          },
+          listedBlockNumber: 1178905,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000062086010028539",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/2612229586214495842527551768232431476062656055007024497123940017576986139174/strk"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          maxLTV: {
+            value: "720000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "850000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          maxLTV: {
+            value: "820000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1921054942193708428619433636456748851087331856691656881799540576257302014718",
+      name: "Braavos Vault",
+      extensionContractAddress: "0x06ffa060b96fd027a7f5c32eb3c9b15505c089cf83b6fd318e3ce61fd8c3fac8",
+      owner: "0x040e32e176dca8f7fba4fab267763172d4530add0719b62ad77d96a2903030ad",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x008288573352819b6af92ffd780d5dc29e38873c6c172a19fe228aaffd95376d",
+            name: "Vesu Wrapped BTC Braavos Vault",
+            symbol: "vWBTC-bv",
+            decimals: 18
+          },
+          listedBlockNumber: 1259226,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "150000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "500000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "34304526",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "343045260000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "34304526",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1921054942193708428619433636456748851087331856691656881799540576257302014718/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1921054942193708428619433636456748851087331856691656881799540576257302014718/wbtc"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x0170c0736763bd33591e541bd81a0aede7f73ed523cb6c834ba58463991966c6",
+            name: "Vesu USD Coin Braavos Vault",
+            symbol: "vUSDC-bv",
+            decimals: 18
+          },
+          listedBlockNumber: 1259226,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "150000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/1921054942193708428619433636456748851087331856691656881799540576257302014718/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/1921054942193708428619433636456748851087331856691656881799540576257302014718/usdc"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "780000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "654335860926414800976850705344094927691632670467085266316814854013984546732",
+      name: "Update",
+      extensionContractAddress: "0x06ffa060b96fd027a7f5c32eb3c9b15505c089cf83b6fd318e3ce61fd8c3fac8",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x02564e985dce624392396d5262364b7e1a19e47f50e9cf307e376aa17346e03d",
+            name: "Vesu USD Coin Update",
+            symbol: "vUSDC-Update",
+            decimals: 18
+          },
+          listedBlockNumber: 1284322,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000019102249991428",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          name: "Endur xSTRK",
+          symbol: "xSTRK",
+          decimals: 18,
+          vToken: {
+            address: "0x02da05de34bbfccfb8484ab63d5fedbd4b062dcfa189d0fc9a4086c420d38903",
+            name: "Vesu Endur xSTRK Update",
+            symbol: "vxSTRK-Update",
+            decimals: 18
+          },
+          listedBlockNumber: 1284322,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000019102249991428",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "31569142064150416",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: {
+              value: "115119666655106208",
+              decimals: 18
+            }
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "400000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "1610264895936553784928358313981672193725908570362488606221536525391950767501",
+      name: "ExtNew",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c27cb555fdb7704d63c4b7ca7e5dfa1bc73872e762896e77b64d08235a821d",
+      isVerified: false,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x042ff68ef33aba2711016ad7695e1f056dfc87613c2b84f30cc80d03c86fb3d2",
+            name: "Vesu Ether ExtNew",
+            symbol: "vETH-ExtNew",
+            decimals: 18
+          },
+          listedBlockNumber: 1284794,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000018641470823448",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x044350aa930ceaaf193954bb4f7ca3a1f0f84e35bb681cc79e49684b6191a5b9",
+            name: "Vesu USD Coin ExtNew",
+            symbol: "vUSDC-ExtNew",
+            decimals: 18
+          },
+          listedBlockNumber: 1284794,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000018641470823448",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "900000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: null,
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "3163948199181372152800322058764275087686391083665033264234338943786798617741",
+      name: "Re7 Starknet Ecosystem",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c8989018428469248f9f722a95b77702e9eb51254bcfd663fb21cb876fce59",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x017f19582c61479f2fe0b6606300e975c0a8f439102f43eeecc1d0e9b3d84350",
+            name: "Vesu USD Coin Re7 USDC",
+            symbol: "vUSDC-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1125655,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1013026725324980598",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "24944525369",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "130861290034884430061053",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "105589622733261570373225",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "131909635114",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "106965109745",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "810896866271806128",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "61465407195544570",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "73063911517056000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3163948199181372152800322058764275087686391083665033264234338943786798617741/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3163948199181372152800322058764275087686391083665033264234338943786798617741/usdc"
+          },
+          interestRate: {
+            value: "2349019789",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x07560a5077d454fe04d174c284fc3988c702ef7070ff2d1e1b81010e6688204e",
+            name: "Vesu Starknet Token Re7 USDC",
+            symbol: "vSTRK-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1125655,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "6012718186813080081060",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "6012718186813080081060",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "6012718186813080081060",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3163948199181372152800322058764275087686391083665033264234338943786798617741/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3163948199181372152800322058764275087686391083665033264234338943786798617741/strk"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          name: "Ekubo Protocol",
+          symbol: "EKUBO",
+          decimals: 18,
+          vToken: {
+            address: "0x0502d4fbc6e273f399002ea4c98c746f15bd041e2a19b07b7b40b9e8331abccf",
+            name: "Vesu Ekubo Re7 Starknet",
+            symbol: "vEKUBO-Re7StarknetEcosystem",
+            decimals: 18
+          },
+          listedBlockNumber: 1125655,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "273415566166264519628518",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "273415566166264519628518",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "273415566166264519628518",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3163948199181372152800322058764275087686391083665033264234338943786798617741/ekubo.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3163948199181372152800322058764275087686391083665033264234338943786798617741/ekubo"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "3496574735728882918499284446337009546448797063742922299223215375275805529443",
+      name: "Alterscope CASH",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x022120e98b4ddbe31d3f618d0143e43a80ee3fd9ee5d678478d6f590af478254",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x06e0ed468fc285132aa2bc8bbb99f85cb12c2bcaa54e5238436f9b5c6fb5941a",
+            name: "Vesu Ether Alterscope CASH",
+            symbol: "vETH-AlterscopeCASH",
+            decimals: 18
+          },
+          listedBlockNumber: 1179283,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000061979114219273",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "850000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "5500000000000002000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "5500000000000002000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "5500000000000002000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/eth"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x0470ef9431a58d99884b7426c4294feadcd4d65a983278037018f8c5737f011a",
+            name: "Vesu STRK Alterscope CASH",
+            symbol: "vSTRK-AlterscopeCASH",
+            decimals: 18
+          },
+          listedBlockNumber: 1179283,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000061979114219268",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/strk"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x0279e954817dd6f1082ca2c1010beb6ba84fa602bbd452902e88c466de451b0f",
+            name: "Vesu WBTC Alterscope CASH",
+            symbol: "vWBTC-AlterscopeCASH",
+            decimals: 18
+          },
+          listedBlockNumber: 1179283,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000061979114219270",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2839",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "28390000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2839",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/wbtc"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x04d6cb9637b9af77fa7bfe4336777279eb8766ba30652e5186edc681effc0601",
+            name: "Vesu USDC Alterscope CASH",
+            symbol: "vUSDC-AlterscopeCASH",
+            decimals: 18
+          },
+          listedBlockNumber: 1179283,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000061979114219274",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/usdc"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          name: "Tether USD",
+          symbol: "USDT",
+          decimals: 6,
+          vToken: {
+            address: "0x0361412b442c2d9d98909cca413254d4abc11fbcdeda00290088798deed2ac5f",
+            name: "Vesu USDT Alterscope CASH",
+            symbol: "vUSDT-AlterscopeCASH",
+            decimals: 18
+          },
+          listedBlockNumber: 1179283,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000061979114219268",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "2000000000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40573089230109660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "499876862976000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/usdt.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/usdt"
+          },
+          interestRate: {
+            value: "16071144",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
+          name: "Cash",
+          symbol: "CASH",
+          decimals: 18,
+          vToken: {
+            address: "0x05eddd0067f51f0ce113efbd2ea38e1796a02194c680f5bd9ce2e5c679122267",
+            name: "Vesu Cash Alterscope CASH",
+            symbol: "vCASH-AlterscopeCASH",
+            decimals: 18
+          },
+          listedBlockNumber: 1179283,
+          config: {
+            debtFloor: {
+              value: "100000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "0",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "5861675589",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1001554553005352233",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "920000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "16062754693148745548482",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "20000000000000000002000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "3943148033692317782242",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "20012032559467388471439",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "3949277866318642922957",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "197345164944292456",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "1679281875863946",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "8473363623936000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/cash.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3496574735728882918499284446337009546448797063742922299223215375275805529443/cash"
+          },
+          interestRate: {
+            value: "272420384",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x0498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
+          maxLTV: {
+            value: "600000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x0498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x0498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
+          maxLTV: {
+            value: "700000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          debtAssetAddress: "0x0498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
+          maxLTV: {
+            value: "750000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
+          debtAssetAddress: "0x0498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
+          maxLTV: {
+            value: "720000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    },
+    {
+      id: "3592370751539490711610556844458488648008775713878064059760995781404350938653",
+      name: "Re7 USDC",
+      extensionContractAddress: "0x07cf3881eb4a58e76b41a792fa151510e7057037d80eda334682bd3e73389ec0",
+      owner: "0x01c8989018428469248f9f722a95b77702e9eb51254bcfd663fb21cb876fce59",
+      isVerified: true,
+      assets: [
+        {
+          address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+          vToken: {
+            address: "0x00989d6902edd719fad6f0331122d084d0fc7cf03e7a254eee549fd9ad8e32e3",
+            name: "Vesu Ether Re7 USDC",
+            symbol: "vETH-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 954804,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351796287134879",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "1186229387423944311",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "1186229387423944311",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "1186229387423944311",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "59416062575780290",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/eth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/eth"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          name: "Wrapped BTC",
+          symbol: "WBTC",
+          decimals: 8,
+          vToken: {
+            address: "0x03c48b0d8bc4913d7d789fb2717572dcd71bb599f2c6e81beeb24d865c8baf14",
+            name: "Vesu Wrapped BTC Re7 USDC",
+            symbol: "vWBTC-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 954804,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351796287134896",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2049",
+              decimals: 8
+            },
+            totalCollateralShares: {
+              value: "20490000000000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2049",
+              decimals: 8
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 8
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/wbtc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/wbtc"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          name: "USD Coin",
+          symbol: "USDC",
+          decimals: 6,
+          vToken: {
+            address: "0x028795e04b2abaf61266faa81cc02d4d1a6ef8574fef383cdf6185ca580648aa",
+            name: "Vesu USD Coin Re7 USDC",
+            symbol: "vUSDC-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 954804,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1010339280989976871",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "10323782211",
+              decimals: 6
+            },
+            totalCollateralShares: {
+              value: "12801094987780974439392",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "2503854836606311167985",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: true,
+            totalSupplied: {
+              value: "12853525106",
+              decimals: 6
+            },
+            totalDebt: {
+              value: "2529742895",
+              decimals: 6
+            },
+            currentUtilization: {
+              value: "196813160136056453",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "3712832882653192",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "40622306152165980",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "18689026361472000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/usdc.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/usdc"
+          },
+          interestRate: {
+            value: "600856043",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          name: "Starknet Token",
+          symbol: "STRK",
+          decimals: 18,
+          vToken: {
+            address: "0x00b5581d0bc94bc984cf79017d0f4b079c7e926af3d79bd92ff66fb451b340df",
+            name: "Vesu Starknet Token Re7 USDC",
+            symbol: "vSTRK-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 954804,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351796287134861",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "43362725988226402627573",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "43362725988226402627573",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "43362725988226402627573",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "41633532015344206",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/strk.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/strk"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          name: "Wrapped Staked Ether",
+          symbol: "wstETH",
+          decimals: 18,
+          vToken: {
+            address: "0x0341c0667fafa526400d29980aec17928732fdd585fd778d58a1f52836708b0e",
+            name: "Vesu wstETH Re7 USDC",
+            symbol: "vwstETH-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 1125191,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "3064241971",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "1000000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "2000",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "2000",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "2000",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: {
+              value: "29135988945557660",
+              decimals: 18
+            },
+            borrowApr: {
+              value: "0",
+              decimals: 18
+            },
+            lstApr: {
+              value: "35791428571428564",
+              decimals: 18
+            }
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/wsteth.mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/wsteth"
+          },
+          interestRate: {
+            value: "0",
+            decimals: 18
+          }
+        },
+        {
+          address: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          name: "Legacy Wrapped Staked Ether",
+          symbol: "wstETH (legacy)",
+          decimals: 18,
+          vToken: {
+            address: "0x02ff9b23f4ada0f5efa0e5acbc6faf79cfed551563eef72fa91287ae38a8dd09",
+            name: "Vesu W-Staked Ether Re7 USDC",
+            symbol: "vwstETH-Re7USDC",
+            decimals: 18
+          },
+          listedBlockNumber: 954804,
+          config: {
+            debtFloor: {
+              value: "10000000000000000000",
+              decimals: 18
+            },
+            isLegacy: false,
+            feeRate: {
+              value: "200000000000000000",
+              decimals: 18
+            },
+            lastFullUtilizationRate: {
+              value: "13035786672",
+              decimals: 18
+            },
+            lastRateAccumulator: {
+              value: "1000351796287134890",
+              decimals: 18
+            },
+            lastUpdated: "2025-04-10T07:13:36.000Z",
+            maxUtilization: {
+              value: "950000000000000000",
+              decimals: 18
+            },
+            reserve: {
+              value: "1187642182629",
+              decimals: 18
+            },
+            totalCollateralShares: {
+              value: "1187642182629",
+              decimals: 18
+            },
+            totalNominalDebt: {
+              value: "0",
+              decimals: 18
+            }
+          },
+          stats: {
+            canBeBorrowed: false,
+            totalSupplied: {
+              value: "1187642182629",
+              decimals: 18
+            },
+            totalDebt: {
+              value: "0",
+              decimals: 18
+            },
+            currentUtilization: {
+              value: "0",
+              decimals: 18
+            },
+            supplyApy: {
+              value: "0",
+              decimals: 18
+            },
+            defiSpringSupplyApr: null,
+            borrowApr: {
+              value: "999498206592000",
+              decimals: 18
+            },
+            lstApr: null
+          },
+          risk: {
+            mdxUrl: "https://raw.githubusercontent.com/vesuxyz/docs/refs/heads/main/docs/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/wsteth (legacy).mdx",
+            url: "https://docs.vesu.xyz/curators/risk-reports/3592370751539490711610556844458488648008775713878064059760995781404350938653/wsteth (legacy)"
+          },
+          interestRate: {
+            value: "32134073",
+            decimals: 18
+          }
+        }
+      ],
+      pairs: [
+        {
+          collateralAssetAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "680000000000000000",
+            decimals: 18
+          }
+        },
+        {
+          collateralAssetAddress: "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b",
+          debtAssetAddress: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+          maxLTV: {
+            value: "870000000000000000",
+            decimals: 18
+          }
+        }
+      ]
+    }
+  ]
+};
+
 // src/strategies/vesu-rebalance.ts
 var VesuRebalance = class _VesuRebalance extends BaseStrategy {
   // 10000 bps = 100%
@@ -3791,9 +12812,10 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     logger.verbose(typeof _pool);
     logger.verbose(`name: ${_pool?.name}`);
     const name = _pool?.name;
-    logger.verbose(`name2: ${name}`);
+    logger.verbose(`name2: ${name}, ${!name ? true : false}, ${name?.length}, ${typeof name}`);
     const assetInfo = _pool?.assets.find((d) => this.asset().address.eqString(d.address));
     if (!name) {
+      logger.verbose(`Pool not found`);
       throw new Error(`Pool name ${p.pool_id.address.toString()} not found`);
     }
     if (!assetInfo) {
@@ -3853,15 +12875,7 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       console.error(`${_VesuRebalance.name}: Error fetching positions for ${this.address.address}`, e);
       isErrorPositionsAPI = true;
     }
-    let isErrorPoolsAPI = false;
-    let pools = [];
-    try {
-      const data2 = await getAPIUsingHeadlessBrowser("https://api.vesu.xyz/pools");
-      pools = data2.data;
-    } catch (e) {
-      console.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
-      isErrorPoolsAPI = true;
-    }
+    let { pools, isErrorPoolsAPI } = await this.getVesuPools();
     const totalAssets = (await this.getTVL()).amount;
     const info = allowedPools.map((p) => this.getPoolInfo(p, pools, vesuPositions, totalAssets, isErrorPositionsAPI, isErrorPoolsAPI));
     const data = await Promise.all(info);
@@ -3871,6 +12885,30 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       isErrorPoolsAPI,
       isError: isErrorPositionsAPI || isErrorPoolsAPI
     };
+  }
+  async getVesuPools(retry = 0) {
+    let isErrorPoolsAPI = false;
+    let pools = [];
+    try {
+      const data = await getAPIUsingHeadlessBrowser("https://api.vesu.xyz/pools");
+      pools = data.data;
+      for (const pool of vesu_pools_default.data) {
+        const found = pools.find((d) => d.id === pool.id);
+        if (!found) {
+          logger.verbose(`VesuRebalance: pools: ${JSON.stringify(pools)}`);
+          logger.verbose(`VesuRebalance: Pool ${pool.id} not found in Vesu API, using hardcoded data`);
+          throw new Error("pool not found [sanity check]");
+        }
+      }
+    } catch (e) {
+      logger.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}, retry ${retry}`, e);
+      isErrorPoolsAPI = true;
+      if (retry < 10) {
+        await new Promise((resolve) => setTimeout(resolve, 5e3 * (retry + 1)));
+        return await this.getVesuPools(retry + 1);
+      }
+    }
+    return { pools, isErrorPoolsAPI };
   }
   /**
    * Calculates the weighted average APY across all pools based on USD value.

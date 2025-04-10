@@ -10,6 +10,7 @@ import { PricerBase } from "@/modules/pricerBase";
 import { BaseStrategy, SingleActionAmount, SingleTokenInfo } from "./base-strategy";
 import { getAPIUsingHeadlessBrowser } from "@/node/headless";
 import { VesuHarvests } from "@/modules/harvests";
+import VesuPoolIDs from "@/data/vesu_pools.json";
 
 interface PoolProps {
     pool_id: ContractAddr;
@@ -190,9 +191,10 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
         logger.verbose(typeof _pool);
         logger.verbose(`name: ${_pool?.name}`);
         const name = _pool?.name;
-        logger.verbose(`name2: ${name}`);
+        logger.verbose(`name2: ${name}, ${!name ? true : false}, ${name?.length}, ${typeof name}`);
         const assetInfo = _pool?.assets.find((d: any) => this.asset().address.eqString(d.address));
         if (!name) {
+            logger.verbose(`Pool not found`);
             throw new Error(`Pool name ${p.pool_id.address.toString()} not found`);
         }
         if (!assetInfo) {
@@ -303,15 +305,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
         }
         
 
-        let isErrorPoolsAPI = false;
-        let pools: any[] = [];
-        try {
-            const data = await getAPIUsingHeadlessBrowser('https://api.vesu.xyz/pools');
-            pools = data.data;
-        } catch (e) {
-            console.error(`${VesuRebalance.name}: Error fetching pools for ${this.address.address}`, e);
-            isErrorPoolsAPI = true;
-        }
+        let { pools, isErrorPoolsAPI } = await this.getVesuPools();
 
         const totalAssets = (await this.getTVL()).amount;
 
@@ -323,6 +317,34 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
             isErrorPoolsAPI,
             isError: isErrorPositionsAPI || isErrorPoolsAPI,
         }
+    }
+
+    async getVesuPools(retry = 0): Promise<{pools: any[], isErrorPoolsAPI: boolean}> {
+        let isErrorPoolsAPI = false;
+        let pools: any[] = [];
+        try {
+            const data = await getAPIUsingHeadlessBrowser('https://api.vesu.xyz/pools');
+            pools = data.data;
+
+            // Vesu API is unstable sometimes, some Pools may be missing sometimes
+            for (const pool of VesuPoolIDs.data) {
+                const found = pools.find((d: any) => d.id === pool.id);
+                if (!found) {
+                    logger.verbose(`VesuRebalance: pools: ${JSON.stringify(pools)}`);
+                    logger.verbose(`VesuRebalance: Pool ${pool.id} not found in Vesu API, using hardcoded data`);
+                    throw new Error('pool not found [sanity check]')
+                }
+            }
+        } catch (e) {
+            logger.error(`${VesuRebalance.name}: Error fetching pools for ${this.address.address}, retry ${retry}`, e);
+            isErrorPoolsAPI = true;
+            if (retry < 10) {
+                await new Promise((resolve) => setTimeout(resolve, 5000 * (retry + 1)));
+                return await this.getVesuPools(retry + 1);
+            }
+        }
+
+        return { pools, isErrorPoolsAPI };
     }
 
     /**
