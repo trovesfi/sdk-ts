@@ -203,6 +203,11 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
         let vTokenContract = new Contract(VesuRebalanceAbi, p.v_token.address, this.config.provider);
         const bal = await vTokenContract.balanceOf(this.address.address);
         const assets = await vTokenContract.convert_to_assets(uint256.bnToUint256(bal.toString()));
+        logger.verbose(`Collateral: ${JSON.stringify(vesuPosition?.collateral)}`);
+        logger.verbose(`supplyApy: ${JSON.stringify(assetInfo?.stats.supplyApy)}`);
+        logger.verbose(`defiSpringSupplyApr: ${JSON.stringify(assetInfo?.stats.defiSpringSupplyApr)}`);
+        logger.verbose(`currentUtilization: ${JSON.stringify(assetInfo?.stats.currentUtilization)}`);
+        logger.verbose(`maxUtilization: ${JSON.stringify(assetInfo?.config.maxUtilization)}`);
         const item = {
             pool_id: p.pool_id,
             pool_name: _pool?.name,
@@ -217,7 +222,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
                 netApy: 0,
             } : {
                 baseApy: Number(Web3Number.fromWei(assetInfo.stats.supplyApy.value, assetInfo.stats.supplyApy.decimals).toFixed(6)),
-                defiSpringApy: Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)),
+                defiSpringApy: assetInfo.stats.defiSpringSupplyApr ? Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)) : 0,
                 netApy: 0,
             },
             currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.stats.currentUtilization.value, assetInfo.stats.currentUtilization.decimals).toFixed(6)),
@@ -562,7 +567,7 @@ export class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAmo
     }
 }
 
-const _description = 'Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.'
+const _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well."
 const _protocol: IProtocol = {name: 'Vesu', logo: 'https://static-assets-8zct.onrender.com/integrations/vesu/logo.png'}
 // need to fine tune better
 const _riskFactor: RiskFactor[] = [

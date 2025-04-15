@@ -2089,7 +2089,7 @@ var AutoCompounderSTRK = class {
   }
 };
 
-// src/strategies/vesu-rebalance.ts
+// src/strategies/vesu-rebalance.tsx
 import { CairoCustomEnum, Contract as Contract5, num as num3, uint256 as uint2563 } from "starknet";
 
 // src/data/vesu-rebalance.abi.json
@@ -12697,7 +12697,7 @@ var vesu_pools_default = {
   ]
 };
 
-// src/strategies/vesu-rebalance.ts
+// src/strategies/vesu-rebalance.tsx
 var VesuRebalance = class _VesuRebalance extends BaseStrategy {
   // 10000 bps = 100%
   /**
@@ -12824,6 +12824,11 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     let vTokenContract = new Contract5(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
     const bal = await vTokenContract.balanceOf(this.address.address);
     const assets = await vTokenContract.convert_to_assets(uint2563.bnToUint256(bal.toString()));
+    logger.verbose(`Collateral: ${JSON.stringify(vesuPosition?.collateral)}`);
+    logger.verbose(`supplyApy: ${JSON.stringify(assetInfo?.stats.supplyApy)}`);
+    logger.verbose(`defiSpringSupplyApr: ${JSON.stringify(assetInfo?.stats.defiSpringSupplyApr)}`);
+    logger.verbose(`currentUtilization: ${JSON.stringify(assetInfo?.stats.currentUtilization)}`);
+    logger.verbose(`maxUtilization: ${JSON.stringify(assetInfo?.config.maxUtilization)}`);
     const item = {
       pool_id: p.pool_id,
       pool_name: _pool?.name,
@@ -12838,7 +12843,7 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
         netApy: 0
       } : {
         baseApy: Number(Web3Number.fromWei(assetInfo.stats.supplyApy.value, assetInfo.stats.supplyApy.decimals).toFixed(6)),
-        defiSpringApy: Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)),
+        defiSpringApy: assetInfo.stats.defiSpringSupplyApr ? Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)) : 0,
         netApy: 0
       },
       currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.stats.currentUtilization.value, assetInfo.stats.currentUtilization.decimals).toFixed(6)),
@@ -13193,7 +13198,7 @@ var VesuRebalanceStrategies = [{
   //     },
 }];
 
-// src/strategies/ekubo-cl-vault.ts
+// src/strategies/ekubo-cl-vault.tsx
 import { Contract as Contract6, num as num4, uint256 as uint2564 } from "starknet";
 
 // src/data/cl-vault.abi.json
@@ -18095,7 +18100,8 @@ var erc4626_abi_default = [
   }
 ];
 
-// src/strategies/ekubo-cl-vault.ts
+// src/strategies/ekubo-cl-vault.tsx
+import { jsx, jsxs } from "react/jsx-runtime";
 var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   /**
    * Creates a new VesuRebalance strategy instance.
@@ -18809,7 +18815,13 @@ var _riskFactor2 = [
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 var EkuboCLVaultStrategies = [{
   name: "Ekubo xSTRK/STRK",
-  description: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK"),
+  description: /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsx("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+    /* @__PURE__ */ jsxs("ul", { style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" }, children: [
+      /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+      /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+    ] })
+  ] }),
   address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
   type: "Other",
   // must be same order as poolKey token0 and token1

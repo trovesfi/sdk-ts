@@ -516,7 +516,7 @@ var getNoRiskTags = (risks) => {
 // src/strategies/autoCompounderStrk.ts
 var import_starknet6 = require("starknet");
 
-// src/strategies/vesu-rebalance.ts
+// src/strategies/vesu-rebalance.tsx
 var import_starknet8 = require("starknet");
 
 // src/node/headless.browser.ts
@@ -525,7 +525,7 @@ var import_axios5 = __toESM(require("axios"));
 // src/modules/harvests.ts
 var import_starknet7 = require("starknet");
 
-// src/strategies/vesu-rebalance.ts
+// src/strategies/vesu-rebalance.tsx
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
 var _riskFactor = [
@@ -620,8 +620,9 @@ var VesuRebalanceStrategies = [{
   //     },
 }];
 
-// src/strategies/ekubo-cl-vault.ts
+// src/strategies/ekubo-cl-vault.tsx
 var import_starknet9 = require("starknet");
+var import_jsx_runtime = require("react/jsx-runtime");
 var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
 var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
 var _riskFactor2 = [
@@ -631,7 +632,13 @@ var _riskFactor2 = [
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 var EkuboCLVaultStrategies = [{
   name: "Ekubo xSTRK/STRK",
-  description: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK"),
+  description: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", { style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+    ] })
+  ] }),
   address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
   type: "Other",
   // must be same order as poolKey token0 and token1

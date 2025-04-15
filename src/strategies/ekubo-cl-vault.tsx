@@ -933,7 +933,13 @@ const AUDIT_URL = 'https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ek
  */
 export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[] = [{
     name: 'Ekubo xSTRK/STRK',
-    description: _description.replace('{{POOL_NAME}}', 'xSTRK/STRK'),
+    description: <div>
+        <p>{_description.replace('{{POOL_NAME}}', 'xSTRK/STRK')}</p>
+        <ul style={{marginLeft: '20px', listStyle: 'circle', fontSize: '12px'}}>
+            <li style={{marginTop: '10px'}}>During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices.</li>
+            <li style={{marginTop: '10px'}}>Sometimes you might see a negative APY — this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week.</li>
+        </ul>
+    </div>,
     address: ContractAddr.from('0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324'),
     type: 'Other',
     // must be same order as poolKey token0 and token1

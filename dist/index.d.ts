@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import * as starknet from 'starknet';
 import { RpcProvider, BlockIdentifier, Contract, Uint256, Call, Account } from 'starknet';
+import React from 'react';
 import { Quote } from '@avnu/avnu-sdk';
 import * as util from 'util';
 import TelegramBot from 'node-telegram-bot-api';
@@ -90,7 +91,7 @@ declare enum FlowChartColors {
  */
 interface IStrategyMetadata<T> {
     name: string;
-    description: string;
+    description: string | React.ReactNode;
     address: ContractAddr;
     type: 'ERC4626' | 'ERC721' | 'Other';
     depositTokens: TokenInfo[];

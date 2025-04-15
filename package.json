@@ -1,6 +1,6 @@
 {
   "name": "@strkfarm/sdk",
-  "version": "1.0.30",
+  "version": "1.0.32",
   "description": "STRKFarm TS SDK (Meant for our internal use, but feel free to use it)",
   "typings": "dist/index.d.ts",
   "types": "dist/index.d.ts",
@@ -41,6 +41,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node-telegram-bot-api": "^0.64.7",
+    "@types/react": "^19.1.2",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.1.5",
@@ -48,6 +49,9 @@
     "tsup": "^8.1.0",
     "typedoc": "^0.26.3",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": "19.1.0"
   },
   "dependencies": {
     "@avnu/avnu-sdk": "^3.0.2",

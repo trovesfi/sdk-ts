@@ -1,5 +1,6 @@
 import { ContractAddr, Web3Number } from "@/dataTypes"
 import { BlockIdentifier, RpcProvider } from "starknet"
+import React from 'react';
 
 export enum RiskType {
     MARKET_RISK = 'Market Risk',
@@ -62,7 +63,7 @@ export enum FlowChartColors {
  */
 export interface IStrategyMetadata<T> {
     name: string,
-    description: string,
+    description: string | React.ReactNode,
     address: ContractAddr,
     type: 'ERC4626' | 'ERC721' | 'Other',
     depositTokens: TokenInfo[],
