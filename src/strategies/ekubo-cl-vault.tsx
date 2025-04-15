@@ -702,16 +702,16 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
         swapInfo: SwapInfo,
         acc: Account,
         estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>,
+        isSellTokenToken0 = true,
         retry = 0,
-        adjustmentFactor = 1,
-        isToken0Deficit = true
+        lowerLimit = 0n,
+        upperLimit = 0n,
     ): Promise<Call[]> {
-        const MAX_RETRIES = 20;
-        const MIN_ADJUSTMENT = 0.001; // Minimum adjustment factor
+        const MAX_RETRIES = 40;
 
         logger.verbose(
             `Rebalancing ${this.metadata.name}: ` +
-            `retry=${retry}, adjustment=${adjustmentFactor}%, token0Deficit=${isToken0Deficit}`
+            `retry=${retry}, lowerLimit=${lowerLimit}, upperLimit=${upperLimit}, isSellTokenToken0=${isSellTokenToken0}`
         );
 
         const fromAmount = uint256.uint256ToBN(swapInfo.token_from_amount);
@@ -729,47 +729,70 @@ export class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> 
                 throw err;
             }
 
-            if (adjustmentFactor < MIN_ADJUSTMENT) {
-                logger.error('Adjustment factor too small, likely oscillating');
-                throw new Error('Failed to converge on valid swap amount');
-            }
-
             logger.error(`Rebalance attempt ${retry + 1} failed, adjusting swap amount...`);
 
             const newSwapInfo = { ...swapInfo };
             const currentAmount = Web3Number.fromWei(fromAmount.toString(), 18); // 18 is ok, as its toWei eventually anyways
-
+            logger.verbose(`Current amount: ${currentAmount.toString()}`);
             if (err.message.includes('invalid token0 balance') || err.message.includes('invalid token0 amount')) {
-                // Too much token0, decrease swap amount
-                logger.verbose('Reducing swap amount - excess token0');
-                newSwapInfo.token_from_amount = uint256.bnToUint256(
-                    currentAmount.multipliedBy((100 - adjustmentFactor)/100).toWei()
-                );
-                adjustmentFactor = isToken0Deficit ? adjustmentFactor * 2: adjustmentFactor / 2;
-                isToken0Deficit = true;
-
-            } else if (err.message.includes('invalid token1 balance') || err.message.includes('invalid token1 amount')) {
-                // Too much token1, increase swap amount  
-                logger.verbose('Increasing swap amount - excess token1');
-                newSwapInfo.token_from_amount = uint256.bnToUint256(
-                    currentAmount.multipliedBy((100 + adjustmentFactor)/100).toWei()
-                );
-                adjustmentFactor = isToken0Deficit ? adjustmentFactor / 2 : adjustmentFactor * 2;
-                isToken0Deficit = false;
-
+                if (!isSellTokenToken0) {
+                    logger.verbose('Reducing swap amount - excess token0');
+                    let nextAmount = (fromAmount + lowerLimit) / 2n;
+                    upperLimit = fromAmount;
+                    if (nextAmount <= lowerLimit) {
+                        logger.error('Convergence failed: nextAmount <= lowerLimit');
+                        throw err;
+                    }
+                    newSwapInfo.token_from_amount = uint256.bnToUint256(nextAmount);
+                } else {
+                    logger.verbose('Increasing swap amount - deficit token0');
+                    let nextAmount = (fromAmount + upperLimit) / 2n;
+                    if (upperLimit == 0n) {
+                        nextAmount = fromAmount * 2n;
+                    }
+                    lowerLimit = fromAmount;
+                    if (upperLimit != 0n && nextAmount >= upperLimit) {
+                        logger.error('Convergence failed: nextAmount >= upperLimit');
+                        throw err;
+                    }
+                    newSwapInfo.token_from_amount = uint256.bnToUint256(nextAmount);
+                }
+            } else if (err.message.includes('invalid token1 amount') || err.message.includes('invalid token1 balance')) {
+                if (isSellTokenToken0) {
+                    logger.verbose('Reducing swap amount - excess token1');
+                    let nextAmount = (fromAmount + lowerLimit) / 2n;
+                    upperLimit = fromAmount;
+                    if (nextAmount <= lowerLimit) {
+                        logger.error('Convergence failed: nextAmount <= lowerLimit');
+                        throw err;
+                    }
+                    newSwapInfo.token_from_amount = uint256.bnToUint256(nextAmount);
+                } else {
+                    logger.verbose('Increasing swap amount - deficit token1');
+                    let nextAmount = (fromAmount + upperLimit) / 2n;
+                    if (upperLimit == 0n) {
+                        nextAmount = fromAmount * 2n;
+                    }
+                    lowerLimit = fromAmount;
+                    if (upperLimit != 0n && nextAmount >= upperLimit) {
+                        logger.error('Convergence failed: nextAmount >= upperLimit');
+                        throw err;
+                    }
+                    newSwapInfo.token_from_amount = uint256.bnToUint256(nextAmount);
+                }
             } else {
                 logger.error('Unexpected error:', err);
+                throw err;
             }
-
             newSwapInfo.token_to_min_amount = uint256.bnToUint256('0');
-
             return this.rebalanceIter(
                 newSwapInfo, 
                 acc,
                 estimateCall,
+                isSellTokenToken0,
                 retry + 1,
-                adjustmentFactor,
-                isToken0Deficit
+                lowerLimit,
+                upperLimit,
             );
         }
     }

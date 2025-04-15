@@ -717,7 +717,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * @returns Array of contract calls needed for rebalancing
      * @throws Error if max retries reached without successful rebalance
      */
-    rebalanceIter(swapInfo: SwapInfo, acc: Account, estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>, retry?: number, adjustmentFactor?: number, isToken0Deficit?: boolean): Promise<Call[]>;
+    rebalanceIter(swapInfo: SwapInfo, acc: Account, estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>, isSellTokenToken0?: boolean, retry?: number, lowerLimit?: bigint, upperLimit?: bigint): Promise<Call[]>;
     static tickToi129(tick: number): {
         mag: number;
         sign: number;
