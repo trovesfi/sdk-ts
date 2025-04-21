@@ -81,7 +81,7 @@ const defaultTokens: TokenInfo[] = [{
 }, {
     name: 'USDT',
     symbol: 'USDT',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/usdc.svg',
+    logo: 'https://assets.strkfarm.com/integrations/tokens/usdt.svg',
     address: ContractAddr.from('0x68f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8'),
     decimals: 6,
     coingeckId: undefined,
