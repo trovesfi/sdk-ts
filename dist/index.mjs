@@ -12974,13 +12974,30 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    *   - finalPools: Array of pool information after rebalance
    * @throws Error if rebalance is not possible while maintaining constraints
    */
-  async getRebalancedPositions() {
-    const { data: pools } = await this.getPools();
-    const totalAssets = (await this.getTVL()).amount;
+  async getRebalancedPositions(_pools) {
+    logger.verbose(`VesuRebalance: getRebalancedPositions`);
+    if (!_pools) {
+      const { data: _pools2 } = await this.getPools();
+      _pools = _pools2;
+    }
+    const feeDeductions = await this.getFee(_pools);
+    logger.verbose(`VesuRebalance: feeDeductions: ${JSON.stringify(feeDeductions)}`);
+    const pools = _pools.map((p) => {
+      const fee = feeDeductions.find((f) => p.v_token.eq(f.vToken))?.fee || Web3Number.fromWei("0", this.decimals());
+      logger.verbose(`FeeAdjustment: ${p.pool_id} => ${fee.toString()}, amt: ${p.amount.toString()}`);
+      return {
+        ...p,
+        amount: p.amount.minus(fee)
+      };
+    });
+    let totalAssets = (await this.getTVL()).amount;
     if (totalAssets.eq(0)) return {
       changes: [],
       finalPools: []
     };
+    feeDeductions.forEach((f) => {
+      totalAssets = totalAssets.minus(f.fee);
+    });
     const sumPools = pools.reduce((acc, curr) => acc.plus(curr.amount.toString()), Web3Number.fromWei("0", this.decimals()));
     logger.verbose(`Sum of pools: ${sumPools.toString()}`);
     logger.verbose(`Total assets: ${totalAssets.toString()}`);
@@ -13018,8 +13035,8 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     const sumChanges = changes.reduce((sum, c) => sum.plus(c.changeAmt.toString()), Web3Number.fromWei("0", this.decimals()));
     const sumFinal = changes.reduce((sum, c) => sum.plus(c.finalAmt.toString()), Web3Number.fromWei("0", this.decimals()));
     const hasChanges = changes.some((c) => !c.changeAmt.eq(0));
-    if (!sumChanges.eq(0)) throw new Error("Sum of changes must be zero");
     logger.verbose(`Sum of changes: ${sumChanges.toString()}`);
+    if (!sumChanges.eq(0)) throw new Error("Sum of changes must be zero");
     logger.verbose(`Sum of final: ${sumFinal.toString()}`);
     logger.verbose(`Total assets: ${totalAssets.toString()}`);
     if (!sumFinal.eq(totalAssets.toString())) throw new Error("Sum of final amounts must equal total assets");
@@ -13122,6 +13139,49 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
         swapInfo
       ])
     ];
+  }
+  /**
+   * Calculates the fees deducted in different vTokens based on the current and previous state.
+   * @param previousTotalSupply - The total supply of the strategy token before the transaction
+   * @returns {Promise<Array<{ vToken: ContractAddr, fee: Web3Number }>>} Array of fees deducted in different vTokens
+   */
+  async getFee(allowedPools) {
+    const assets = Web3Number.fromWei((await this.contract.total_assets()).toString(), this.asset().decimals);
+    const totalSupply = Web3Number.fromWei((await this.contract.total_supply()).toString(), this.asset().decimals);
+    const prevIndex = Web3Number.fromWei((await this.contract.get_previous_index()).toString(), 18);
+    const currIndex = new Web3Number(1, 18).multipliedBy(assets).dividedBy(totalSupply);
+    logger.verbose(`Previous index: ${prevIndex.toString()}`);
+    logger.verbose(`Assets: ${assets.toString()}`);
+    logger.verbose(`Total supply: ${totalSupply.toString()}`);
+    logger.verbose(`Current index: ${currIndex.toNumber()}`);
+    if (currIndex.lt(prevIndex)) {
+      logger.verbose(`getFee::Current index is less than previous index, no fees to be deducted`);
+      return [];
+    }
+    const indexDiff = currIndex.minus(prevIndex);
+    logger.verbose(`Index diff: ${indexDiff.toString()}`);
+    const numerator = totalSupply.multipliedBy(indexDiff).multipliedBy(this.metadata.additionalInfo.feeBps);
+    const denominator = 1e4;
+    let fee = numerator.dividedBy(denominator);
+    logger.verbose(`Fee: ${fee.toString()}`);
+    if (fee.lte(0)) {
+      return [];
+    }
+    const fees = [];
+    let remainingFee = fee.plus(Web3Number.fromWei("100", this.asset().decimals));
+    for (const pool of allowedPools) {
+      const vToken = pool.v_token;
+      const balance = pool.amount;
+      if (remainingFee.lte(balance)) {
+        fees.push({ vToken, fee: remainingFee });
+        break;
+      } else {
+        fees.push({ vToken, fee: Web3Number.fromWei(balance.toString(), 18) });
+        remainingFee = remainingFee.minus(Web3Number.fromWei(balance.toString(), 18));
+      }
+    }
+    logger.verbose(`Fees: ${JSON.stringify(fees)}`);
+    return fees;
   }
 };
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";

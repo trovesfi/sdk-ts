@@ -580,7 +580,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      *   - finalPools: Array of pool information after rebalance
      * @throws Error if rebalance is not possible while maintaining constraints
      */
-    getRebalancedPositions(): Promise<{
+    getRebalancedPositions(_pools?: PoolInfoFull[]): Promise<{
         changes: never[];
         finalPools: never[];
         isAnyPoolOverMaxWeight?: undefined;
@@ -597,6 +597,15 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
     getRebalanceCall(pools: Awaited<ReturnType<typeof this.getRebalancedPositions>>['changes'], isOverWeightAdjustment: boolean): Promise<starknet.Call | null>;
     getInvestmentFlows(pools: PoolInfoFull[]): Promise<IInvestmentFlow[]>;
     harvest(acc: Account): Promise<starknet.Call[]>;
+    /**
+     * Calculates the fees deducted in different vTokens based on the current and previous state.
+     * @param previousTotalSupply - The total supply of the strategy token before the transaction
+     * @returns {Promise<Array<{ vToken: ContractAddr, fee: Web3Number }>>} Array of fees deducted in different vTokens
+     */
+    getFee(allowedPools: Array<PoolInfoFull>): Promise<Array<{
+        vToken: ContractAddr;
+        fee: Web3Number;
+    }>>;
 }
 /**
  * Represents the Vesu Rebalance Strategies.
