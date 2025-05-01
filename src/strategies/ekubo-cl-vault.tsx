@@ -954,34 +954,79 @@ const AUDIT_URL = 'https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ek
 /**
  * Represents the Vesu Rebalance Strategies.
  */
-export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[] = [{
-    name: 'Ekubo xSTRK/STRK',
-    description: <div>
-        <p>{_description.replace('{{POOL_NAME}}', 'xSTRK/STRK')}</p>
-        <ul style={{marginLeft: '20px', listStyle: 'circle', fontSize: '12px'}}>
-            <li style={{marginTop: '10px'}}>During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices.</li>
-            <li style={{marginTop: '10px'}}>Sometimes you might see a negative APY — this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week.</li>
+export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[] = [
+  {
+    name: "Ekubo xSTRK/STRK",
+    description: (
+      <div>
+        <p>{_description.replace("{{POOL_NAME}}", "xSTRK/STRK")}</p>
+        <ul
+          style={{ marginLeft: "20px", listStyle: "circle", fontSize: "12px" }}
+        >
+          <li style={{ marginTop: "10px" }}>
+            During withdrawal, you may receive either or both tokens depending
+            on market conditions and prevailing prices.
+          </li>
+          <li style={{ marginTop: "10px" }}>
+            Sometimes you might see a negative APY — this is usually not a big
+            deal. It happens when xSTRK's price drops on DEXes, but things
+            typically bounce back within a few days or a week.
+          </li>
         </ul>
-    </div>,
-    address: ContractAddr.from('0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324'),
-    type: 'Other',
+      </div>
+    ),
+    address: ContractAddr.from(
+      "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
+    ),
+    type: "Other",
     // must be same order as poolKey token0 and token1
-    depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'xSTRK')!, Global.getDefaultTokens().find(t => t.symbol === 'STRK')!],
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "xSTRK")!,
+      Global.getDefaultTokens().find((t) => t.symbol === "STRK")!
+    ],
     protocols: [_protocol],
     auditUrl: AUDIT_URL,
-    maxTVL: Web3Number.fromWei('0', 18),
+    maxTVL: Web3Number.fromWei("0", 18),
     risk: {
-        riskFactor: _riskFactor,
-        netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) /  _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-        notARisks: getNoRiskTags(_riskFactor)
+      riskFactor: _riskFactor,
+      netRisk:
+        _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) /
+        _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
     },
-    apyMethodology: 'APY based on 7-day historical performance, including fees and rewards.',
+    apyMethodology:
+      "APY based on 7-day historical performance, including fees and rewards.",
     additionalInfo: {
-        newBounds: {
-            lower: -1,
-            upper: 1
-        },
-        lstContract: ContractAddr.from('0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a'),
-        feeBps: 1000
-    }
-}]
+      newBounds: {
+        lower: -1,
+        upper: 1
+      },
+      lstContract: ContractAddr.from(
+        "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"
+      ),
+      feeBps: 1000
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
+  }
+];

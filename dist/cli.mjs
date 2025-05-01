@@ -485,7 +485,9 @@ var RiskType = /* @__PURE__ */ ((RiskType2) => {
 })(RiskType || {});
 var getNoRiskTags = (risks) => {
   const noRisks1 = risks.filter((risk) => risk.value === 0).map((risk) => risk.type);
-  const noRisks2 = Object.values(RiskType).filter((risk) => !risks.map((risk2) => risk2.type).includes(risk));
+  const noRisks2 = Object.values(RiskType).filter(
+    (risk) => !risks.map((risk2) => risk2.type).includes(risk)
+  );
   const mergedUnique = [.../* @__PURE__ */ new Set([...noRisks1, ...noRisks2])];
   return mergedUnique.map((risk) => `No ${risk}`);
 };
@@ -504,98 +506,194 @@ import { Contract as Contract4, num as num2 } from "starknet";
 
 // src/strategies/vesu-rebalance.tsx
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
-var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+var _protocol = {
+  name: "Vesu",
+  logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png"
+};
 var _riskFactor = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
   { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
-var VesuRebalanceStrategies = [{
-  name: "Vesu Fusion STRK",
-  description: _description.replace("{{TOKEN}}", "STRK"),
-  address: ContractAddr.from("0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"),
-  type: "ERC4626",
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
-  protocols: [_protocol],
-  auditUrl: AUDIT_URL,
-  maxTVL: Web3Number.fromWei("0", 18),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
+var VesuRebalanceStrategies = [
+  {
+    name: "Vesu Fusion STRK",
+    description: _description.replace("{{TOKEN}}", "STRK"),
+    address: ContractAddr.from(
+      "0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"
+    ),
+    type: "ERC4626",
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "STRK")
+    ],
+    protocols: [_protocol],
+    auditUrl: AUDIT_URL,
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   },
-  additionalInfo: {
-    feeBps: 1e3
-  }
-}, {
-  name: "Vesu Fusion ETH",
-  description: _description.replace("{{TOKEN}}", "ETH"),
-  address: ContractAddr.from("0x5eaf5ee75231cecf79921ff8ded4b5ffe96be718bcb3daf206690ad1a9ad0ca"),
-  type: "ERC4626",
-  auditUrl: AUDIT_URL,
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "ETH")],
-  protocols: [_protocol],
-  maxTVL: Web3Number.fromWei("0", 18),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
+  {
+    name: "Vesu Fusion ETH",
+    description: _description.replace("{{TOKEN}}", "ETH"),
+    address: ContractAddr.from(
+      "0x5eaf5ee75231cecf79921ff8ded4b5ffe96be718bcb3daf206690ad1a9ad0ca"
+    ),
+    type: "ERC4626",
+    auditUrl: AUDIT_URL,
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "ETH")
+    ],
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   },
-  additionalInfo: {
-    feeBps: 1e3
-  }
-}, {
-  name: "Vesu Fusion USDC",
-  description: _description.replace("{{TOKEN}}", "USDC"),
-  address: ContractAddr.from("0xa858c97e9454f407d1bd7c57472fc8d8d8449a777c822b41d18e387816f29c"),
-  type: "ERC4626",
-  auditUrl: AUDIT_URL,
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDC")],
-  protocols: [_protocol],
-  maxTVL: Web3Number.fromWei("0", 6),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
+  {
+    name: "Vesu Fusion USDC",
+    description: _description.replace("{{TOKEN}}", "USDC"),
+    address: ContractAddr.from(
+      "0xa858c97e9454f407d1bd7c57472fc8d8d8449a777c822b41d18e387816f29c"
+    ),
+    type: "ERC4626",
+    auditUrl: AUDIT_URL,
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "USDC")
+    ],
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei("0", 6),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   },
-  additionalInfo: {
-    feeBps: 1e3
+  {
+    name: "Vesu Fusion USDT",
+    description: _description.replace("{{TOKEN}}", "USDT"),
+    address: ContractAddr.from(
+      "0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"
+    ),
+    type: "ERC4626",
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "USDT")
+    ],
+    auditUrl: AUDIT_URL,
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei("0", 6),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
+    // }, {
+    //     name: 'Vesu Fusion WBTC',
+    //     description: _description.replace('{{TOKEN}}', 'WBTC'),
+    //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
+    //     type: 'ERC4626',
+    //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
+    // auditUrl: AUDIT_URL,
+    //     protocols: [_protocol],
+    //     maxTVL: Web3Number.fromWei('0', 8),
+    //     risk: {
+    //         riskFactor: _riskFactor,
+    //         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+    //     },
+    //     additionalInfo: {
+    //         feeBps: 1000,
+    //     },
   }
-}, {
-  name: "Vesu Fusion USDT",
-  description: _description.replace("{{TOKEN}}", "USDT"),
-  address: ContractAddr.from("0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"),
-  type: "ERC4626",
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDT")],
-  auditUrl: AUDIT_URL,
-  protocols: [_protocol],
-  maxTVL: Web3Number.fromWei("0", 6),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
-  },
-  additionalInfo: {
-    feeBps: 1e3
-  }
-  // }, {
-  //     name: 'Vesu Fusion WBTC',
-  //     description: _description.replace('{{TOKEN}}', 'WBTC'),
-  //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
-  //     type: 'ERC4626',
-  //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
-  // auditUrl: AUDIT_URL,
-  //     protocols: [_protocol],
-  //     maxTVL: Web3Number.fromWei('0', 8),
-  //     risk: {
-  //         riskFactor: _riskFactor,
-  //         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-  //     },
-  //     additionalInfo: {
-  //         feeBps: 1000,
-  //     },
-}];
+];
 
 // src/strategies/ekubo-cl-vault.tsx
 import { Contract as Contract6, num as num4, uint256 as uint2564 } from "starknet";
@@ -607,37 +705,70 @@ var _riskFactor2 = [
   { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
 ];
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
-var EkuboCLVaultStrategies = [{
-  name: "Ekubo xSTRK/STRK",
-  description: /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-    /* @__PURE__ */ jsxs("ul", { style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" }, children: [
-      /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-      /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
-    ] })
-  ] }),
-  address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
-  type: "Other",
-  // must be same order as poolKey token0 and token1
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"), Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
-  protocols: [_protocol2],
-  auditUrl: AUDIT_URL2,
-  maxTVL: Web3Number.fromWei("0", 18),
-  risk: {
-    riskFactor: _riskFactor2,
-    netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor2)
-  },
-  apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
-  additionalInfo: {
-    newBounds: {
-      lower: -1,
-      upper: 1
+var EkuboCLVaultStrategies = [
+  {
+    name: "Ekubo xSTRK/STRK",
+    description: /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+      /* @__PURE__ */ jsxs(
+        "ul",
+        {
+          style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" },
+          children: [
+            /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+            /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+          ]
+        }
+      )
+    ] }),
+    address: ContractAddr.from(
+      "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
+    ),
+    type: "Other",
+    // must be same order as poolKey token0 and token1
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"),
+      Global.getDefaultTokens().find((t) => t.symbol === "STRK")
+    ],
+    protocols: [_protocol2],
+    auditUrl: AUDIT_URL2,
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor2,
+      netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor2)
     },
-    lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
-    feeBps: 1e3
+    apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
+    additionalInfo: {
+      newBounds: {
+        lower: -1,
+        upper: 1
+      },
+      lstContract: ContractAddr.from(
+        "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"
+      ),
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   }
-}];
+];
 
 // src/notifs/telegram.ts
 import TelegramBot from "node-telegram-bot-api";

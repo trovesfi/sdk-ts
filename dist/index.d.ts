@@ -73,7 +73,7 @@ declare enum Network {
 interface IConfig {
     provider: RpcProvider;
     network: Network;
-    stage: 'production' | 'staging';
+    stage: "production" | "staging";
     heartbeatUrl?: string;
 }
 interface IProtocol {
@@ -85,6 +85,10 @@ declare enum FlowChartColors {
     Blue = "#35484f",
     Purple = "#6e53dc"
 }
+interface FAQ {
+    question: string;
+    answer: string;
+}
 /**
  * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.
  * @property risk.riskFactor.factor - The value of the risk factor from 0 to 10, 0 being the lowest and 10 being the highest.
@@ -93,7 +97,7 @@ interface IStrategyMetadata<T> {
     name: string;
     description: string | React.ReactNode;
     address: ContractAddr;
-    type: 'ERC4626' | 'ERC721' | 'Other';
+    type: "ERC4626" | "ERC721" | "Other";
     depositTokens: TokenInfo[];
     protocols: IProtocol[];
     auditUrl?: string;
@@ -105,6 +109,7 @@ interface IStrategyMetadata<T> {
     };
     apyMethodology?: string;
     additionalInfo: T;
+    faqs: FAQ[];
 }
 interface IInvestmentFlow {
     id?: string;
@@ -594,7 +599,7 @@ declare class VesuRebalance extends BaseStrategy<SingleTokenInfo, SingleActionAm
      * @param pools - Array of pool information including IDs, weights, amounts, APYs and utilization
      * @returns Populated contract call for rebalance
      */
-    getRebalanceCall(pools: Awaited<ReturnType<typeof this.getRebalancedPositions>>['changes'], isOverWeightAdjustment: boolean): Promise<starknet.Call | null>;
+    getRebalanceCall(pools: Awaited<ReturnType<typeof this.getRebalancedPositions>>["changes"], isOverWeightAdjustment: boolean): Promise<starknet.Call | null>;
     getInvestmentFlows(pools: PoolInfoFull[]): Promise<IInvestmentFlow[]>;
     harvest(acc: Account): Promise<starknet.Call[]>;
     /**
@@ -862,4 +867,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, BaseStrategy, type CLVaultStrategySettings, ContractAddr, type DualActionAmount, type DualTokenInfo, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, type SingleActionAmount, type SingleTokenInfo, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, type VesuRebalanceSettings, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, BaseStrategy, type CLVaultStrategySettings, ContractAddr, type DualActionAmount, type DualTokenInfo, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, type FAQ, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, type SingleActionAmount, type SingleTokenInfo, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, type VesuRebalanceSettings, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };

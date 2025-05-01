@@ -2006,7 +2006,9 @@ var getRiskColor = (risk) => {
 };
 var getNoRiskTags = (risks) => {
   const noRisks1 = risks.filter((risk) => risk.value === 0).map((risk) => risk.type);
-  const noRisks2 = Object.values(RiskType).filter((risk) => !risks.map((risk2) => risk2.type).includes(risk));
+  const noRisks2 = Object.values(RiskType).filter(
+    (risk) => !risks.map((risk2) => risk2.type).includes(risk)
+  );
   const mergedUnique = [.../* @__PURE__ */ new Set([...noRisks1, ...noRisks2])];
   return mergedUnique.map((risk) => `No ${risk}`);
 };
@@ -12711,10 +12713,17 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     super(config);
     this.BASE_WEIGHT = 1e4;
     this.pricer = pricer;
-    assert(metadata.depositTokens.length === 1, "VesuRebalance only supports 1 deposit token");
+    assert(
+      metadata.depositTokens.length === 1,
+      "VesuRebalance only supports 1 deposit token"
+    );
     this.metadata = metadata;
     this.address = metadata.address;
-    this.contract = new Contract5(vesu_rebalance_abi_default, this.address.address, this.config.provider);
+    this.contract = new Contract5(
+      vesu_rebalance_abi_default,
+      this.address.address,
+      this.config.provider
+    );
   }
   /**
    * Creates a deposit call to the strategy contract.
@@ -12723,10 +12732,23 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    * @returns Populated contract call for deposit
    */
   async depositCall(amountInfo, receiver) {
-    assert(amountInfo.tokenInfo.address.eq(this.asset().address), "Deposit token mismatch");
-    const assetContract = new Contract5(vesu_rebalance_abi_default, this.asset().address.address, this.config.provider);
-    const call1 = assetContract.populate("approve", [this.address.address, uint2563.bnToUint256(amountInfo.amount.toWei())]);
-    const call2 = this.contract.populate("deposit", [uint2563.bnToUint256(amountInfo.amount.toWei()), receiver.address]);
+    assert(
+      amountInfo.tokenInfo.address.eq(this.asset().address),
+      "Deposit token mismatch"
+    );
+    const assetContract = new Contract5(
+      vesu_rebalance_abi_default,
+      this.asset().address.address,
+      this.config.provider
+    );
+    const call1 = assetContract.populate("approve", [
+      this.address.address,
+      uint2563.bnToUint256(amountInfo.amount.toWei())
+    ]);
+    const call2 = this.contract.populate("deposit", [
+      uint2563.bnToUint256(amountInfo.amount.toWei()),
+      receiver.address
+    ]);
     return [call1, call2];
   }
   /**
@@ -12737,7 +12759,13 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    * @returns Populated contract call for withdrawal
    */
   async withdrawCall(amountInfo, receiver, owner) {
-    return [this.contract.populate("withdraw", [uint2563.bnToUint256(amountInfo.amount.toWei()), receiver.address, owner.address])];
+    return [
+      this.contract.populate("withdraw", [
+        uint2563.bnToUint256(amountInfo.amount.toWei()),
+        receiver.address,
+        owner.address
+      ])
+    ];
   }
   /**
    * Returns the underlying asset token of the strategy.
@@ -12760,9 +12788,16 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    */
   async getUserTVL(user) {
     const shares = await this.contract.balanceOf(user.address);
-    const assets = await this.contract.convert_to_assets(uint2563.bnToUint256(shares));
-    const amount = Web3Number.fromWei(assets.toString(), this.metadata.depositTokens[0].decimals);
-    let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
+    const assets = await this.contract.convert_to_assets(
+      uint2563.bnToUint256(shares)
+    );
+    const amount = Web3Number.fromWei(
+      assets.toString(),
+      this.metadata.depositTokens[0].decimals
+    );
+    let price = await this.pricer.getPrice(
+      this.metadata.depositTokens[0].symbol
+    );
     const usdValue = Number(amount.toFixed(6)) * price.price;
     return {
       tokenInfo: this.asset(),
@@ -12776,8 +12811,13 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    */
   async getTVL() {
     const assets = await this.contract.total_assets();
-    const amount = Web3Number.fromWei(assets.toString(), this.metadata.depositTokens[0].decimals);
-    let price = await this.pricer.getPrice(this.metadata.depositTokens[0].symbol);
+    const amount = Web3Number.fromWei(
+      assets.toString(),
+      this.metadata.depositTokens[0].decimals
+    );
+    let price = await this.pricer.getPrice(
+      this.metadata.depositTokens[0].symbol
+    );
     const usdValue = Number(amount.toFixed(6)) * price.price;
     return {
       tokenInfo: this.asset(),
@@ -12803,51 +12843,104 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     return pools;
   }
   async getPoolInfo(p, pools, vesuPositions, totalAssets, isErrorPositionsAPI, isErrorPoolsAPI) {
-    const vesuPosition = vesuPositions.find((d) => d.pool.id.toString() === num3.getDecimalString(p.pool_id.address.toString()));
+    const vesuPosition = vesuPositions.find(
+      (d) => d.pool.id.toString() === num3.getDecimalString(p.pool_id.address.toString())
+    );
     const _pool = pools.find((d) => {
-      logger.verbose(`pool check: ${d.id == num3.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${num3.getDecimalString(p.pool_id.address.toString())}`);
+      logger.verbose(
+        `pool check: ${d.id == num3.getDecimalString(p.pool_id.address.toString())}, id: ${d.id}, pool_id: ${num3.getDecimalString(
+          p.pool_id.address.toString()
+        )}`
+      );
       return d.id == num3.getDecimalString(p.pool_id.address.toString());
     });
     logger.verbose(`pool: ${JSON.stringify(_pool)}`);
     logger.verbose(typeof _pool);
     logger.verbose(`name: ${_pool?.name}`);
     const name = _pool?.name;
-    logger.verbose(`name2: ${name}, ${!name ? true : false}, ${name?.length}, ${typeof name}`);
-    const assetInfo = _pool?.assets.find((d) => this.asset().address.eqString(d.address));
+    logger.verbose(
+      `name2: ${name}, ${!name ? true : false}, ${name?.length}, ${typeof name}`
+    );
+    const assetInfo = _pool?.assets.find(
+      (d) => this.asset().address.eqString(d.address)
+    );
     if (!name) {
       logger.verbose(`Pool not found`);
       throw new Error(`Pool name ${p.pool_id.address.toString()} not found`);
     }
     if (!assetInfo) {
-      throw new Error(`Asset ${this.asset().address.toString()} not found in pool ${p.pool_id.address.toString()}`);
+      throw new Error(
+        `Asset ${this.asset().address.toString()} not found in pool ${p.pool_id.address.toString()}`
+      );
     }
-    let vTokenContract = new Contract5(vesu_rebalance_abi_default, p.v_token.address, this.config.provider);
+    let vTokenContract = new Contract5(
+      vesu_rebalance_abi_default,
+      p.v_token.address,
+      this.config.provider
+    );
     const bal = await vTokenContract.balanceOf(this.address.address);
-    const assets = await vTokenContract.convert_to_assets(uint2563.bnToUint256(bal.toString()));
+    const assets = await vTokenContract.convert_to_assets(
+      uint2563.bnToUint256(bal.toString())
+    );
     logger.verbose(`Collateral: ${JSON.stringify(vesuPosition?.collateral)}`);
     logger.verbose(`supplyApy: ${JSON.stringify(assetInfo?.stats.supplyApy)}`);
-    logger.verbose(`defiSpringSupplyApr: ${JSON.stringify(assetInfo?.stats.defiSpringSupplyApr)}`);
-    logger.verbose(`currentUtilization: ${JSON.stringify(assetInfo?.stats.currentUtilization)}`);
-    logger.verbose(`maxUtilization: ${JSON.stringify(assetInfo?.config.maxUtilization)}`);
+    logger.verbose(
+      `defiSpringSupplyApr: ${JSON.stringify(
+        assetInfo?.stats.defiSpringSupplyApr
+      )}`
+    );
+    logger.verbose(
+      `currentUtilization: ${JSON.stringify(
+        assetInfo?.stats.currentUtilization
+      )}`
+    );
+    logger.verbose(
+      `maxUtilization: ${JSON.stringify(assetInfo?.config.maxUtilization)}`
+    );
     const item = {
       pool_id: p.pool_id,
       pool_name: _pool?.name,
       max_weight: p.max_weight,
-      current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)),
+      current_weight: isErrorPositionsAPI || !vesuPosition ? 0 : Number(
+        Web3Number.fromWei(vesuPosition.collateral.value, this.decimals()).dividedBy(totalAssets.toString()).toFixed(6)
+      ),
       v_token: p.v_token,
       amount: Web3Number.fromWei(assets.toString(), this.decimals()),
-      usdValue: isErrorPositionsAPI || !vesuPosition ? Web3Number.fromWei("0", this.decimals()) : Web3Number.fromWei(vesuPosition.collateral.usdPrice.value, vesuPosition.collateral.usdPrice.decimals),
+      usdValue: isErrorPositionsAPI || !vesuPosition ? Web3Number.fromWei("0", this.decimals()) : Web3Number.fromWei(
+        vesuPosition.collateral.usdPrice.value,
+        vesuPosition.collateral.usdPrice.decimals
+      ),
       APY: isErrorPoolsAPI || !assetInfo ? {
         baseApy: 0,
         defiSpringApy: 0,
         netApy: 0
       } : {
-        baseApy: Number(Web3Number.fromWei(assetInfo.stats.supplyApy.value, assetInfo.stats.supplyApy.decimals).toFixed(6)),
-        defiSpringApy: assetInfo.stats.defiSpringSupplyApr ? Number(Web3Number.fromWei(assetInfo.stats.defiSpringSupplyApr.value, assetInfo.stats.defiSpringSupplyApr.decimals).toFixed(6)) : 0,
+        baseApy: Number(
+          Web3Number.fromWei(
+            assetInfo.stats.supplyApy.value,
+            assetInfo.stats.supplyApy.decimals
+          ).toFixed(6)
+        ),
+        defiSpringApy: assetInfo.stats.defiSpringSupplyApr ? Number(
+          Web3Number.fromWei(
+            assetInfo.stats.defiSpringSupplyApr.value,
+            assetInfo.stats.defiSpringSupplyApr.decimals
+          ).toFixed(6)
+        ) : 0,
         netApy: 0
       },
-      currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.stats.currentUtilization.value, assetInfo.stats.currentUtilization.decimals).toFixed(6)),
-      maxUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(Web3Number.fromWei(assetInfo.config.maxUtilization.value, assetInfo.config.maxUtilization.decimals).toFixed(6))
+      currentUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(
+        Web3Number.fromWei(
+          assetInfo.stats.currentUtilization.value,
+          assetInfo.stats.currentUtilization.decimals
+        ).toFixed(6)
+      ),
+      maxUtilization: isErrorPoolsAPI || !assetInfo ? 0 : Number(
+        Web3Number.fromWei(
+          assetInfo.config.maxUtilization.value,
+          assetInfo.config.maxUtilization.decimals
+        ).toFixed(6)
+      )
     };
     item.APY.netApy = item.APY.baseApy + item.APY.defiSpringApy;
     return item;
@@ -12857,7 +12950,7 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    * 1. Contract's allowed pools
    * 2. Vesu positions API for current positions
    * 3. Vesu pools API for APY and utilization data
-   * 
+   *
    * @returns {Promise<{
    *   data: Array<PoolInfoFull>,
    *   isErrorPositionsAPI: boolean
@@ -12874,15 +12967,29 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     let isErrorPositionsAPI = false;
     let vesuPositions = [];
     try {
-      const data2 = await getAPIUsingHeadlessBrowser(`https://api.vesu.xyz/positions?walletAddress=${this.address.address}`);
+      const data2 = await getAPIUsingHeadlessBrowser(
+        `https://api.vesu.xyz/positions?walletAddress=${this.address.address}`
+      );
       vesuPositions = data2.data;
     } catch (e) {
-      console.error(`${_VesuRebalance.name}: Error fetching positions for ${this.address.address}`, e);
+      console.error(
+        `${_VesuRebalance.name}: Error fetching positions for ${this.address.address}`,
+        e
+      );
       isErrorPositionsAPI = true;
     }
     let { pools, isErrorPoolsAPI } = await this.getVesuPools();
     const totalAssets = (await this.getTVL()).amount;
-    const info = allowedPools.map((p) => this.getPoolInfo(p, pools, vesuPositions, totalAssets, isErrorPositionsAPI, isErrorPoolsAPI));
+    const info = allowedPools.map(
+      (p) => this.getPoolInfo(
+        p,
+        pools,
+        vesuPositions,
+        totalAssets,
+        isErrorPositionsAPI,
+        isErrorPoolsAPI
+      )
+    );
     const data = await Promise.all(info);
     return {
       data,
@@ -12895,18 +13002,25 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     let isErrorPoolsAPI = false;
     let pools = [];
     try {
-      const data = await getAPIUsingHeadlessBrowser("https://api.vesu.xyz/pools");
+      const data = await getAPIUsingHeadlessBrowser(
+        "https://api.vesu.xyz/pools"
+      );
       pools = data.data;
       for (const pool of vesu_pools_default.data) {
         const found = pools.find((d) => d.id === pool.id);
         if (!found) {
           logger.verbose(`VesuRebalance: pools: ${JSON.stringify(pools)}`);
-          logger.verbose(`VesuRebalance: Pool ${pool.id} not found in Vesu API, using hardcoded data`);
+          logger.verbose(
+            `VesuRebalance: Pool ${pool.id} not found in Vesu API, using hardcoded data`
+          );
           throw new Error("pool not found [sanity check]");
         }
       }
     } catch (e) {
-      logger.error(`${_VesuRebalance.name}: Error fetching pools for ${this.address.address}, retry ${retry}`, e);
+      logger.error(
+        `${_VesuRebalance.name}: Error fetching pools for ${this.address.address}, retry ${retry}`,
+        e
+      );
       isErrorPoolsAPI = true;
       if (retry < 10) {
         await new Promise((resolve) => setTimeout(resolve, 5e3 * (retry + 1)));
@@ -12944,8 +13058,8 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    * 3. For each pool that needs more funds:
    *    - Takes funds from lowest APY pools that are over their target
    * 4. Validates that total assets remain constant
-   * 
-   * @returns {Promise<{  
+   *
+   * @returns {Promise<{
    *   changes: Change[],
    *   finalPools: PoolInfoFull[],
    *   isAnyPoolOverMaxWeight: boolean
@@ -12961,27 +13075,38 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       _pools = _pools2;
     }
     const feeDeductions = await this.getFee(_pools);
-    logger.verbose(`VesuRebalance: feeDeductions: ${JSON.stringify(feeDeductions)}`);
+    logger.verbose(
+      `VesuRebalance: feeDeductions: ${JSON.stringify(feeDeductions)}`
+    );
     const pools = _pools.map((p) => {
       const fee = feeDeductions.find((f) => p.v_token.eq(f.vToken))?.fee || Web3Number.fromWei("0", this.decimals());
-      logger.verbose(`FeeAdjustment: ${p.pool_id} => ${fee.toString()}, amt: ${p.amount.toString()}`);
+      logger.verbose(
+        `FeeAdjustment: ${p.pool_id} => ${fee.toString()}, amt: ${p.amount.toString()}`
+      );
       return {
         ...p,
         amount: p.amount.minus(fee)
       };
     });
     let totalAssets = (await this.getTVL()).amount;
-    if (totalAssets.eq(0)) return {
-      changes: [],
-      finalPools: []
-    };
+    if (totalAssets.eq(0))
+      return {
+        changes: [],
+        finalPools: []
+      };
     feeDeductions.forEach((f) => {
       totalAssets = totalAssets.minus(f.fee);
     });
-    const sumPools = pools.reduce((acc, curr) => acc.plus(curr.amount.toString()), Web3Number.fromWei("0", this.decimals()));
+    const sumPools = pools.reduce(
+      (acc, curr) => acc.plus(curr.amount.toString()),
+      Web3Number.fromWei("0", this.decimals())
+    );
     logger.verbose(`Sum of pools: ${sumPools.toString()}`);
     logger.verbose(`Total assets: ${totalAssets.toString()}`);
-    assert(sumPools.lte(totalAssets.multipliedBy(1.00001).toString()), "Sum of pools.amount must be less than or equal to totalAssets");
+    assert(
+      sumPools.lte(totalAssets.multipliedBy(1.00001).toString()),
+      "Sum of pools.amount must be less than or equal to totalAssets"
+    );
     const sortedPools = [...pools].sort((a, b) => b.APY.netApy - a.APY.netApy);
     const targetAmounts = {};
     let remainingAssets = totalAssets;
@@ -13003,7 +13128,10 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     assert(remainingAssets.lt(1e-5), "Remaining assets must be 0");
     const changes = sortedPools.map((pool) => {
       const target = targetAmounts[pool.pool_id.address.toString()] || Web3Number.fromWei("0", this.decimals());
-      const change = Web3Number.fromWei(target.minus(pool.amount.toString()).toWei(), this.decimals());
+      const change = Web3Number.fromWei(
+        target.minus(pool.amount.toString()).toWei(),
+        this.decimals()
+      );
       return {
         pool_id: pool.pool_id,
         changeAmt: change,
@@ -13012,14 +13140,21 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       };
     });
     logger.verbose(`Changes: ${JSON.stringify(changes)}`);
-    const sumChanges = changes.reduce((sum, c) => sum.plus(c.changeAmt.toString()), Web3Number.fromWei("0", this.decimals()));
-    const sumFinal = changes.reduce((sum, c) => sum.plus(c.finalAmt.toString()), Web3Number.fromWei("0", this.decimals()));
+    const sumChanges = changes.reduce(
+      (sum, c) => sum.plus(c.changeAmt.toString()),
+      Web3Number.fromWei("0", this.decimals())
+    );
+    const sumFinal = changes.reduce(
+      (sum, c) => sum.plus(c.finalAmt.toString()),
+      Web3Number.fromWei("0", this.decimals())
+    );
     const hasChanges = changes.some((c) => !c.changeAmt.eq(0));
     logger.verbose(`Sum of changes: ${sumChanges.toString()}`);
     if (!sumChanges.eq(0)) throw new Error("Sum of changes must be zero");
     logger.verbose(`Sum of final: ${sumFinal.toString()}`);
     logger.verbose(`Total assets: ${totalAssets.toString()}`);
-    if (!sumFinal.eq(totalAssets.toString())) throw new Error("Sum of final amounts must equal total assets");
+    if (!sumFinal.eq(totalAssets.toString()))
+      throw new Error("Sum of final amounts must equal total assets");
     if (!hasChanges) throw new Error("No changes required");
     const finalPools = pools.map((p) => {
       const target = targetAmounts[p.pool_id.address.toString()] || Web3Number.fromWei("0", this.decimals());
@@ -13047,9 +13182,13 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       if (p.changeAmt.eq(0)) return null;
       actions.push({
         pool_id: p.pool_id.address,
-        feature: new CairoCustomEnum(p.isDeposit ? { DEPOSIT: {} } : { WITHDRAW: {} }),
+        feature: new CairoCustomEnum(
+          p.isDeposit ? { DEPOSIT: {} } : { WITHDRAW: {} }
+        ),
         token: this.asset().address.address,
-        amount: uint2563.bnToUint256(p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei())
+        amount: uint2563.bnToUint256(
+          p.changeAmt.multipliedBy(p.isDeposit ? 1 : -1).toWei()
+        )
       });
     });
     if (actions.length === 0) return null;
@@ -13062,18 +13201,29 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     const netYield = await this.netAPYGivenPools(pools);
     const baseFlow = {
       title: "Your Deposit",
-      subItems: [{ key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%` }, { key: `Performance Fee`, value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%` }],
+      subItems: [
+        { key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%` },
+        {
+          key: `Performance Fee`,
+          value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%`
+        }
+      ],
       linkedFlows: [],
       style: { backgroundColor: "#6e53dc" /* Purple */.valueOf() }
     };
     let _pools = [...pools];
-    _pools = _pools.sort((a, b) => Number(b.amount.toString()) - Number(a.amount.toString()));
+    _pools = _pools.sort(
+      (a, b) => Number(b.amount.toString()) - Number(a.amount.toString())
+    );
     _pools.forEach((p) => {
       const flow = {
         title: `Pool name: ${p.pool_name}`,
         subItems: [
           { key: `APY`, value: `${(p.APY.netApy * 100).toFixed(2)}%` },
-          { key: "Weight", value: `${(p.current_weight * 100).toFixed(2)} / ${(p.max_weight * 100).toFixed(2)}%` }
+          {
+            key: "Weight",
+            value: `${(p.current_weight * 100).toFixed(2)} / ${(p.max_weight * 100).toFixed(2)}%`
+          }
         ],
         linkedFlows: [],
         style: p.amount.greaterThan(0) ? { backgroundColor: "#35484f" /* Blue */.valueOf() } : { color: "gray" }
@@ -13105,7 +13255,12 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
         harvest.actualReward.toWei(),
         this.address.address
       );
-      swapInfo = await avnu.getSwapInfo(quote, this.address.address, 0, this.address.address);
+      swapInfo = await avnu.getSwapInfo(
+        quote,
+        this.address.address,
+        0,
+        this.address.address
+      );
     }
     return [
       this.contract.populate("harvest", [
@@ -13126,16 +13281,27 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
    * @returns {Promise<Array<{ vToken: ContractAddr, fee: Web3Number }>>} Array of fees deducted in different vTokens
    */
   async getFee(allowedPools) {
-    const assets = Web3Number.fromWei((await this.contract.total_assets()).toString(), this.asset().decimals);
-    const totalSupply = Web3Number.fromWei((await this.contract.total_supply()).toString(), this.asset().decimals);
-    const prevIndex = Web3Number.fromWei((await this.contract.get_previous_index()).toString(), 18);
+    const assets = Web3Number.fromWei(
+      (await this.contract.total_assets()).toString(),
+      this.asset().decimals
+    );
+    const totalSupply = Web3Number.fromWei(
+      (await this.contract.total_supply()).toString(),
+      this.asset().decimals
+    );
+    const prevIndex = Web3Number.fromWei(
+      (await this.contract.get_previous_index()).toString(),
+      18
+    );
     const currIndex = new Web3Number(1, 18).multipliedBy(assets).dividedBy(totalSupply);
     logger.verbose(`Previous index: ${prevIndex.toString()}`);
     logger.verbose(`Assets: ${assets.toString()}`);
     logger.verbose(`Total supply: ${totalSupply.toString()}`);
     logger.verbose(`Current index: ${currIndex.toNumber()}`);
     if (currIndex.lt(prevIndex)) {
-      logger.verbose(`getFee::Current index is less than previous index, no fees to be deducted`);
+      logger.verbose(
+        `getFee::Current index is less than previous index, no fees to be deducted`
+      );
       return [];
     }
     const indexDiff = currIndex.minus(prevIndex);
@@ -13148,7 +13314,9 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
       return [];
     }
     const fees = [];
-    let remainingFee = fee.plus(Web3Number.fromWei("100", this.asset().decimals));
+    let remainingFee = fee.plus(
+      Web3Number.fromWei("100", this.asset().decimals)
+    );
     for (const pool of allowedPools) {
       const vToken = pool.v_token;
       const balance = pool.amount;
@@ -13157,7 +13325,9 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
         break;
       } else {
         fees.push({ vToken, fee: Web3Number.fromWei(balance.toString(), 18) });
-        remainingFee = remainingFee.minus(Web3Number.fromWei(balance.toString(), 18));
+        remainingFee = remainingFee.minus(
+          Web3Number.fromWei(balance.toString(), 18)
+        );
       }
     }
     logger.verbose(`Fees: ${JSON.stringify(fees)}`);
@@ -13165,98 +13335,194 @@ var VesuRebalance = class _VesuRebalance extends BaseStrategy {
   }
 };
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
-var _protocol = { name: "Vesu", logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png" };
+var _protocol = {
+  name: "Vesu",
+  logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png"
+};
 var _riskFactor = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
   { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
-var VesuRebalanceStrategies = [{
-  name: "Vesu Fusion STRK",
-  description: _description.replace("{{TOKEN}}", "STRK"),
-  address: ContractAddr.from("0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"),
-  type: "ERC4626",
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
-  protocols: [_protocol],
-  auditUrl: AUDIT_URL,
-  maxTVL: Web3Number.fromWei("0", 18),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
+var VesuRebalanceStrategies = [
+  {
+    name: "Vesu Fusion STRK",
+    description: _description.replace("{{TOKEN}}", "STRK"),
+    address: ContractAddr.from(
+      "0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"
+    ),
+    type: "ERC4626",
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "STRK")
+    ],
+    protocols: [_protocol],
+    auditUrl: AUDIT_URL,
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   },
-  additionalInfo: {
-    feeBps: 1e3
-  }
-}, {
-  name: "Vesu Fusion ETH",
-  description: _description.replace("{{TOKEN}}", "ETH"),
-  address: ContractAddr.from("0x5eaf5ee75231cecf79921ff8ded4b5ffe96be718bcb3daf206690ad1a9ad0ca"),
-  type: "ERC4626",
-  auditUrl: AUDIT_URL,
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "ETH")],
-  protocols: [_protocol],
-  maxTVL: Web3Number.fromWei("0", 18),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
+  {
+    name: "Vesu Fusion ETH",
+    description: _description.replace("{{TOKEN}}", "ETH"),
+    address: ContractAddr.from(
+      "0x5eaf5ee75231cecf79921ff8ded4b5ffe96be718bcb3daf206690ad1a9ad0ca"
+    ),
+    type: "ERC4626",
+    auditUrl: AUDIT_URL,
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "ETH")
+    ],
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   },
-  additionalInfo: {
-    feeBps: 1e3
-  }
-}, {
-  name: "Vesu Fusion USDC",
-  description: _description.replace("{{TOKEN}}", "USDC"),
-  address: ContractAddr.from("0xa858c97e9454f407d1bd7c57472fc8d8d8449a777c822b41d18e387816f29c"),
-  type: "ERC4626",
-  auditUrl: AUDIT_URL,
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDC")],
-  protocols: [_protocol],
-  maxTVL: Web3Number.fromWei("0", 6),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
+  {
+    name: "Vesu Fusion USDC",
+    description: _description.replace("{{TOKEN}}", "USDC"),
+    address: ContractAddr.from(
+      "0xa858c97e9454f407d1bd7c57472fc8d8d8449a777c822b41d18e387816f29c"
+    ),
+    type: "ERC4626",
+    auditUrl: AUDIT_URL,
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "USDC")
+    ],
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei("0", 6),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   },
-  additionalInfo: {
-    feeBps: 1e3
+  {
+    name: "Vesu Fusion USDT",
+    description: _description.replace("{{TOKEN}}", "USDT"),
+    address: ContractAddr.from(
+      "0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"
+    ),
+    type: "ERC4626",
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "USDT")
+    ],
+    auditUrl: AUDIT_URL,
+    protocols: [_protocol],
+    maxTVL: Web3Number.fromWei("0", 6),
+    risk: {
+      riskFactor: _riskFactor,
+      netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor)
+    },
+    additionalInfo: {
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
+    // }, {
+    //     name: 'Vesu Fusion WBTC',
+    //     description: _description.replace('{{TOKEN}}', 'WBTC'),
+    //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
+    //     type: 'ERC4626',
+    //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
+    // auditUrl: AUDIT_URL,
+    //     protocols: [_protocol],
+    //     maxTVL: Web3Number.fromWei('0', 8),
+    //     risk: {
+    //         riskFactor: _riskFactor,
+    //         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
+    //     },
+    //     additionalInfo: {
+    //         feeBps: 1000,
+    //     },
   }
-}, {
-  name: "Vesu Fusion USDT",
-  description: _description.replace("{{TOKEN}}", "USDT"),
-  address: ContractAddr.from("0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"),
-  type: "ERC4626",
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "USDT")],
-  auditUrl: AUDIT_URL,
-  protocols: [_protocol],
-  maxTVL: Web3Number.fromWei("0", 6),
-  risk: {
-    riskFactor: _riskFactor,
-    netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor)
-  },
-  additionalInfo: {
-    feeBps: 1e3
-  }
-  // }, {
-  //     name: 'Vesu Fusion WBTC',
-  //     description: _description.replace('{{TOKEN}}', 'WBTC'),
-  //     address: ContractAddr.from('0x778007f8136a5b827325d21613803e796bda4d676fbe1e34aeab0b2a2ec027f'),
-  //     type: 'ERC4626',
-  //     depositTokens: [Global.getDefaultTokens().find(t => t.symbol === 'WBTC')!],
-  // auditUrl: AUDIT_URL,
-  //     protocols: [_protocol],
-  //     maxTVL: Web3Number.fromWei('0', 8),
-  //     risk: {
-  //         riskFactor: _riskFactor,
-  //         netRisk: _riskFactor.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor.reduce((acc, curr) => acc + curr.weight, 0),
-  //     },
-  //     additionalInfo: {
-  //         feeBps: 1000,
-  //     },
-}];
+];
 
 // src/strategies/ekubo-cl-vault.tsx
 import { Contract as Contract6, num as num4, uint256 as uint2564 } from "starknet";
@@ -18903,37 +19169,70 @@ var _riskFactor2 = [
   { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
 ];
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
-var EkuboCLVaultStrategies = [{
-  name: "Ekubo xSTRK/STRK",
-  description: /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-    /* @__PURE__ */ jsxs("ul", { style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" }, children: [
-      /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-      /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
-    ] })
-  ] }),
-  address: ContractAddr.from("0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"),
-  type: "Other",
-  // must be same order as poolKey token0 and token1
-  depositTokens: [Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"), Global.getDefaultTokens().find((t) => t.symbol === "STRK")],
-  protocols: [_protocol2],
-  auditUrl: AUDIT_URL2,
-  maxTVL: Web3Number.fromWei("0", 18),
-  risk: {
-    riskFactor: _riskFactor2,
-    netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
-    notARisks: getNoRiskTags(_riskFactor2)
-  },
-  apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
-  additionalInfo: {
-    newBounds: {
-      lower: -1,
-      upper: 1
+var EkuboCLVaultStrategies = [
+  {
+    name: "Ekubo xSTRK/STRK",
+    description: /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+      /* @__PURE__ */ jsxs(
+        "ul",
+        {
+          style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" },
+          children: [
+            /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+            /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+          ]
+        }
+      )
+    ] }),
+    address: ContractAddr.from(
+      "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
+    ),
+    type: "Other",
+    // must be same order as poolKey token0 and token1
+    depositTokens: [
+      Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"),
+      Global.getDefaultTokens().find((t) => t.symbol === "STRK")
+    ],
+    protocols: [_protocol2],
+    auditUrl: AUDIT_URL2,
+    maxTVL: Web3Number.fromWei("0", 18),
+    risk: {
+      riskFactor: _riskFactor2,
+      netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
+      notARisks: getNoRiskTags(_riskFactor2)
     },
-    lstContract: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
-    feeBps: 1e3
+    apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
+    additionalInfo: {
+      newBounds: {
+        lower: -1,
+        upper: 1
+      },
+      lstContract: ContractAddr.from(
+        "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"
+      ),
+      feeBps: 1e3
+    },
+    faqs: [
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      },
+      {
+        question: "Question asked basis zkLend",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+      }
+    ]
   }
-}];
+];
 export {
   AutoCompounderSTRK,
   AvnuWrapper,
