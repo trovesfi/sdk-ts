@@ -1,5 +1,6 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
 import {
+  FAQ,
   FlowChartColors,
   getNoRiskTags,
   IConfig,
@@ -894,6 +895,54 @@ const _riskFactor: RiskFactor[] = [
 ];
 const AUDIT_URL =
   "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+
+const faqs: FAQ[] = [
+  {
+    question: "What is the Vesu Rebalancing Strategy?",
+    answer:
+      "The Vesu Rebalancing Strategy is an automated investment strategy that diversifies your holdings across multiple Vesu pools. It optimizes yield by rebalancing assets based on pool performance while adhering to risk constraints."
+  },
+  {
+    question: "Will I earn Vesu points?",
+    answer: "Yes, of course! You will earn Vesu points for your deposits."
+  },
+  {
+    question: "How does the strategy optimize yield?",
+    answer:
+      "The strategy calculates the weighted average APY across all pools and reallocates assets to maximize returns. It prioritizes high-performing pools while ensuring compliance with maximum weight constraints."
+  },
+  {
+    question: "What are the risks associated with this strategy?",
+    answer:
+      "The strategy involves usual DeFi risks such as smart contract vulnerabilities, counterparty risks, and oracle inaccuracies. However, we try our best to reduce these risks through audits and careful pool selection."
+  },
+  {
+    question: "How are fees calculated and deducted?",
+    answer:
+      "Fees are calculated based on the performance of the strategy and deducted proportionally from the total assets. We charge a 10% performance fee and is already accounted in the APY shown."
+  },
+  {
+    question: "What happens if a pool exceeds its maximum weight?",
+    answer:
+      "If a pool exceeds its maximum weight, the strategy rebalances by withdrawing excess funds and reallocating them to other pools with available capacity."
+  },
+  {
+    question: "Can I withdraw my assets at any time?",
+    answer:
+      "Yes, you can withdraw your assets at any time. In rare circumstances, if debt utilisation is high for certain pools on Vesu, it may not be possible to withdraw until markets restore balance."
+  },
+  {
+    question: "What happens to my Defi Spring STRK rewards?",
+    answer:
+      "STRK rewards are automatically harvested and reinvested into the strategy every week to maximize compounding returns."
+  },
+  {
+    question: "Is the strategy audited?",
+    answer:
+      <div>Yes, the strategy has been audited. You can review the audit report in our docs <a href="https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details" style={{textDecoration: 'underline', marginLeft: '5px'}}>Here</a>.</div>
+  }
+];
+
 /**
  * Represents the Vesu Rebalance Strategies.
  */
@@ -922,28 +971,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs: [
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        }
-      ]
+      faqs
     },
     {
       name: "Vesu Fusion ETH",
@@ -968,28 +996,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs: [
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        }
-      ]
+      faqs
     },
     {
       name: "Vesu Fusion USDC",
@@ -1014,28 +1021,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs: [
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        }
-      ]
+      faqs
     },
     {
       name: "Vesu Fusion USDT",
@@ -1060,28 +1046,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs: [
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          question: "Question asked basis zkLend",
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-        }
-      ]
+      faqs
       // }, {
       //     name: 'Vesu Fusion WBTC',
       //     description: _description.replace('{{TOKEN}}', 'WBTC'),

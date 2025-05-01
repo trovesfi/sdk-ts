@@ -12789,6 +12789,7 @@ var vesu_pools_default = {
 };
 
 // src/strategies/vesu-rebalance.tsx
+var import_jsx_runtime = require("react/jsx-runtime");
 var VesuRebalance = class _VesuRebalance extends BaseStrategy {
   // 10000 bps = 100%
   /**
@@ -13434,6 +13435,48 @@ var _riskFactor = [
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+var faqs = [
+  {
+    question: "What is the Vesu Rebalancing Strategy?",
+    answer: "The Vesu Rebalancing Strategy is an automated investment strategy that diversifies your holdings across multiple Vesu pools. It optimizes yield by rebalancing assets based on pool performance while adhering to risk constraints."
+  },
+  {
+    question: "Will I earn Vesu points?",
+    answer: "Yes, of course! You will earn Vesu points for your deposits."
+  },
+  {
+    question: "How does the strategy optimize yield?",
+    answer: "The strategy calculates the weighted average APY across all pools and reallocates assets to maximize returns. It prioritizes high-performing pools while ensuring compliance with maximum weight constraints."
+  },
+  {
+    question: "What are the risks associated with this strategy?",
+    answer: "The strategy involves usual DeFi risks such as smart contract vulnerabilities, counterparty risks, and oracle inaccuracies. However, we try our best to reduce these risks through audits and careful pool selection."
+  },
+  {
+    question: "How are fees calculated and deducted?",
+    answer: "Fees are calculated based on the performance of the strategy and deducted proportionally from the total assets. We charge a 10% performance fee and is already accounted in the APY shown."
+  },
+  {
+    question: "What happens if a pool exceeds its maximum weight?",
+    answer: "If a pool exceeds its maximum weight, the strategy rebalances by withdrawing excess funds and reallocating them to other pools with available capacity."
+  },
+  {
+    question: "Can I withdraw my assets at any time?",
+    answer: "Yes, you can withdraw your assets at any time. In rare circumstances, if debt utilisation is high for certain pools on Vesu, it may not be possible to withdraw until markets restore balance."
+  },
+  {
+    question: "What happens to my Defi Spring STRK rewards?",
+    answer: "STRK rewards are automatically harvested and reinvested into the strategy every week to maximize compounding returns."
+  },
+  {
+    question: "Is the strategy audited?",
+    answer: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+      "Yes, the strategy has been audited. You can review the audit report in our docs ",
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", { href: "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
+      "."
+    ] })
+  }
+];
 var VesuRebalanceStrategies = [
   {
     name: "Vesu Fusion STRK",
@@ -13456,24 +13499,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
   },
   {
     name: "Vesu Fusion ETH",
@@ -13496,24 +13522,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
   },
   {
     name: "Vesu Fusion USDC",
@@ -13536,24 +13545,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
   },
   {
     name: "Vesu Fusion USDT",
@@ -13576,24 +13568,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
     // }, {
     //     name: 'Vesu Fusion WBTC',
     //     description: _description.replace('{{TOKEN}}', 'WBTC'),
@@ -18516,7 +18491,7 @@ var erc4626_abi_default = [
 ];
 
 // src/strategies/ekubo-cl-vault.tsx
-var import_jsx_runtime = require("react/jsx-runtime");
+var import_jsx_runtime2 = require("react/jsx-runtime");
 var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   /**
    * Creates a new VesuRebalance strategy instance.
@@ -18529,15 +18504,34 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     super(config);
     this.BASE_WEIGHT = 1e4;
     this.pricer = pricer;
-    assert(metadata.depositTokens.length === 2, "EkuboCL only supports 2 deposit token");
+    assert(
+      metadata.depositTokens.length === 2,
+      "EkuboCL only supports 2 deposit token"
+    );
     this.metadata = metadata;
     this.address = metadata.address;
-    this.contract = new import_starknet9.Contract(cl_vault_abi_default, this.address.address, this.config.provider);
-    this.lstContract = new import_starknet9.Contract(erc4626_abi_default, this.metadata.additionalInfo.lstContract.address, this.config.provider);
+    this.contract = new import_starknet9.Contract(
+      cl_vault_abi_default,
+      this.address.address,
+      this.config.provider
+    );
+    this.lstContract = new import_starknet9.Contract(
+      erc4626_abi_default,
+      this.metadata.additionalInfo.lstContract.address,
+      this.config.provider
+    );
     const EKUBO_POSITION = "0x02e0af29598b407c8716b17f6d2795eca1b471413fa03fb145a5e33722184067";
-    this.ekuboPositionsContract = new import_starknet9.Contract(ekubo_positions_abi_default, EKUBO_POSITION, this.config.provider);
+    this.ekuboPositionsContract = new import_starknet9.Contract(
+      ekubo_positions_abi_default,
+      EKUBO_POSITION,
+      this.config.provider
+    );
     const EKUBO_MATH = "0x04a72e9e166f6c0e9d800af4dc40f6b6fb4404b735d3f528d9250808b2481995";
-    this.ekuboMathContract = new import_starknet9.Contract(ekubo_math_abi_default, EKUBO_MATH, this.config.provider);
+    this.ekuboMathContract = new import_starknet9.Contract(
+      ekubo_math_abi_default,
+      EKUBO_MATH,
+      this.config.provider
+    );
     this.avnu = new AvnuWrapper();
   }
   async matchInputAmounts(amountInfo) {
@@ -18562,25 +18556,52 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   /** Returns minimum amounts give given two amounts based on what can be added for liq */
   async getMinDepositAmounts(amountInfo) {
     const shares = await this.tokensToShares(amountInfo);
-    const { amount0, amount1 } = await this.contract.call("convert_to_assets", [import_starknet9.uint256.bnToUint256(shares.toWei())]);
+    const { amount0, amount1 } = await this.contract.call(
+      "convert_to_assets",
+      [import_starknet9.uint256.bnToUint256(shares.toWei())]
+    );
     return {
       token0: {
         tokenInfo: amountInfo.token0.tokenInfo,
-        amount: Web3Number.fromWei(amount0.toString(), amountInfo.token0.tokenInfo.decimals)
+        amount: Web3Number.fromWei(
+          amount0.toString(),
+          amountInfo.token0.tokenInfo.decimals
+        )
       },
       token1: {
         tokenInfo: amountInfo.token1.tokenInfo,
-        amount: Web3Number.fromWei(amount1.toString(), amountInfo.token1.tokenInfo.decimals)
+        amount: Web3Number.fromWei(
+          amount1.toString(),
+          amountInfo.token1.tokenInfo.decimals
+        )
       }
     };
   }
   async depositCall(amountInfo, receiver) {
     const updateAmountInfo = await this.getMinDepositAmounts(amountInfo);
-    const token0Contract = new import_starknet9.Contract(erc4626_abi_default, amountInfo.token0.tokenInfo.address.address, this.config.provider);
-    const token1Contract = new import_starknet9.Contract(erc4626_abi_default, amountInfo.token1.tokenInfo.address.address, this.config.provider);
-    const call1 = token0Contract.populate("approve", [this.address.address, import_starknet9.uint256.bnToUint256(updateAmountInfo.token0.amount.toWei())]);
-    const call2 = token1Contract.populate("approve", [this.address.address, import_starknet9.uint256.bnToUint256(updateAmountInfo.token1.amount.toWei())]);
-    const call3 = this.contract.populate("deposit", [import_starknet9.uint256.bnToUint256(updateAmountInfo.token0.amount.toWei()), import_starknet9.uint256.bnToUint256(updateAmountInfo.token1.amount.toWei()), receiver.address]);
+    const token0Contract = new import_starknet9.Contract(
+      erc4626_abi_default,
+      amountInfo.token0.tokenInfo.address.address,
+      this.config.provider
+    );
+    const token1Contract = new import_starknet9.Contract(
+      erc4626_abi_default,
+      amountInfo.token1.tokenInfo.address.address,
+      this.config.provider
+    );
+    const call1 = token0Contract.populate("approve", [
+      this.address.address,
+      import_starknet9.uint256.bnToUint256(updateAmountInfo.token0.amount.toWei())
+    ]);
+    const call2 = token1Contract.populate("approve", [
+      this.address.address,
+      import_starknet9.uint256.bnToUint256(updateAmountInfo.token1.amount.toWei())
+    ]);
+    const call3 = this.contract.populate("deposit", [
+      import_starknet9.uint256.bnToUint256(updateAmountInfo.token0.amount.toWei()),
+      import_starknet9.uint256.bnToUint256(updateAmountInfo.token1.amount.toWei()),
+      receiver.address
+    ]);
     const calls = [];
     if (updateAmountInfo.token0.amount.greaterThan(0)) calls.push(call1);
     if (updateAmountInfo.token1.amount.greaterThan(0)) calls.push(call2);
@@ -18595,25 +18616,29 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   }
   async withdrawCall(amountInfo, receiver, owner) {
     const shares = await this.tokensToShares(amountInfo);
-    logger.verbose(`${_EkuboCLVault.name}: withdrawCall: shares=${shares.toString()}`);
-    return [this.contract.populate("withdraw", [
-      import_starknet9.uint256.bnToUint256(shares.toWei()),
-      receiver.address
-    ])];
+    logger.verbose(
+      `${_EkuboCLVault.name}: withdrawCall: shares=${shares.toString()}`
+    );
+    return [
+      this.contract.populate("withdraw", [
+        import_starknet9.uint256.bnToUint256(shares.toWei()),
+        receiver.address
+      ])
+    ];
   }
   rebalanceCall(newBounds, swapParams) {
-    return [this.contract.populate("rebalance", [
-      {
-        lower: _EkuboCLVault.tickToi129(Number(newBounds.lowerTick)),
-        upper: _EkuboCLVault.tickToi129(Number(newBounds.upperTick))
-      },
-      swapParams
-    ])];
+    return [
+      this.contract.populate("rebalance", [
+        {
+          lower: _EkuboCLVault.tickToi129(Number(newBounds.lowerTick)),
+          upper: _EkuboCLVault.tickToi129(Number(newBounds.upperTick))
+        },
+        swapParams
+      ])
+    ];
   }
   handleUnusedCall(swapParams) {
-    return [this.contract.populate("handle_unused", [
-      swapParams
-    ])];
+    return [this.contract.populate("handle_unused", [swapParams])];
   }
   handleFeesCall() {
     return [this.contract.populate("handle_fees", [])];
@@ -18629,8 +18654,12 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     let blockNow = typeof blockIdentifier == "number" ? blockIdentifier : (await this.config.provider.getBlockLatestAccepted()).block_number;
     const blockNowTime = typeof blockIdentifier == "number" ? (await this.config.provider.getBlockWithTxs(blockIdentifier)).timestamp : (/* @__PURE__ */ new Date()).getTime() / 1e3;
     const blockBefore = blockNow - sinceBlocks;
-    const adjustedSupplyNow = supplyNow.minus(await this.getHarvestRewardShares(blockBefore, blockNow));
-    let blockBeforeInfo = await this.config.provider.getBlockWithTxs(blockBefore);
+    const adjustedSupplyNow = supplyNow.minus(
+      await this.getHarvestRewardShares(blockBefore, blockNow)
+    );
+    let blockBeforeInfo = await this.config.provider.getBlockWithTxs(
+      blockBefore
+    );
     const tvlBefore = await this._getTVL(blockBefore);
     const supplyBefore = await this.totalSupply(blockBefore);
     const priceBefore = await this.getCurrentPrice(blockBefore);
@@ -18648,7 +18677,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     logger.verbose(`Supply before: ${supplyBefore.toString()}`);
     logger.verbose(`Supply now: ${adjustedSupplyNow.toString()}`);
     logger.verbose(`Time diff in seconds: ${timeDiffSeconds}`);
-    const apyForGivenBlocks = Number(tvlPerShareNow.minus(tvlPerShareBf).multipliedBy(1e4).dividedBy(tvlPerShareBf)) / 1e4;
+    const apyForGivenBlocks = Number(
+      tvlPerShareNow.minus(tvlPerShareBf).multipliedBy(1e4).dividedBy(tvlPerShareBf)
+    ) / 1e4;
     return apyForGivenBlocks * (365 * 24 * 3600) / timeDiffSeconds;
   }
   async getHarvestRewardShares(fromBlock, toBlock) {
@@ -18666,7 +18697,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       } else {
         shares = shares.plus(Web3Number.fromWei(record.shares.toString(), 18));
       }
-      logger.verbose(`${_EkuboCLVault.name}: getHarvestRewardShares: ${i} => ${shares.toWei()}`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: getHarvestRewardShares: ${i} => ${shares.toWei()}`
+      );
     }
     return shares;
   }
@@ -18676,15 +18709,25 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   }
   async getUserTVL(user, blockIdentifier = "pending") {
     let bal = await this.balanceOf(user, blockIdentifier);
-    const assets = await this.contract.call("convert_to_assets", [import_starknet9.uint256.bnToUint256(bal.toWei())], {
-      blockIdentifier
-    });
+    const assets = await this.contract.call(
+      "convert_to_assets",
+      [import_starknet9.uint256.bnToUint256(bal.toWei())],
+      {
+        blockIdentifier
+      }
+    );
     const poolKey = await this.getPoolKey(blockIdentifier);
     this.assertValidDepositTokens(poolKey);
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
-    const amount0 = Web3Number.fromWei(assets.amount0.toString(), token0Info.decimals);
-    const amount1 = Web3Number.fromWei(assets.amount1.toString(), token1Info.decimals);
+    const amount0 = Web3Number.fromWei(
+      assets.amount0.toString(),
+      token0Info.decimals
+    );
+    const amount1 = Web3Number.fromWei(
+      assets.amount1.toString(),
+      token1Info.decimals
+    );
     const P0 = await this.pricer.getPrice(token0Info.symbol);
     const P1 = await this.pricer.getPrice(token1Info.symbol);
     const token0Usd = Number(amount0.toFixed(13)) * P0.price;
@@ -18708,7 +18751,11 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       blockIdentifier
     });
     const bounds = await this.getCurrentBounds(blockIdentifier);
-    const { amount0, amount1 } = await this.getLiquidityToAmounts(Web3Number.fromWei(result.toString(), 18), bounds, blockIdentifier);
+    const { amount0, amount1 } = await this.getLiquidityToAmounts(
+      Web3Number.fromWei(result.toString(), 18),
+      bounds,
+      blockIdentifier
+    );
     return { amount0, amount1 };
   }
   async totalSupply(blockIdentifier = "pending") {
@@ -18718,8 +18765,14 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     return Web3Number.fromWei(res.toString(), 18);
   }
   assertValidDepositTokens(poolKey) {
-    assert(poolKey.token0.eq(this.metadata.depositTokens[0].address), "Expected token0 in depositTokens[0]");
-    assert(poolKey.token1.eq(this.metadata.depositTokens[1].address), "Expected token1 in depositTokens[1]");
+    assert(
+      poolKey.token0.eq(this.metadata.depositTokens[0].address),
+      "Expected token0 in depositTokens[0]"
+    );
+    assert(
+      poolKey.token1.eq(this.metadata.depositTokens[1].address),
+      "Expected token1 in depositTokens[1]"
+    );
   }
   async getTVL(blockIdentifier = "pending") {
     const { amount0, amount1 } = await this._getTVL(blockIdentifier);
@@ -18749,26 +18802,35 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     const nftID = await this.getCurrentNFTID();
     const poolKey = await this.getPoolKey();
     const currentBounds = await this.getCurrentBounds();
-    const result = await this.ekuboPositionsContract.call("get_token_info", [
-      nftID,
-      {
-        token0: poolKey.token0.address,
-        token1: poolKey.token1.address,
-        fee: poolKey.fee,
-        tick_spacing: poolKey.tick_spacing,
-        extension: poolKey.extension
-      },
-      {
-        lower: _EkuboCLVault.tickToi129(Number(currentBounds.lowerTick)),
-        upper: _EkuboCLVault.tickToi129(Number(currentBounds.upperTick))
-      }
-    ]);
+    const result = await this.ekuboPositionsContract.call(
+      "get_token_info",
+      [
+        nftID,
+        {
+          token0: poolKey.token0.address,
+          token1: poolKey.token1.address,
+          fee: poolKey.fee,
+          tick_spacing: poolKey.tick_spacing,
+          extension: poolKey.extension
+        },
+        {
+          lower: _EkuboCLVault.tickToi129(Number(currentBounds.lowerTick)),
+          upper: _EkuboCLVault.tickToi129(Number(currentBounds.upperTick))
+        }
+      ]
+    );
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
     const P0 = await this.pricer.getPrice(token0Info.symbol);
     const P1 = await this.pricer.getPrice(token1Info.symbol);
-    const token0Web3 = Web3Number.fromWei(result.fees0.toString(), token0Info.decimals);
-    const token1Web3 = Web3Number.fromWei(result.fees1.toString(), token1Info.decimals);
+    const token0Web3 = Web3Number.fromWei(
+      result.fees0.toString(),
+      token0Info.decimals
+    );
+    const token1Web3 = Web3Number.fromWei(
+      result.fees1.toString(),
+      token1Info.decimals
+    );
     const token0Usd = Number(token0Web3.toFixed(13)) * P0.price;
     const token1Usd = Number(token1Web3.toFixed(13)) * P1.price;
     return {
@@ -18790,7 +18852,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     return Number(result.salt.toString());
   }
   async truePrice() {
-    const result = await this.lstContract.call("convert_to_assets", [import_starknet9.uint256.bnToUint256(BigInt(1e18).toString())]);
+    const result = await this.lstContract.call("convert_to_assets", [
+      import_starknet9.uint256.bnToUint256(BigInt(1e18).toString())
+    ]);
     const truePrice = Number(BigInt(result.toString()) * BigInt(1e9) / BigInt(1e18)) / 1e9;
     return truePrice;
   }
@@ -18799,22 +18863,36 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     return this._getCurrentPrice(poolKey, blockIdentifier);
   }
   async _getCurrentPrice(poolKey, blockIdentifier = "pending") {
-    const priceInfo = await this.ekuboPositionsContract.call("get_pool_price", [
+    const priceInfo = await this.ekuboPositionsContract.call(
+      "get_pool_price",
+      [
+        {
+          token0: poolKey.token0.address,
+          token1: poolKey.token1.address,
+          fee: poolKey.fee,
+          tick_spacing: poolKey.tick_spacing,
+          extension: poolKey.extension
+        }
+      ],
       {
-        token0: poolKey.token0.address,
-        token1: poolKey.token1.address,
-        fee: poolKey.fee,
-        tick_spacing: poolKey.tick_spacing,
-        extension: poolKey.extension
+        blockIdentifier
       }
-    ], {
-      blockIdentifier
-    });
-    const sqrtRatio = _EkuboCLVault.div2Power128(BigInt(priceInfo.sqrt_ratio.toString()));
-    console.log(`EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, sqrtRatio: ${sqrtRatio}, ${priceInfo.sqrt_ratio.toString()}`);
+    );
+    const sqrtRatio = _EkuboCLVault.div2Power128(
+      BigInt(priceInfo.sqrt_ratio.toString())
+    );
+    console.log(
+      `EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, sqrtRatio: ${sqrtRatio}, ${priceInfo.sqrt_ratio.toString()}`
+    );
     const price = sqrtRatio * sqrtRatio;
-    const tick = _EkuboCLVault.priceToTick(price, true, Number(poolKey.tick_spacing));
-    console.log(`EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, price: ${price}, tick: ${tick.mag}, ${tick.sign}`);
+    const tick = _EkuboCLVault.priceToTick(
+      price,
+      true,
+      Number(poolKey.tick_spacing)
+    );
+    console.log(
+      `EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, price: ${price}, tick: ${tick.mag}, ${tick.sign}`
+    );
     return {
       price,
       tick: tick.mag * (tick.sign == 0 ? 1 : -1),
@@ -18854,7 +18932,10 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     };
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
-    assert(token0Info.decimals == token1Info.decimals, "Tested only for equal decimals");
+    assert(
+      token0Info.decimals == token1Info.decimals,
+      "Tested only for equal decimals"
+    );
     this.poolKey = poolKey;
     return poolKey;
   }
@@ -18878,11 +18959,18 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   async _getExpectedAmountsForLiquidity(amount0, amount1, bounds, justUseInputAmount = true) {
     assert(amount0.greaterThan(0) || amount1.greaterThan(0), "Amount is 0");
     const sampleLiq = 1e20;
-    const { amount0: sampleAmount0, amount1: sampleAmount1 } = await this.getLiquidityToAmounts(Web3Number.fromWei(sampleLiq.toString(), 18), bounds);
-    logger.verbose(`${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => sampleAmount0: ${sampleAmount0.toString()}, sampleAmount1: ${sampleAmount1.toString()}`);
+    const { amount0: sampleAmount0, amount1: sampleAmount1 } = await this.getLiquidityToAmounts(
+      Web3Number.fromWei(sampleLiq.toString(), 18),
+      bounds
+    );
+    logger.verbose(
+      `${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => sampleAmount0: ${sampleAmount0.toString()}, sampleAmount1: ${sampleAmount1.toString()}`
+    );
     assert(!sampleAmount0.eq(0) || !sampleAmount1.eq(0), "Sample amount is 0");
     const price = await (await this.getCurrentPrice()).price;
-    logger.verbose(`${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => price: ${price}`);
+    logger.verbose(
+      `${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => price: ${price}`
+    );
     if (amount1.eq(0) && amount0.greaterThan(0)) {
       if (sampleAmount1.eq(0)) {
         return {
@@ -18912,12 +19000,22 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
         };
       }
     }
-    assert(sampleAmount0.decimals == sampleAmount1.decimals, "Sample amounts have different decimals");
+    assert(
+      sampleAmount0.decimals == sampleAmount1.decimals,
+      "Sample amounts have different decimals"
+    );
     const ratioWeb3Number = sampleAmount0.multipliedBy(1e18).dividedBy(sampleAmount1.toString()).dividedBy(1e18);
     const ratio = Number(ratioWeb3Number.toFixed(18));
-    logger.verbose(`${_EkuboCLVault.name}: ${this.metadata.name} => ratio: ${ratio.toString()}`);
+    logger.verbose(
+      `${_EkuboCLVault.name}: ${this.metadata.name} => ratio: ${ratio.toString()}`
+    );
     if (justUseInputAmount)
-      return this._solveExpectedAmountsEq(amount0, amount1, ratioWeb3Number, price);
+      return this._solveExpectedAmountsEq(
+        amount0,
+        amount1,
+        ratioWeb3Number,
+        price
+      );
     if (amount1.eq(0) && amount0.greaterThan(0)) {
       const _amount1 = amount0.dividedBy(ratioWeb3Number);
       return {
@@ -18933,7 +19031,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
         ratio
       };
     } else {
-      throw new Error("Both amounts are non-zero, cannot compute expected amounts");
+      throw new Error(
+        "Both amounts are non-zero, cannot compute expected amounts"
+      );
     }
   }
   _solveExpectedAmountsEq(availableAmount0, availableAmount1, ratio, price) {
@@ -18950,34 +19050,65 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     const erc20Mod = new ERC20(this.config);
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
-    const token0Bal1 = await erc20Mod.balanceOf(poolKey.token0, this.address.address, token0Info.decimals);
-    const token1Bal1 = await erc20Mod.balanceOf(poolKey.token1, this.address.address, token1Info.decimals);
-    logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal1: ${token0Bal1.toString()}, token1Bal1: ${token1Bal1.toString()}`);
+    const token0Bal1 = await erc20Mod.balanceOf(
+      poolKey.token0,
+      this.address.address,
+      token0Info.decimals
+    );
+    const token1Bal1 = await erc20Mod.balanceOf(
+      poolKey.token1,
+      this.address.address,
+      token1Info.decimals
+    );
+    logger.verbose(
+      `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal1: ${token0Bal1.toString()}, token1Bal1: ${token1Bal1.toString()}`
+    );
     const token0Price = await this.pricer.getPrice(token0Info.symbol);
     const token1Price = await this.pricer.getPrice(token1Info.symbol);
     const token0PriceUsd = token0Price.price * Number(token0Bal1.toFixed(13));
     const token1PriceUsd = token1Price.price * Number(token1Bal1.toFixed(13));
     if (token0PriceUsd > 1 && token1PriceUsd > 1) {
-      throw new Error("Both tokens are non-zero and above $1, call handle_fees first");
+      throw new Error(
+        "Both tokens are non-zero and above $1, call handle_fees first"
+      );
     }
     let token0Bal = token0Bal1;
     let token1Bal = token1Bal1;
     if (considerRebalance) {
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => considerRebalance: true`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => considerRebalance: true`
+      );
       const tvl = await this.getTVL();
       token0Bal = token0Bal.plus(tvl.token0.amount.toString());
       token1Bal = token1Bal.plus(tvl.token1.amount.toString());
     } else {
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => considerRebalance: false`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => considerRebalance: false`
+      );
     }
-    logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`);
+    logger.verbose(
+      `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
+    );
     const newBounds = await this.getNewBounds();
-    logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${newBounds.lowerTick}, ${newBounds.upperTick}`);
-    return await this.getSwapInfoGivenAmounts(poolKey, token0Bal, token1Bal, newBounds);
+    logger.verbose(
+      `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${newBounds.lowerTick}, ${newBounds.upperTick}`
+    );
+    return await this.getSwapInfoGivenAmounts(
+      poolKey,
+      token0Bal,
+      token1Bal,
+      newBounds
+    );
   }
   async getSwapInfoGivenAmounts(poolKey, token0Bal, token1Bal, bounds) {
-    let expectedAmounts = await this._getExpectedAmountsForLiquidity(token0Bal, token1Bal, bounds);
-    logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`);
+    let expectedAmounts = await this._getExpectedAmountsForLiquidity(
+      token0Bal,
+      token1Bal,
+      bounds
+    );
+    logger.verbose(
+      `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
+    );
     let retry = 0;
     const maxRetry = 10;
     while (retry < maxRetry) {
@@ -18994,9 +19125,15 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       const remainingSellAmount = tokenToSell == poolKey.token0 ? expectedAmounts.amount0 : expectedAmounts.amount1;
       const tokenToBuyInfo = await Global.getTokenInfoFromAddr(tokenToBuy);
       const expectedRatio = expectedAmounts.ratio;
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => tokenToSell: ${tokenToSell.address}, tokenToBuy: ${tokenToBuy.address}, amountToSell: ${amountToSell.toWei()}`);
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => remainingSellAmount: ${remainingSellAmount.toString()}`);
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedRatio: ${expectedRatio}`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => tokenToSell: ${tokenToSell.address}, tokenToBuy: ${tokenToBuy.address}, amountToSell: ${amountToSell.toWei()}`
+      );
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => remainingSellAmount: ${remainingSellAmount.toString()}`
+      );
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedRatio: ${expectedRatio}`
+      );
       if (amountToSell.eq(0)) {
         return {
           token_from_address: tokenToSell.address,
@@ -19010,23 +19147,62 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
           routes: []
         };
       }
-      const quote = await this.avnu.getQuotes(tokenToSell.address, tokenToBuy.address, amountToSell.toWei(), this.address.address);
+      const quote = await this.avnu.getQuotes(
+        tokenToSell.address,
+        tokenToBuy.address,
+        amountToSell.toWei(),
+        this.address.address
+      );
       if (remainingSellAmount.eq(0)) {
-        const minAmountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals).multipliedBy(0.9999);
-        return await this.avnu.getSwapInfo(quote, this.address.address, 0, this.address.address, minAmountOut.toWei());
+        const minAmountOut = Web3Number.fromWei(
+          quote.buyAmount.toString(),
+          tokenToBuyInfo.decimals
+        ).multipliedBy(0.9999);
+        return await this.avnu.getSwapInfo(
+          quote,
+          this.address.address,
+          0,
+          this.address.address,
+          minAmountOut.toWei()
+        );
       }
-      const amountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals);
+      const amountOut = Web3Number.fromWei(
+        quote.buyAmount.toString(),
+        tokenToBuyInfo.decimals
+      );
       const swapPrice = tokenToSell == poolKey.token0 ? amountOut.dividedBy(amountToSell) : amountToSell.dividedBy(amountOut);
       const newRatio = tokenToSell == poolKey.token0 ? remainingSellAmount.dividedBy(token1Bal.plus(amountOut)) : token0Bal.plus(amountOut).dividedBy(remainingSellAmount);
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => amountOut: ${amountOut.toString()}`);
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => swapPrice: ${swapPrice.toString()}`);
-      logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newRatio: ${newRatio.toString()}`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => amountOut: ${amountOut.toString()}`
+      );
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => swapPrice: ${swapPrice.toString()}`
+      );
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newRatio: ${newRatio.toString()}`
+      );
       if (Number(newRatio.toString()) > expectedRatio * 1.0000001 || Number(newRatio.toString()) < expectedRatio * 0.9999999) {
-        expectedAmounts = await this._solveExpectedAmountsEq(token0Bal, token1Bal, new Web3Number(Number(expectedRatio).toFixed(13), 18), Number(swapPrice.toString()));
-        logger.verbose(`${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`);
+        expectedAmounts = await this._solveExpectedAmountsEq(
+          token0Bal,
+          token1Bal,
+          new Web3Number(Number(expectedRatio).toFixed(13), 18),
+          Number(swapPrice.toString())
+        );
+        logger.verbose(
+          `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
+        );
       } else {
-        const minAmountOut = Web3Number.fromWei(quote.buyAmount.toString(), tokenToBuyInfo.decimals).multipliedBy(0.9999);
-        return await this.avnu.getSwapInfo(quote, this.address.address, 0, this.address.address, minAmountOut.toWei());
+        const minAmountOut = Web3Number.fromWei(
+          quote.buyAmount.toString(),
+          tokenToBuyInfo.decimals
+        ).multipliedBy(0.9999);
+        return await this.avnu.getSwapInfo(
+          quote,
+          this.address.address,
+          0,
+          this.address.address,
+          minAmountOut.toWei()
+        );
       }
       retry++;
     }
@@ -19035,8 +19211,8 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   /**
    * Attempts to rebalance the vault by iteratively adjusting swap amounts if initial attempt fails.
    * Uses binary search approach to find optimal swap amount.
-   * 
-   * @param newBounds - The new tick bounds to rebalance to 
+   *
+   * @param newBounds - The new tick bounds to rebalance to
    * @param swapInfo - Initial swap parameters for rebalancing
    * @param acc - Account to estimate gas fees with
    * @param retry - Current retry attempt number (default 0)
@@ -19063,7 +19239,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
         logger.error(`Rebalance failed after ${MAX_RETRIES} retries`);
         throw err;
       }
-      logger.error(`Rebalance attempt ${retry + 1} failed, adjusting swap amount...`);
+      logger.error(
+        `Rebalance attempt ${retry + 1} failed, adjusting swap amount...`
+      );
       const newSwapInfo = { ...swapInfo };
       const currentAmount = Web3Number.fromWei(fromAmount.toString(), 18);
       logger.verbose(`Current amount: ${currentAmount.toString()}`);
@@ -19155,23 +19333,39 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     const currentPrice = _currentPrice || await this.getCurrentPrice(blockIdentifier);
     const lowerPrice = _EkuboCLVault.tickToPrice(bounds.lowerTick);
     const upperPrice = _EkuboCLVault.tickToPrice(bounds.upperTick);
-    logger.verbose(`${_EkuboCLVault.name}: getLiquidityToAmounts => currentPrice: ${currentPrice.price}, lowerPrice: ${lowerPrice}, upperPrice: ${upperPrice}`);
-    const result = await this.ekuboMathContract.call("liquidity_delta_to_amount_delta", [
-      import_starknet9.uint256.bnToUint256(currentPrice.sqrtRatio),
+    logger.verbose(
+      `${_EkuboCLVault.name}: getLiquidityToAmounts => currentPrice: ${currentPrice.price}, lowerPrice: ${lowerPrice}, upperPrice: ${upperPrice}`
+    );
+    const result = await this.ekuboMathContract.call(
+      "liquidity_delta_to_amount_delta",
+      [
+        import_starknet9.uint256.bnToUint256(currentPrice.sqrtRatio),
+        {
+          mag: liquidity.toWei(),
+          sign: 0
+        },
+        import_starknet9.uint256.bnToUint256(
+          _EkuboCLVault.priceToSqrtRatio(lowerPrice).toString()
+        ),
+        import_starknet9.uint256.bnToUint256(
+          _EkuboCLVault.priceToSqrtRatio(upperPrice).toString()
+        )
+      ],
       {
-        mag: liquidity.toWei(),
-        sign: 0
-      },
-      import_starknet9.uint256.bnToUint256(_EkuboCLVault.priceToSqrtRatio(lowerPrice).toString()),
-      import_starknet9.uint256.bnToUint256(_EkuboCLVault.priceToSqrtRatio(upperPrice).toString())
-    ], {
-      blockIdentifier
-    });
+        blockIdentifier
+      }
+    );
     const poolKey = _poolKey || await this.getPoolKey(blockIdentifier);
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
-    const amount0 = Web3Number.fromWei(_EkuboCLVault.i129ToNumber(result.amount0).toString(), token0Info.decimals);
-    const amount1 = Web3Number.fromWei(_EkuboCLVault.i129ToNumber(result.amount1).toString(), token1Info.decimals);
+    const amount0 = Web3Number.fromWei(
+      _EkuboCLVault.i129ToNumber(result.amount0).toString(),
+      token0Info.decimals
+    );
+    const amount1 = Web3Number.fromWei(
+      _EkuboCLVault.i129ToNumber(result.amount1).toString(),
+      token1Info.decimals
+    );
     return {
       amount0,
       amount1
@@ -19179,7 +19373,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   }
   async harvest(acc) {
     const ekuboHarvests = new EkuboHarvests(this.config);
-    const unClaimedRewards = await ekuboHarvests.getUnHarvestedRewards(this.address);
+    const unClaimedRewards = await ekuboHarvests.getUnHarvestedRewards(
+      this.address
+    );
     const poolKey = await this.getPoolKey();
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
@@ -19189,18 +19385,37 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       const fee = claim.claim.amount.multipliedBy(this.metadata.additionalInfo.feeBps).dividedBy(1e4);
       const postFeeAmount = claim.claim.amount.minus(fee);
       const isToken1 = claim.token.eq(poolKey.token1);
-      logger.verbose(`${_EkuboCLVault.name}: harvest => Processing claim, isToken1: ${isToken1} amount: ${postFeeAmount.toWei()}`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: harvest => Processing claim, isToken1: ${isToken1} amount: ${postFeeAmount.toWei()}`
+      );
       const token0Amt = isToken1 ? new Web3Number(0, token0Info.decimals) : postFeeAmount;
       const token1Amt = isToken1 ? postFeeAmount : new Web3Number(0, token0Info.decimals);
-      logger.verbose(`${_EkuboCLVault.name}: harvest => token0Amt: ${token0Amt.toString()}, token1Amt: ${token1Amt.toString()}`);
-      const swapInfo = await this.getSwapInfoGivenAmounts(poolKey, token0Amt, token1Amt, bounds);
+      logger.verbose(
+        `${_EkuboCLVault.name}: harvest => token0Amt: ${token0Amt.toString()}, token1Amt: ${token1Amt.toString()}`
+      );
+      const swapInfo = await this.getSwapInfoGivenAmounts(
+        poolKey,
+        token0Amt,
+        token1Amt,
+        bounds
+      );
       swapInfo.token_to_address = token0Info.address.address;
-      logger.verbose(`${_EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(swapInfo)}`);
-      logger.verbose(`${_EkuboCLVault.name}: harvest => claim: ${JSON.stringify(claim)}`);
+      logger.verbose(
+        `${_EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(swapInfo)}`
+      );
+      logger.verbose(
+        `${_EkuboCLVault.name}: harvest => claim: ${JSON.stringify(claim)}`
+      );
       const harvestEstimateCall = async (swapInfo1) => {
-        const swap1Amount = Web3Number.fromWei(import_starknet9.uint256.uint256ToBN(swapInfo1.token_from_amount).toString(), 18);
+        const swap1Amount = Web3Number.fromWei(
+          import_starknet9.uint256.uint256ToBN(swapInfo1.token_from_amount).toString(),
+          18
+        );
         const remainingAmount = postFeeAmount.minus(swap1Amount);
-        const swapInfo2 = { ...swapInfo, token_from_amount: import_starknet9.uint256.bnToUint256(remainingAmount.toWei()) };
+        const swapInfo2 = {
+          ...swapInfo,
+          token_from_amount: import_starknet9.uint256.bnToUint256(remainingAmount.toWei())
+        };
         swapInfo2.token_to_address = token1Info.address.address;
         const calldata = [
           claim.rewardsContract.address,
@@ -19213,11 +19428,23 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
           swapInfo,
           swapInfo2
         ];
-        logger.verbose(`${_EkuboCLVault.name}: harvest => calldata: ${JSON.stringify(calldata)}`);
+        logger.verbose(
+          `${_EkuboCLVault.name}: harvest => calldata: ${JSON.stringify(
+            calldata
+          )}`
+        );
         return [this.contract.populate("harvest", calldata)];
       };
-      const _callsFinal = await this.rebalanceIter(swapInfo, acc, harvestEstimateCall);
-      logger.verbose(`${_EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(_callsFinal)}`);
+      const _callsFinal = await this.rebalanceIter(
+        swapInfo,
+        acc,
+        harvestEstimateCall
+      );
+      logger.verbose(
+        `${_EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(
+          _callsFinal
+        )}`
+      );
       calls.push(..._callsFinal);
     }
     return calls;
@@ -19227,24 +19454,37 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     const poolKey = await this.getPoolKey();
     const linkedFlow = {
       title: this.metadata.name,
-      subItems: [{ key: "Pool", value: `${(_EkuboCLVault.div2Power128(BigInt(poolKey.fee)) * 100).toFixed(2)}%, ${poolKey.tick_spacing} tick spacing` }],
+      subItems: [
+        {
+          key: "Pool",
+          value: `${(_EkuboCLVault.div2Power128(BigInt(poolKey.fee)) * 100).toFixed(2)}%, ${poolKey.tick_spacing} tick spacing`
+        }
+      ],
       linkedFlows: [],
       style: { backgroundColor: "#35484f" /* Blue */.valueOf() }
     };
     const baseFlow = {
       id: "base",
       title: "Your Deposit",
-      subItems: [{ key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%` }, { key: `Performance Fee`, value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%` }],
+      subItems: [
+        { key: `Net yield`, value: `${(netYield * 100).toFixed(2)}%` },
+        {
+          key: `Performance Fee`,
+          value: `${(this.metadata.additionalInfo.feeBps / 100).toFixed(2)}%`
+        }
+      ],
       linkedFlows: [linkedFlow],
       style: { backgroundColor: "#6e53dc" /* Purple */.valueOf() }
     };
     const rebalanceFlow = {
       id: "rebalance",
       title: "Automated Rebalance",
-      subItems: [{
-        key: "Range selection",
-        value: `${this.metadata.additionalInfo.newBounds.lower * Number(poolKey.tick_spacing)} to ${this.metadata.additionalInfo.newBounds.upper * Number(poolKey.tick_spacing)} ticks`
-      }],
+      subItems: [
+        {
+          key: "Range selection",
+          value: `${this.metadata.additionalInfo.newBounds.lower * Number(poolKey.tick_spacing)} to ${this.metadata.additionalInfo.newBounds.upper * Number(poolKey.tick_spacing)} ticks`
+        }
+      ],
       linkedFlows: [linkedFlow],
       style: { backgroundColor: "purple" /* Green */.valueOf() }
     };
@@ -19252,24 +19492,53 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
   }
 };
 var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
-var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
+var _protocol2 = {
+  name: "Ekubo",
+  logo: "https://app.ekubo.org/favicon.ico"
+};
 var _riskFactor2 = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
   { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
 ];
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+var faqs2 = [
+  {
+    question: "What is the Ekubo CL Vault strategy?",
+    answer: "The Ekubo CL Vault strategy deploys your assets into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce manual adjustments."
+  },
+  {
+    question: "How are trading fees and rewards handled?",
+    answer: "Trading fees and DeFi Spring rewards are automatically compounded back into the strategy, increasing your overall returns."
+  },
+  {
+    question: "What happens during withdrawal?",
+    answer: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices."
+  },
+  {
+    question: "Is the strategy audited?",
+    answer: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+      "Yes, the strategy has been audited. You can review the audit report in our docs ",
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
+      "."
+    ] })
+  }
+];
 var EkuboCLVaultStrategies = [
   {
     name: "Ekubo xSTRK/STRK",
-    description: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+    description: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
         "ul",
         {
-          style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" },
+          style: {
+            marginLeft: "20px",
+            listStyle: "circle",
+            fontSize: "12px"
+          },
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
           ]
         }
       )
@@ -19303,21 +19572,10 @@ var EkuboCLVaultStrategies = [
       feeBps: 1e3
     },
     faqs: [
+      ...faqs2,
       {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+        question: "Why might I see a negative APY?",
+        answer: "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week."
       }
     ]
   }

@@ -86,8 +86,8 @@ declare enum FlowChartColors {
     Purple = "#6e53dc"
 }
 interface FAQ {
-    question: string;
-    answer: string;
+    question: string | React.ReactNode;
+    answer: string | React.ReactNode;
 }
 /**
  * @property risk.riskFactor.factor - The risk factors that are considered for the strategy.

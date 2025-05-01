@@ -505,6 +505,7 @@ import axios5 from "axios";
 import { Contract as Contract4, num as num2 } from "starknet";
 
 // src/strategies/vesu-rebalance.tsx
+import { jsx, jsxs } from "react/jsx-runtime";
 var _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
 var _protocol = {
   name: "Vesu",
@@ -516,6 +517,48 @@ var _riskFactor = [
   { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
 ];
 var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+var faqs = [
+  {
+    question: "What is the Vesu Rebalancing Strategy?",
+    answer: "The Vesu Rebalancing Strategy is an automated investment strategy that diversifies your holdings across multiple Vesu pools. It optimizes yield by rebalancing assets based on pool performance while adhering to risk constraints."
+  },
+  {
+    question: "Will I earn Vesu points?",
+    answer: "Yes, of course! You will earn Vesu points for your deposits."
+  },
+  {
+    question: "How does the strategy optimize yield?",
+    answer: "The strategy calculates the weighted average APY across all pools and reallocates assets to maximize returns. It prioritizes high-performing pools while ensuring compliance with maximum weight constraints."
+  },
+  {
+    question: "What are the risks associated with this strategy?",
+    answer: "The strategy involves usual DeFi risks such as smart contract vulnerabilities, counterparty risks, and oracle inaccuracies. However, we try our best to reduce these risks through audits and careful pool selection."
+  },
+  {
+    question: "How are fees calculated and deducted?",
+    answer: "Fees are calculated based on the performance of the strategy and deducted proportionally from the total assets. We charge a 10% performance fee and is already accounted in the APY shown."
+  },
+  {
+    question: "What happens if a pool exceeds its maximum weight?",
+    answer: "If a pool exceeds its maximum weight, the strategy rebalances by withdrawing excess funds and reallocating them to other pools with available capacity."
+  },
+  {
+    question: "Can I withdraw my assets at any time?",
+    answer: "Yes, you can withdraw your assets at any time. In rare circumstances, if debt utilisation is high for certain pools on Vesu, it may not be possible to withdraw until markets restore balance."
+  },
+  {
+    question: "What happens to my Defi Spring STRK rewards?",
+    answer: "STRK rewards are automatically harvested and reinvested into the strategy every week to maximize compounding returns."
+  },
+  {
+    question: "Is the strategy audited?",
+    answer: /* @__PURE__ */ jsxs("div", { children: [
+      "Yes, the strategy has been audited. You can review the audit report in our docs ",
+      /* @__PURE__ */ jsx("a", { href: "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
+      "."
+    ] })
+  }
+];
 var VesuRebalanceStrategies = [
   {
     name: "Vesu Fusion STRK",
@@ -538,24 +581,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
   },
   {
     name: "Vesu Fusion ETH",
@@ -578,24 +604,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
   },
   {
     name: "Vesu Fusion USDC",
@@ -618,24 +627,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
   },
   {
     name: "Vesu Fusion USDT",
@@ -658,24 +650,7 @@ var VesuRebalanceStrategies = [
     additionalInfo: {
       feeBps: 1e3
     },
-    faqs: [
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      }
-    ]
+    faqs
     // }, {
     //     name: 'Vesu Fusion WBTC',
     //     description: _description.replace('{{TOKEN}}', 'WBTC'),
@@ -696,27 +671,60 @@ var VesuRebalanceStrategies = [
 ];
 
 // src/strategies/ekubo-cl-vault.tsx
-import { Contract as Contract6, num as num4, uint256 as uint2564 } from "starknet";
-import { jsx, jsxs } from "react/jsx-runtime";
+import {
+  Contract as Contract6,
+  num as num4,
+  uint256 as uint2564
+} from "starknet";
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
-var _protocol2 = { name: "Ekubo", logo: "https://app.ekubo.org/favicon.ico" };
+var _protocol2 = {
+  name: "Ekubo",
+  logo: "https://app.ekubo.org/favicon.ico"
+};
 var _riskFactor2 = [
   { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
   { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
 ];
 var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+var faqs2 = [
+  {
+    question: "What is the Ekubo CL Vault strategy?",
+    answer: "The Ekubo CL Vault strategy deploys your assets into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce manual adjustments."
+  },
+  {
+    question: "How are trading fees and rewards handled?",
+    answer: "Trading fees and DeFi Spring rewards are automatically compounded back into the strategy, increasing your overall returns."
+  },
+  {
+    question: "What happens during withdrawal?",
+    answer: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices."
+  },
+  {
+    question: "Is the strategy audited?",
+    answer: /* @__PURE__ */ jsxs2("div", { children: [
+      "Yes, the strategy has been audited. You can review the audit report in our docs ",
+      /* @__PURE__ */ jsx2("a", { href: "https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
+      "."
+    ] })
+  }
+];
 var EkuboCLVaultStrategies = [
   {
     name: "Ekubo xSTRK/STRK",
-    description: /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-      /* @__PURE__ */ jsxs(
+    description: /* @__PURE__ */ jsxs2("div", { children: [
+      /* @__PURE__ */ jsx2("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+      /* @__PURE__ */ jsxs2(
         "ul",
         {
-          style: { marginLeft: "20px", listStyle: "circle", fontSize: "12px" },
+          style: {
+            marginLeft: "20px",
+            listStyle: "circle",
+            fontSize: "12px"
+          },
           children: [
-            /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-            /* @__PURE__ */ jsx("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+            /* @__PURE__ */ jsx2("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+            /* @__PURE__ */ jsx2("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
           ]
         }
       )
@@ -750,21 +758,10 @@ var EkuboCLVaultStrategies = [
       feeBps: 1e3
     },
     faqs: [
+      ...faqs2,
       {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
-      },
-      {
-        question: "Question asked basis zkLend",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat."
+        question: "Why might I see a negative APY?",
+        answer: "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week."
       }
     ]
   }

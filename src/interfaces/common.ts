@@ -58,8 +58,8 @@ export enum FlowChartColors {
 }
 
 export interface FAQ {
-  question: string;
-  answer: string;
+  question: string | React.ReactNode;
+  answer: string | React.ReactNode;
 }
 
 /**
