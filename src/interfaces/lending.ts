@@ -1,10 +1,9 @@
 import { IConfig } from "@/interfaces/common";
 import { TokenInfo } from "./common";
 import { ContractAddr } from "@/dataTypes/address";
-import { loggers } from "winston";
-import { logger } from "@/global";
 import { log } from "console";
 import { Web3Number } from "@/dataTypes";
+import { logger } from "@/utils/logger";
 
 export interface ILendingMetadata {
     name: string;

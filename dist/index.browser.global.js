@@ -17293,8 +17293,7 @@ var strkfarm_risk_engine = (() => {
     getMainnetConfig: () => getMainnetConfig,
     getNoRiskTags: () => getNoRiskTags,
     getRiskColor: () => getRiskColor,
-    getRiskExplaination: () => getRiskExplaination,
-    logger: () => logger
+    getRiskExplaination: () => getRiskExplaination
   });
 
   // node_modules/.pnpm/axios@1.7.2/node_modules/axios/lib/helpers/bind.js
@@ -19723,6 +19722,14 @@ var strkfarm_risk_engine = (() => {
     mergeConfig: mergeConfig2
   } = axios_default;
 
+  // src/utils/logger.browser.ts
+  var logger = {
+    ...console,
+    verbose(message) {
+      console.log(`[VERBOSE] ${message}`);
+    }
+  };
+
   // src/dataTypes/_bignumber.ts
   var import_bignumber = __toESM(require_bignumber());
   var _Web3Number = class extends import_bignumber.default {
@@ -19739,6 +19746,7 @@ var strkfarm_risk_engine = (() => {
     }
     dividedBy(value) {
       const _value = this.getStandardString(value);
+      console.log("dividedBy", _value);
       return this.construct(this.div(_value).toString(), this.decimals);
     }
     plus(value) {
@@ -19752,13 +19760,15 @@ var strkfarm_risk_engine = (() => {
     construct(value, decimals) {
       return new this.constructor(value, decimals);
     }
-    toString(decimals = this.maxToFixedDecimals()) {
-      return super.toFixed(decimals);
+    toString() {
+      return super.toString();
     }
     toJSON() {
+      logger.verbose(`converting to json with decimals`);
       return this.toString();
     }
     valueOf() {
+      logger.verbose(`converting to valueOf with decimals`);
       return this.toString();
     }
     maxToFixedDecimals() {
@@ -36012,12 +36022,6 @@ var strkfarm_risk_engine = (() => {
   };
 
   // src/global.ts
-  var logger = {
-    ...console,
-    verbose(message) {
-      console.log(`[VERBOSE] ${message}`);
-    }
-  };
   var FatalError = class extends Error {
     constructor(message, err2) {
       super(message);
@@ -36596,7 +36600,7 @@ var strkfarm_risk_engine = (() => {
       } catch (e) {
         logger.warn("getPriceFromMyAPI error", JSON.stringify(e.message || e));
       }
-      logger.log("getPrice coinbase", tokenSymbol);
+      logger.info("getPrice coinbase", tokenSymbol);
       let retry = 0;
       const MAX_RETRIES = 5;
       for (retry = 1; retry < MAX_RETRIES + 1; retry++) {
@@ -37773,6 +37777,11 @@ var strkfarm_risk_engine = (() => {
       const contract = this.contract(token);
       const balance = await contract.call("balanceOf", [address.toString()]);
       return Web3Number.fromWei(balance.toString(), tokenDecimals);
+    }
+    async allowance(token, owner, spender, tokenDecimals) {
+      const contract = this.contract(token);
+      const allowance = await contract.call("allowance", [owner.toString(), spender.toString()]);
+      return Web3Number.fromWei(allowance.toString(), tokenDecimals);
     }
   };
 
@@ -49609,6 +49618,7 @@ var strkfarm_risk_engine = (() => {
       address: ContractAddr.from(
         "0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       depositTokens: [
         Global.getDefaultTokens().find((t) => t.symbol === "STRK")
@@ -49632,6 +49642,7 @@ var strkfarm_risk_engine = (() => {
       address: ContractAddr.from(
         "0x5eaf5ee75231cecf79921ff8ded4b5ffe96be718bcb3daf206690ad1a9ad0ca"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       auditUrl: AUDIT_URL,
       depositTokens: [
@@ -49655,6 +49666,7 @@ var strkfarm_risk_engine = (() => {
       address: ContractAddr.from(
         "0xa858c97e9454f407d1bd7c57472fc8d8d8449a777c822b41d18e387816f29c"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       auditUrl: AUDIT_URL,
       depositTokens: [
@@ -49678,6 +49690,7 @@ var strkfarm_risk_engine = (() => {
       address: ContractAddr.from(
         "0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       depositTokens: [
         Global.getDefaultTokens().find((t) => t.symbol === "USDT")
@@ -54637,11 +54650,15 @@ var strkfarm_risk_engine = (() => {
         this.address.address,
         this.config.provider
       );
-      this.lstContract = new Contract(
-        erc4626_abi_default,
-        this.metadata.additionalInfo.lstContract.address,
-        this.config.provider
-      );
+      if (this.metadata.additionalInfo.lstContract) {
+        this.lstContract = new Contract(
+          erc4626_abi_default,
+          this.metadata.additionalInfo.lstContract.address,
+          this.config.provider
+        );
+      } else {
+        this.lstContract = null;
+      }
       const EKUBO_POSITION = "0x02e0af29598b407c8716b17f6d2795eca1b471413fa03fb145a5e33722184067";
       this.ekuboPositionsContract = new Contract(
         ekubo_positions_abi_default,
@@ -54775,7 +54792,7 @@ var strkfarm_risk_engine = (() => {
       const priceNow = await this.getCurrentPrice(blockIdentifier);
       let blockNow = typeof blockIdentifier == "number" ? blockIdentifier : (await this.config.provider.getBlockLatestAccepted()).block_number;
       const blockNowTime = typeof blockIdentifier == "number" ? (await this.config.provider.getBlockWithTxs(blockIdentifier)).timestamp : (/* @__PURE__ */ new Date()).getTime() / 1e3;
-      const blockBefore = blockNow - sinceBlocks;
+      const blockBefore = Math.max(blockNow - sinceBlocks, this.metadata.launchBlock);
       const adjustedSupplyNow = supplyNow.minus(
         await this.getHarvestRewardShares(blockBefore, blockNow)
       );
@@ -54786,9 +54803,9 @@ var strkfarm_risk_engine = (() => {
       const supplyBefore = await this.totalSupply(blockBefore);
       const priceBefore = await this.getCurrentPrice(blockBefore);
       const tvlInToken0Now = tvlNow.amount0.multipliedBy(priceNow.price).plus(tvlNow.amount1);
-      const tvlPerShareNow = tvlInToken0Now.multipliedBy(1e18).dividedBy(adjustedSupplyNow);
+      const tvlPerShareNow = tvlInToken0Now.multipliedBy(1e18).dividedBy(adjustedSupplyNow.toString());
       const tvlInToken0Bf = tvlBefore.amount0.multipliedBy(priceBefore.price).plus(tvlBefore.amount1);
-      const tvlPerShareBf = tvlInToken0Bf.multipliedBy(1e18).dividedBy(supplyBefore);
+      const tvlPerShareBf = tvlInToken0Bf.multipliedBy(1e18).dividedBy(supplyBefore.toString());
       const timeDiffSeconds = blockNowTime - blockBeforeInfo.timestamp;
       logger.verbose(`tvlInToken0Now: ${tvlInToken0Now.toString()}`);
       logger.verbose(`tvlInToken0Bf: ${tvlInToken0Bf.toString()}`);
@@ -54826,7 +54843,9 @@ var strkfarm_risk_engine = (() => {
       return shares;
     }
     async balanceOf(user, blockIdentifier = "pending") {
-      let bal = await this.contract.call("balance_of", [user.address]);
+      let bal = await this.contract.call("balance_of", [user.address], {
+        blockIdentifier
+      });
       return Web3Number.fromWei(bal.toString(), 18);
     }
     async getUserTVL(user, blockIdentifier = "pending") {
@@ -54974,11 +54993,16 @@ var strkfarm_risk_engine = (() => {
       return Number(result.salt.toString());
     }
     async truePrice() {
-      const result = await this.lstContract.call("convert_to_assets", [
-        uint256_exports.bnToUint256(BigInt(1e18).toString())
-      ]);
-      const truePrice = Number(BigInt(result.toString()) * BigInt(1e9) / BigInt(1e18)) / 1e9;
-      return truePrice;
+      if (this.metadata.additionalInfo.truePrice) {
+        return this.metadata.additionalInfo.truePrice;
+      } else if (this.lstContract) {
+        const result = await this.lstContract.call("convert_to_assets", [
+          uint256_exports.bnToUint256(BigInt(1e18).toString())
+        ]);
+        const truePrice = Number(BigInt(result.toString()) * BigInt(1e9) / BigInt(1e18)) / 1e9;
+        return truePrice;
+      }
+      throw new Error("No true price available");
     }
     async getCurrentPrice(blockIdentifier = "pending") {
       const poolKey = await this.getPoolKey(blockIdentifier);
@@ -55532,6 +55556,7 @@ var strkfarm_risk_engine = (() => {
           const swap1Amount = Web3Number.fromWei(
             uint256_exports.uint256ToBN(swapInfo1.token_from_amount).toString(),
             18
+            // cause its always STRK?
           );
           const remainingAmount = postFeeAmount.minus(swap1Amount);
           const swapInfo2 = {
@@ -55622,6 +55647,9 @@ var strkfarm_risk_engine = (() => {
     { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
     { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
   ];
+  var _riskFactorStable = [
+    { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 }
+  ];
   var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
   var faqs2 = [
     {
@@ -55668,6 +55696,7 @@ var strkfarm_risk_engine = (() => {
       address: ContractAddr.from(
         "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
       ),
+      launchBlock: 1209881,
       type: "Other",
       // must be same order as poolKey token0 and token1
       depositTokens: [
@@ -55699,6 +55728,53 @@ var strkfarm_risk_engine = (() => {
           question: "Why might I see a negative APY?",
           answer: "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week."
         }
+      ]
+    },
+    {
+      name: "Ekubo USDC/USDT",
+      description: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "USDC/USDT") }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          "ul",
+          {
+            style: {
+              marginLeft: "20px",
+              listStyle: "circle",
+              fontSize: "12px"
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
+          }
+        )
+      ] }),
+      address: ContractAddr.from(
+        "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
+      ),
+      launchBlock: 1385576,
+      type: "Other",
+      // must be same order as poolKey token0 and token1
+      depositTokens: [
+        Global.getDefaultTokens().find((t) => t.symbol === "USDC"),
+        Global.getDefaultTokens().find((t) => t.symbol === "USDT")
+      ],
+      protocols: [_protocol2],
+      auditUrl: AUDIT_URL2,
+      maxTVL: Web3Number.fromWei("0", 6),
+      risk: {
+        riskFactor: _riskFactorStable,
+        netRisk: _riskFactorStable.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
+        notARisks: getNoRiskTags(_riskFactorStable)
+      },
+      apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
+      additionalInfo: {
+        newBounds: {
+          lower: -1,
+          upper: 1
+        },
+        truePrice: 1,
+        feeBps: 1e3
+      },
+      faqs: [
+        ...faqs2
       ]
     }
   ];

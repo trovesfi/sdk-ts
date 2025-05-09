@@ -1,39 +1,7 @@
 import axios from 'axios';
 import { TokenInfo } from './interfaces';
 import { ContractAddr } from './dataTypes';
-
-const colors = {
-    error: 'red',
-    warn: 'yellow',
-    info: 'blue',
-    verbose: 'white',
-    debug: 'white',
-}
-
-// Add custom colors to Winston
-// winston.addColors(colors);
-
-// export const logger = createLogger({
-//   level: 'verbose', // Set the minimum logging level
-//   format: format.combine(
-//     format.colorize({ all: true }), // Apply custom colors
-//     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), // Add timestamp to log messages
-//     format.printf(({ timestamp, level, message }) => {
-//       return `${timestamp} ${level}: ${message}`;
-//     })
-//   ),
-//   transports: [
-//     // new transports.Console() // Output logs to the console
-//   ]
-// });
-
-
-export const logger = {
-    ...console,
-    verbose(message: string) {
-        console.log(`[VERBOSE] ${message}`);
-    }
-};
+import { logger } from '@/utils/logger';
 
 
 export class FatalError extends Error {

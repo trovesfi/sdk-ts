@@ -1,9 +1,10 @@
 import axios from "axios";
-import { FatalError, Global, logger } from "@/global";
+import { FatalError, Global } from "@/global";
 import { TokenInfo } from "@/interfaces/common";
 import { IConfig } from "@/interfaces/common";
 import { Web3Number } from "@/dataTypes";
 import { PricerBase } from "./pricerBase";
+import { logger } from "@/utils/logger";
 
 export interface PriceInfo {
     price: number,

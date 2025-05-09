@@ -1,5 +1,5 @@
-import { logger } from "@/global";
 import TelegramBot from "node-telegram-bot-api";
+import { logger } from "@/utils/logger";
 
 export class TelegramNotif {
     private subscribers: string[] = [

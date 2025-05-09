@@ -11,6 +11,7 @@ export default defineConfig((options) => {
       } : {
         // '@/node/headless': '@/node/headless.node',
         '@/dataTypes/bignumber': '@/dataTypes/bignumber.node',
+        '@/utils/logger': '@/utils/logger.node',
       }
     },
   }

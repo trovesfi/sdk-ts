@@ -70,6 +70,7 @@ export interface IStrategyMetadata<T> {
   name: string;
   description: string | React.ReactNode;
   address: ContractAddr;
+  launchBlock: number;
   type: "ERC4626" | "ERC721" | "Other";
   depositTokens: TokenInfo[];
   protocols: IProtocol[];

@@ -1,8 +1,8 @@
-import { logger } from "@/global";
-import { PriceInfo } from "./pricer";
+    import { PriceInfo } from "./pricer";
 import axios from "axios";
 import { IConfig, TokenInfo } from "@/interfaces";
 import { PricerBase } from "./pricerBase";
+import { logger } from "@/utils/logger";
 
 export class PricerFromApi extends PricerBase {
     constructor(config: IConfig, tokens: TokenInfo[]) {
@@ -15,7 +15,7 @@ export class PricerFromApi extends PricerBase {
         } catch (e: any) {
             logger.warn('getPriceFromMyAPI error', JSON.stringify(e.message || e));
         }
-        logger.log('getPrice coinbase', tokenSymbol);
+        logger.info('getPrice coinbase', tokenSymbol);
         let retry = 0;
         const MAX_RETRIES = 5;
         for (retry = 1; retry < MAX_RETRIES + 1; retry++) {

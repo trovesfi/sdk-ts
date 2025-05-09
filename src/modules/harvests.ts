@@ -1,5 +1,5 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
-import { logger } from "@/global";
+import { logger } from "@/utils/logger";
 import { IConfig } from "@/interfaces";
 import { assert } from "@/utils";
 import { Contract, num } from "starknet";

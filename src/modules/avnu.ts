@@ -3,7 +3,7 @@ import { uint256 } from "starknet";
 import { Call, Uint256 } from "starknet";
 import { fetchBuildExecuteTransaction, fetchQuotes, Quote } from "@avnu/avnu-sdk";
 import { assert } from "../utils";
-import { logger } from "@/global";
+import { logger } from "@/utils/logger";
 
 export interface Route {
     token_from: string,

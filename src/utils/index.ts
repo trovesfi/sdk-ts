@@ -1,3 +1,5 @@
+export * from '@/utils/logger';
+
 // Utility type to make all optional properties required
 export type RequiredFields<T> = {
     [K in keyof T]-?: T[K]

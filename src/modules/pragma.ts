@@ -1,6 +1,6 @@
 import { Contract, RpcProvider } from "starknet";
 import PragmaAbi from '@/data/pragma.abi.json';
-import { logger } from "@/global";
+import { logger } from "@/utils/logger";
 
 export class Pragma {
     contractAddr = '0x023fb3afbff2c0e3399f896dcf7400acf1a161941cfb386e34a123f228c62832';

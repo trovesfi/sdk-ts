@@ -51,7 +51,8 @@
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
-    "react": "19.1.0"
+    "react": "19.1.0",
+    "starknet": "^6.11.0"
   },
   "dependencies": {
     "@avnu/avnu-sdk": "^3.0.2",
@@ -67,7 +68,6 @@
     "proxy-from-env": "^1.1.0",
     "redis": "^4.7.0",
     "stacktrace-js": "^2.0.2",
-    "starknet": "^6.11.0",
     "winston": "^3.13.0"
   }
 }

@@ -1,12 +1,13 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
 import { Web3Number } from "@/dataTypes/bignumber.browser";
-import { FatalError, Global, logger } from "@/global";
+import { FatalError, Global } from "@/global";
 import { TokenInfo } from "@/interfaces";
 import { ILending, ILendingPosition, LendingToken, MarginType } from "@/interfaces/lending";
 import { ContractAddr } from "@/dataTypes/address";
 import { IConfig } from "@/interfaces";
 import { Pricer } from "./pricer";
+import { logger } from "@/utils/logger";
 
 export class ZkLend extends ILending implements ILending {
     readonly pricer: Pricer;

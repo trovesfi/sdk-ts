@@ -3,8 +3,8 @@ import fs, { readFileSync, writeFileSync } from 'fs';
 import { Account, constants } from 'starknet';
 import * as crypto from 'crypto';
 import { PasswordJsonCryptoUtil } from './encrypt';
-import { logger } from '..';
 import { log } from 'winston';
+import { logger } from "@/utils/logger";
 
 /**
  * @description Config to manage storage of files on disk

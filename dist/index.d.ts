@@ -3,7 +3,6 @@ import * as starknet from 'starknet';
 import { RpcProvider, BlockIdentifier, Contract, Uint256, Call, Account } from 'starknet';
 import React from 'react';
 import { Quote } from '@avnu/avnu-sdk';
-import * as util from 'util';
 import TelegramBot from 'node-telegram-bot-api';
 
 declare class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
@@ -15,7 +14,7 @@ declare class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     plus(value: string | number | T): T;
     minus(n: number | string | T, base?: number): T;
     protected construct(value: string | number, decimals: number): T;
-    toString(decimals?: number | undefined): string;
+    toString(): string;
     toJSON(): string;
     valueOf(): string;
     private maxToFixedDecimals;
@@ -97,6 +96,7 @@ interface IStrategyMetadata<T> {
     name: string;
     description: string | React.ReactNode;
     address: ContractAddr;
+    launchBlock: number;
     type: "ERC4626" | "ERC721" | "Other";
     depositTokens: TokenInfo[];
     protocols: IProtocol[];
@@ -265,6 +265,7 @@ declare class ERC20 {
     constructor(config: IConfig);
     contract(addr: string | ContractAddr): Contract;
     balanceOf(token: string | ContractAddr, address: string | ContractAddr, tokenDecimals: number): Promise<Web3Number>;
+    allowance(token: string | ContractAddr, owner: string | ContractAddr, spender: string | ContractAddr, tokenDecimals: number): Promise<Web3Number>;
 }
 
 interface Route {
@@ -290,52 +291,6 @@ declare class AvnuWrapper {
     getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount?: string): Promise<SwapInfo>;
 }
 
-declare const logger: {
-    verbose(message: string): void;
-    assert(condition?: boolean, ...data: any[]): void;
-    assert(value: any, message?: string, ...optionalParams: any[]): void;
-    clear(): void;
-    clear(): void;
-    count(label?: string): void;
-    count(label?: string): void;
-    countReset(label?: string): void;
-    countReset(label?: string): void;
-    debug(...data: any[]): void;
-    debug(message?: any, ...optionalParams: any[]): void;
-    dir(item?: any, options?: any): void;
-    dir(obj: any, options?: util.InspectOptions): void;
-    dirxml(...data: any[]): void;
-    dirxml(...data: any[]): void;
-    error(...data: any[]): void;
-    error(message?: any, ...optionalParams: any[]): void;
-    group(...data: any[]): void;
-    group(...label: any[]): void;
-    groupCollapsed(...data: any[]): void;
-    groupCollapsed(...label: any[]): void;
-    groupEnd(): void;
-    groupEnd(): void;
-    info(...data: any[]): void;
-    info(message?: any, ...optionalParams: any[]): void;
-    log(...data: any[]): void;
-    log(message?: any, ...optionalParams: any[]): void;
-    table(tabularData?: any, properties?: string[]): void;
-    table(tabularData: any, properties?: readonly string[]): void;
-    time(label?: string): void;
-    time(label?: string): void;
-    timeEnd(label?: string): void;
-    timeEnd(label?: string): void;
-    timeLog(label?: string, ...data: any[]): void;
-    timeLog(label?: string, ...data: any[]): void;
-    timeStamp(label?: string): void;
-    timeStamp(label?: string): void;
-    trace(...data: any[]): void;
-    trace(message?: any, ...optionalParams: any[]): void;
-    warn(...data: any[]): void;
-    warn(message?: any, ...optionalParams: any[]): void;
-    Console: console.ConsoleConstructor;
-    profile(label?: string): void;
-    profileEnd(label?: string): void;
-};
 declare class FatalError extends Error {
     constructor(message: string, err?: Error);
 }
@@ -640,7 +595,8 @@ interface CLVaultStrategySettings {
         lower: number;
         upper: number;
     };
-    lstContract: ContractAddr;
+    lstContract?: ContractAddr;
+    truePrice?: number;
     feeBps: number;
 }
 declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> {
@@ -655,7 +611,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
     readonly BASE_WEIGHT = 10000;
     readonly ekuboPositionsContract: Contract;
     readonly ekuboMathContract: Contract;
-    readonly lstContract: Contract;
+    readonly lstContract: Contract | null;
     poolKey: EkuboPoolKey | undefined;
     readonly avnu: AvnuWrapper;
     /**
@@ -765,6 +721,19 @@ declare class TelegramNotif {
     activateChatBot(): void;
     sendMessage(msg: string): void;
 }
+
+interface LeveledLogMethod {
+    (message: string, ...meta: any[]): void;
+    (message: any): void;
+}
+interface MyLogger {
+    error: LeveledLogMethod;
+    warn: LeveledLogMethod;
+    info: LeveledLogMethod;
+    verbose: LeveledLogMethod;
+    debug: LeveledLogMethod;
+}
+declare const logger: MyLogger;
 
 type RequiredFields<T> = {
     [K in keyof T]-?: T[K];

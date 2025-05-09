@@ -13,8 +13,9 @@ import {
 import { AvnuWrapper, Pricer, SwapInfo } from "@/modules";
 import { Account, CairoCustomEnum, Contract, num, uint256 } from "starknet";
 import VesuRebalanceAbi from "@/data/vesu-rebalance.abi.json";
-import { Global, logger } from "@/global";
+import { Global } from "@/global";
 import { assert } from "@/utils";
+import { logger } from "@/utils/logger";
 import axios from "axios";
 import { PricerBase } from "@/modules/pricerBase";
 import {
@@ -954,6 +955,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       address: ContractAddr.from(
         "0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       depositTokens: [
         Global.getDefaultTokens().find((t) => t.symbol === "STRK")!
@@ -979,6 +981,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       address: ContractAddr.from(
         "0x5eaf5ee75231cecf79921ff8ded4b5ffe96be718bcb3daf206690ad1a9ad0ca"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       auditUrl: AUDIT_URL,
       depositTokens: [
@@ -1004,6 +1007,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       address: ContractAddr.from(
         "0xa858c97e9454f407d1bd7c57472fc8d8d8449a777c822b41d18e387816f29c"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       auditUrl: AUDIT_URL,
       depositTokens: [
@@ -1029,6 +1033,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       address: ContractAddr.from(
         "0x115e94e722cfc4c77a2f15c4aefb0928c1c0029e5a57570df24c650cb7cec2c"
       ),
+      launchBlock: 0,
       type: "ERC4626",
       depositTokens: [
         Global.getDefaultTokens().find((t) => t.symbol === "USDT")!

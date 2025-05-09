@@ -20,4 +20,10 @@ export class ERC20 {
         const balance = await contract.call('balanceOf', [address.toString()]);
         return Web3Number.fromWei(balance.toString(), tokenDecimals);
     }
+
+    async allowance(token: string | ContractAddr, owner: string | ContractAddr, spender: string | ContractAddr, tokenDecimals: number) {
+        const contract = this.contract(token);
+        const allowance = await contract.call('allowance', [owner.toString(), spender.toString()]);
+        return Web3Number.fromWei(allowance.toString(), tokenDecimals);
+    }
 }

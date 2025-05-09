@@ -1,8 +1,9 @@
-import { FatalError, Global, logger } from '@/global';
+import { FatalError, Global } from '@/global';
 import { IConfig, TokenInfo } from '@/interfaces';
 import { PriceInfo, Pricer } from '@/modules/pricer';
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis'
+import { logger } from "@/utils/logger";
 
 export class PricerRedis extends Pricer {
     private redisClient: RedisClientType | null = null;

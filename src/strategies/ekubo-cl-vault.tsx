@@ -24,13 +24,14 @@ import CLVaultAbi from "@/data/cl-vault.abi.json";
 import EkuboPositionsAbi from "@/data/ekubo-positions.abi.json";
 import EkuboMathAbi from "@/data/ekubo-math.abi.json";
 import ERC4626Abi from "@/data/erc4626.abi.json";
-import { Global, logger } from "@/global";
+import { Global } from "@/global";
 import { AvnuWrapper, ERC20, SwapInfo } from "@/modules";
 import { BaseStrategy } from "./base-strategy";
 import { DualActionAmount } from "./base-strategy";
 import { DualTokenInfo } from "./base-strategy";
 import { log } from "winston";
 import { EkuboHarvests } from "@/modules/harvests";
+import { logger } from "@/utils/logger";
 
 export interface EkuboPoolKey {
   token0: ContractAddr;
@@ -58,7 +59,8 @@ export interface CLVaultStrategySettings {
     upper: number;
   };
   // to get true price
-  lstContract: ContractAddr;
+  lstContract?: ContractAddr;
+  truePrice?: number; // useful for pools where price is known (e.g. USDC/USDT as 1)
   feeBps: number;
 }
 
@@ -78,7 +80,7 @@ export class EkuboCLVault extends BaseStrategy<
 
   readonly ekuboPositionsContract: Contract;
   readonly ekuboMathContract: Contract;
-  readonly lstContract: Contract;
+  readonly lstContract: Contract | null;
   poolKey: EkuboPoolKey | undefined;
   readonly avnu: AvnuWrapper;
 
@@ -109,11 +111,15 @@ export class EkuboCLVault extends BaseStrategy<
       this.address.address,
       this.config.provider
     );
-    this.lstContract = new Contract(
-      ERC4626Abi,
-      this.metadata.additionalInfo.lstContract.address,
-      this.config.provider
-    );
+    if (this.metadata.additionalInfo.lstContract) {
+      this.lstContract = new Contract(
+        ERC4626Abi,
+        this.metadata.additionalInfo.lstContract.address,
+        this.config.provider
+      );
+    } else {
+      this.lstContract = null;
+    }
 
     // ekubo positions contract
     const EKUBO_POSITION =
@@ -291,7 +297,7 @@ export class EkuboCLVault extends BaseStrategy<
         ? (await this.config.provider.getBlockWithTxs(blockIdentifier))
             .timestamp
         : new Date().getTime() / 1000;
-    const blockBefore = blockNow - sinceBlocks;
+    const blockBefore = Math.max(blockNow - sinceBlocks, this.metadata.launchBlock);
     const adjustedSupplyNow = supplyNow.minus(
       await this.getHarvestRewardShares(blockBefore, blockNow)
     );
@@ -307,13 +313,13 @@ export class EkuboCLVault extends BaseStrategy<
       .plus(tvlNow.amount1);
     const tvlPerShareNow = tvlInToken0Now
       .multipliedBy(1e18)
-      .dividedBy(adjustedSupplyNow);
+      .dividedBy(adjustedSupplyNow.toString());
     const tvlInToken0Bf = tvlBefore.amount0
       .multipliedBy(priceBefore.price)
       .plus(tvlBefore.amount1);
     const tvlPerShareBf = tvlInToken0Bf
       .multipliedBy(1e18)
-      .dividedBy(supplyBefore);
+      .dividedBy(supplyBefore.toString());
     const timeDiffSeconds = blockNowTime - blockBeforeInfo.timestamp;
     logger.verbose(`tvlInToken0Now: ${tvlInToken0Now.toString()}`);
     logger.verbose(`tvlInToken0Bf: ${tvlInToken0Bf.toString()}`);
@@ -362,7 +368,9 @@ export class EkuboCLVault extends BaseStrategy<
     user: ContractAddr,
     blockIdentifier: BlockIdentifier = "pending"
   ): Promise<Web3Number> {
-    let bal = await this.contract.call("balance_of", [user.address]);
+    let bal = await this.contract.call("balance_of", [user.address], {
+      blockIdentifier
+    });
     return Web3Number.fromWei(bal.toString(), 18);
   }
 
@@ -529,12 +537,18 @@ export class EkuboCLVault extends BaseStrategy<
   }
 
   async truePrice() {
-    const result: any = await this.lstContract.call("convert_to_assets", [
-      uint256.bnToUint256(BigInt(1e18).toString()),
-    ]);
-    const truePrice =
-      Number((BigInt(result.toString()) * BigInt(1e9)) / BigInt(1e18)) / 1e9;
-    return truePrice;
+    if (this.metadata.additionalInfo.truePrice) {
+      return this.metadata.additionalInfo.truePrice;
+    } else if (this.lstContract) {
+      const result: any = await this.lstContract.call("convert_to_assets", [
+        uint256.bnToUint256(BigInt(1e18).toString()),
+      ]);
+      const truePrice =
+        Number((BigInt(result.toString()) * BigInt(1e9)) / BigInt(1e18)) / 1e9;
+      return truePrice;
+    }
+
+    throw new Error("No true price available");
   }
 
   async getCurrentPrice(blockIdentifier: BlockIdentifier = "pending") {
@@ -1294,7 +1308,7 @@ export class EkuboCLVault extends BaseStrategy<
       const harvestEstimateCall = async (swapInfo1: SwapInfo) => {
         const swap1Amount = Web3Number.fromWei(
           uint256.uint256ToBN(swapInfo1.token_from_amount).toString(),
-          18
+          18, // cause its always STRK?
         );
         const remainingAmount = postFeeAmount.minus(swap1Amount);
         const swapInfo2 = {
@@ -1401,6 +1415,10 @@ const _riskFactor: RiskFactor[] = [
   { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25 },
   { type: RiskType.IMPERMANENT_LOSS, value: 1, weight: 75 },
 ];
+
+const _riskFactorStable: RiskFactor[] = [
+  { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25 },
+];
 const AUDIT_URL =
   "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 
@@ -1458,6 +1476,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
       address: ContractAddr.from(
         "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
       ),
+      launchBlock: 1209881,
       type: "Other",
       // must be same order as poolKey token0 and token1
       depositTokens: [
@@ -1493,6 +1512,59 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
           answer:
             "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week.",
         },
+      ]
+    },
+    {
+      name: "Ekubo USDC/USDT",
+      description: (
+        <div>
+          <p>{_description.replace("{{POOL_NAME}}", "USDC/USDT")}</p>
+          <ul
+            style={{
+              marginLeft: "20px",
+              listStyle: "circle",
+              fontSize: "12px",
+            }}
+          >
+            <li style={{ marginTop: "10px" }}>
+              During withdrawal, you may receive either or both tokens depending
+              on market conditions and prevailing prices.
+            </li>
+          </ul>
+        </div>
+      ),
+      address: ContractAddr.from(
+        "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
+      ),
+      launchBlock: 1385576,
+      type: "Other",
+      // must be same order as poolKey token0 and token1
+      depositTokens: [
+        Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
+        Global.getDefaultTokens().find((t) => t.symbol === "USDT")!,
+      ],
+      protocols: [_protocol],
+      auditUrl: AUDIT_URL,
+      maxTVL: Web3Number.fromWei("0", 6),
+      risk: {
+        riskFactor: _riskFactorStable,
+        netRisk:
+        _riskFactorStable.reduce((acc, curr) => acc + curr.value * curr.weight, 0) /
+        _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
+        notARisks: getNoRiskTags(_riskFactorStable),
+      },
+      apyMethodology:
+        "APY based on 7-day historical performance, including fees and rewards.",
+      additionalInfo: {
+        newBounds: {
+          lower: -1,
+          upper: 1,
+        },
+        truePrice: 1,
+        feeBps: 1000,
+      },
+      faqs: [
+        ...faqs,
       ]
     },
   ];
