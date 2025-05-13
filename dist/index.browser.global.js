@@ -19722,14 +19722,6 @@ var strkfarm_risk_engine = (() => {
     mergeConfig: mergeConfig2
   } = axios_default;
 
-  // src/utils/logger.browser.ts
-  var logger = {
-    ...console,
-    verbose(message) {
-      console.log(`[VERBOSE] ${message}`);
-    }
-  };
-
   // src/dataTypes/_bignumber.ts
   var import_bignumber = __toESM(require_bignumber());
   var _Web3Number = class extends import_bignumber.default {
@@ -19746,7 +19738,6 @@ var strkfarm_risk_engine = (() => {
     }
     dividedBy(value) {
       const _value = this.getStandardString(value);
-      console.log("dividedBy", _value);
       return this.construct(this.div(_value).toString(), this.decimals);
     }
     plus(value) {
@@ -19764,11 +19755,9 @@ var strkfarm_risk_engine = (() => {
       return super.toString();
     }
     toJSON() {
-      logger.verbose(`converting to json with decimals`);
       return this.toString();
     }
     valueOf() {
-      logger.verbose(`converting to valueOf with decimals`);
       return this.toString();
     }
     maxToFixedDecimals() {
@@ -36018,6 +36007,14 @@ var strkfarm_risk_engine = (() => {
     }
     toString() {
       return this.address;
+    }
+  };
+
+  // src/utils/logger.browser.ts
+  var logger = {
+    ...console,
+    verbose(message) {
+      console.log(`[VERBOSE] ${message}`);
     }
   };
 
@@ -55185,14 +55182,24 @@ var strkfarm_risk_engine = (() => {
     _solveExpectedAmountsEq(availableAmount0, availableAmount1, ratio, price) {
       const y = ratio.multipliedBy(availableAmount1).minus(availableAmount0).dividedBy(ratio.plus(1 / price));
       const x = y.dividedBy(price);
+      logger.verbose(
+        `${_EkuboCLVault.name}: _solveExpectedAmountsEq => x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
+      );
+      if (ratio.eq(0)) {
+        return {
+          amount0: Web3Number.fromWei("0", availableAmount0.decimals),
+          amount1: availableAmount1.minus(y),
+          ratio: 0
+        };
+      }
       return {
         amount0: availableAmount0.plus(x),
         amount1: availableAmount1.minus(y),
         ratio: Number(ratio.toString())
       };
     }
-    async getSwapInfoToHandleUnused(considerRebalance = true) {
-      const poolKey = await this.getPoolKey();
+    async unusedBalances(_poolKey) {
+      const poolKey = _poolKey || await this.getPoolKey();
       const erc20Mod = new ERC20(this.config);
       const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
       const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
@@ -55213,11 +55220,24 @@ var strkfarm_risk_engine = (() => {
       const token1Price = await this.pricer.getPrice(token1Info.symbol);
       const token0PriceUsd = token0Price.price * Number(token0Bal1.toFixed(13));
       const token1PriceUsd = token1Price.price * Number(token1Bal1.toFixed(13));
-      if (token0PriceUsd > 1 && token1PriceUsd > 1) {
-        throw new Error(
-          "Both tokens are non-zero and above $1, call handle_fees first"
-        );
-      }
+      return {
+        token0: {
+          amount: token0Bal1,
+          tokenInfo: token0Info,
+          usdValue: token0PriceUsd
+        },
+        token1: {
+          amount: token1Bal1,
+          tokenInfo: token1Info,
+          usdValue: token1PriceUsd
+        }
+      };
+    }
+    async getSwapInfoToHandleUnused(considerRebalance = true) {
+      const poolKey = await this.getPoolKey();
+      const unusedBalances = await this.unusedBalances(poolKey);
+      const { amount: token0Bal1, usdValue: token0PriceUsd } = unusedBalances.token0;
+      const { amount: token1Bal1, usdValue: token1PriceUsd } = unusedBalances.token1;
       let token0Bal = token0Bal1;
       let token1Bal = token1Bal1;
       if (considerRebalance) {
@@ -55235,25 +55255,33 @@ var strkfarm_risk_engine = (() => {
       logger.verbose(
         `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
       );
-      const newBounds = await this.getNewBounds();
+      let ekuboBounds;
+      if (considerRebalance) {
+        ekuboBounds = await this.getNewBounds();
+      } else {
+        ekuboBounds = await this.getCurrentBounds();
+      }
       logger.verbose(
-        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${newBounds.lowerTick}, ${newBounds.upperTick}`
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${ekuboBounds.lowerTick}, ${ekuboBounds.upperTick}`
       );
       return await this.getSwapInfoGivenAmounts(
         poolKey,
         token0Bal,
         token1Bal,
-        newBounds
+        ekuboBounds
       );
     }
     async getSwapInfoGivenAmounts(poolKey, token0Bal, token1Bal, bounds) {
+      logger.verbose(
+        `${_EkuboCLVault.name}: getSwapInfoGivenAmounts::pre => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
+      );
       let expectedAmounts = await this._getExpectedAmountsForLiquidity(
         token0Bal,
         token1Bal,
         bounds
       );
       logger.verbose(
-        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
+        `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts2: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
       );
       let retry = 0;
       const maxRetry = 10;
@@ -55526,6 +55554,7 @@ var strkfarm_risk_engine = (() => {
       const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
       const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
       const bounds = await this.getCurrentBounds();
+      logger.verbose(`${_EkuboCLVault.name}: harvest => unClaimedRewards: ${unClaimedRewards.length}`);
       const calls = [];
       for (let claim of unClaimedRewards) {
         const fee = claim.claim.amount.multipliedBy(this.metadata.additionalInfo.feeBps).dividedBy(1e4);
@@ -55558,12 +55587,28 @@ var strkfarm_risk_engine = (() => {
             18
             // cause its always STRK?
           );
+          logger.verbose(
+            `${_EkuboCLVault.name}: harvest => swap1Amount: ${swap1Amount}`
+          );
           const remainingAmount = postFeeAmount.minus(swap1Amount);
+          logger.verbose(
+            `${_EkuboCLVault.name}: harvest => remainingAmount: ${remainingAmount}`
+          );
           const swapInfo2 = {
             ...swapInfo,
             token_from_amount: uint256_exports.bnToUint256(remainingAmount.toWei())
           };
           swapInfo2.token_to_address = token1Info.address.address;
+          logger.verbose(
+            `${_EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(
+              swapInfo
+            )}`
+          );
+          logger.verbose(
+            `${_EkuboCLVault.name}: harvest => swapInfo2: ${JSON.stringify(
+              swapInfo2
+            )}`
+          );
           const calldata = [
             claim.rewardsContract.address,
             {

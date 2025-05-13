@@ -795,6 +795,7 @@ export class EkuboCLVault extends BaseStrategy<
     ratio: Web3Number,
     price: number
   ) {
+
     // (amount0 + x) / (amount1 - y) = ratio
     // x = y * Py / Px                                     ---- (1)
     // => (amount0 + y * Py / Px) / (amount1 - y) = ratio
@@ -807,6 +808,17 @@ export class EkuboCLVault extends BaseStrategy<
       .minus(availableAmount0)
       .dividedBy(ratio.plus(1 / price));
     const x = y.dividedBy(price);
+    logger.verbose(
+      `${EkuboCLVault.name}: _solveExpectedAmountsEq => x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
+    );
+
+    if (ratio.eq(0)) {
+      return {
+        amount0: Web3Number.fromWei("0", availableAmount0.decimals),
+        amount1: availableAmount1.minus(y),
+        ratio: 0,
+      };
+    }
     return {
       amount0: availableAmount0.plus(x),
       amount1: availableAmount1.minus(y),
@@ -814,10 +826,8 @@ export class EkuboCLVault extends BaseStrategy<
     };
   }
 
-  async getSwapInfoToHandleUnused(considerRebalance: boolean = true) {
-    const poolKey = await this.getPoolKey();
-
-    // fetch current unused balances of vault
+  async unusedBalances(_poolKey?: EkuboPoolKey) {
+    const poolKey = _poolKey || (await this.getPoolKey());
     const erc20Mod = new ERC20(this.config);
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
@@ -831,6 +841,7 @@ export class EkuboCLVault extends BaseStrategy<
       this.address.address,
       token1Info.decimals
     );
+
     logger.verbose(
       `${
         EkuboCLVault.name
@@ -841,16 +852,39 @@ export class EkuboCLVault extends BaseStrategy<
     const token1Price = await this.pricer.getPrice(token1Info.symbol);
     const token0PriceUsd = token0Price.price * Number(token0Bal1.toFixed(13));
     const token1PriceUsd = token1Price.price * Number(token1Bal1.toFixed(13));
-    if (token0PriceUsd > 1 && token1PriceUsd > 1) {
-      // the swap is designed to handle one token only.
-      // i.e. all balance should be in one token
-      // except small amount of dust
-      // so we need to call handle_fees first, which will atleast use
-      // most of one token
-      throw new Error(
-        "Both tokens are non-zero and above $1, call handle_fees first"
-      );
+
+    return {
+      token0: {
+        amount: token0Bal1,
+        tokenInfo: token0Info,
+        usdValue: token0PriceUsd,
+      },
+      token1: {
+        amount: token1Bal1,
+        tokenInfo: token1Info,
+        usdValue: token1PriceUsd,
+      },
     }
+  }
+
+  async getSwapInfoToHandleUnused(considerRebalance: boolean = true) {
+    const poolKey = await this.getPoolKey();
+
+    // fetch current unused balances of vault
+    const unusedBalances = await this.unusedBalances(poolKey);
+    const { amount: token0Bal1, usdValue: token0PriceUsd} = unusedBalances.token0;
+    const { amount: token1Bal1, usdValue: token1PriceUsd} = unusedBalances.token1;
+
+    // if (token0PriceUsd > 1 && token1PriceUsd > 1) {
+    //   // the swap is designed to handle one token only.
+    //   // i.e. all balance should be in one token
+    //   // except small amount of dust
+    //   // so we need to call handle_fees first, which will atleast use
+    //   // most of one token
+    //   throw new Error(
+    //     "Both tokens are non-zero and above $1, call handle_fees first"
+    //   );
+    // }
 
     let token0Bal = token0Bal1;
     let token1Bal = token1Bal1;
@@ -875,16 +909,21 @@ export class EkuboCLVault extends BaseStrategy<
     );
 
     // get expected amounts for liquidity
-    const newBounds = await this.getNewBounds();
+    let ekuboBounds: EkuboBounds;
+    if (considerRebalance) {
+      ekuboBounds = await this.getNewBounds();
+    } else {
+      ekuboBounds = await this.getCurrentBounds();
+    }
     logger.verbose(
-      `${EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${newBounds.lowerTick}, ${newBounds.upperTick}`
+      `${EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${ekuboBounds.lowerTick}, ${ekuboBounds.upperTick}`
     );
 
     return await this.getSwapInfoGivenAmounts(
       poolKey,
       token0Bal,
       token1Bal,
-      newBounds
+      ekuboBounds
     );
   }
 
@@ -894,6 +933,9 @@ export class EkuboCLVault extends BaseStrategy<
     token1Bal: Web3Number,
     bounds: EkuboBounds
   ): Promise<SwapInfo> {
+    logger.verbose(
+      `${EkuboCLVault.name}: getSwapInfoGivenAmounts::pre => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
+    );
     let expectedAmounts = await this._getExpectedAmountsForLiquidity(
       token0Bal,
       token1Bal,
@@ -902,7 +944,7 @@ export class EkuboCLVault extends BaseStrategy<
     logger.verbose(
       `${
         EkuboCLVault.name
-      }: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
+      }: getSwapInfoToHandleUnused => expectedAmounts2: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
     );
 
     // get swap info
@@ -1266,6 +1308,7 @@ export class EkuboCLVault extends BaseStrategy<
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
     const bounds = await this.getCurrentBounds();
+    logger.verbose(`${EkuboCLVault.name}: harvest => unClaimedRewards: ${unClaimedRewards.length}`);
     const calls: Call[] = [];
     for (let claim of unClaimedRewards) {
       const fee = claim.claim.amount
@@ -1279,6 +1322,8 @@ export class EkuboCLVault extends BaseStrategy<
           EkuboCLVault.name
         }: harvest => Processing claim, isToken1: ${isToken1} amount: ${postFeeAmount.toWei()}`
       );
+
+      // todo what if the claim token is neither token0 or token1
       const token0Amt = isToken1
         ? new Web3Number(0, token0Info.decimals)
         : postFeeAmount;
@@ -1310,12 +1355,28 @@ export class EkuboCLVault extends BaseStrategy<
           uint256.uint256ToBN(swapInfo1.token_from_amount).toString(),
           18, // cause its always STRK?
         );
+        logger.verbose(
+          `${EkuboCLVault.name}: harvest => swap1Amount: ${swap1Amount}`
+        );
         const remainingAmount = postFeeAmount.minus(swap1Amount);
+        logger.verbose(
+          `${EkuboCLVault.name}: harvest => remainingAmount: ${remainingAmount}`
+        );
         const swapInfo2 = {
           ...swapInfo,
           token_from_amount: uint256.bnToUint256(remainingAmount.toWei()),
         };
         swapInfo2.token_to_address = token1Info.address.address;
+        logger.verbose(
+          `${EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(
+            swapInfo
+          )}`
+        );  
+        logger.verbose(
+          `${EkuboCLVault.name}: harvest => swapInfo2: ${JSON.stringify(
+            swapInfo2
+          )}`
+        );  
         const calldata = [
           claim.rewardsContract.address,
           {

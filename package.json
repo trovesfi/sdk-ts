@@ -1,6 +1,6 @@
 {
   "name": "@strkfarm/sdk",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "description": "STRKFarm TS SDK (Meant for our internal use, but feel free to use it)",
   "typings": "dist/index.d.ts",
   "types": "dist/index.d.ts",

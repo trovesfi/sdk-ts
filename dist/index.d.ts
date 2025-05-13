@@ -672,6 +672,18 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      */
     private _getExpectedAmountsForLiquidity;
     private _solveExpectedAmountsEq;
+    unusedBalances(_poolKey?: EkuboPoolKey): Promise<{
+        token0: {
+            amount: Web3Number;
+            tokenInfo: TokenInfo;
+            usdValue: number;
+        };
+        token1: {
+            amount: Web3Number;
+            tokenInfo: TokenInfo;
+            usdValue: number;
+        };
+    }>;
     getSwapInfoToHandleUnused(considerRebalance?: boolean): Promise<SwapInfo>;
     getSwapInfoGivenAmounts(poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number, bounds: EkuboBounds): Promise<SwapInfo>;
     /**
