@@ -289,6 +289,7 @@ interface SwapInfo {
 declare class AvnuWrapper {
     getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string, retry?: number): Promise<Quote>;
     getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount?: string): Promise<SwapInfo>;
+    static buildZeroSwap(tokenToSell: ContractAddr, address: string): SwapInfo;
 }
 
 declare class FatalError extends Error {
@@ -598,6 +599,11 @@ interface CLVaultStrategySettings {
     lstContract?: ContractAddr;
     truePrice?: number;
     feeBps: number;
+    rebalanceConditions: {
+        minWaitHours: number;
+        direction: "any" | "uponly";
+        customShouldRebalance: (currentPoolPrice: number) => Promise<boolean>;
+    };
 }
 declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount> {
     /** Contract address of the strategy */

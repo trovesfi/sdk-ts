@@ -62,6 +62,11 @@ export interface CLVaultStrategySettings {
   lstContract?: ContractAddr;
   truePrice?: number; // useful for pools where price is known (e.g. USDC/USDT as 1)
   feeBps: number;
+  rebalanceConditions: {
+    minWaitHours: number; // number of hours out of range to rebalance
+    direction: "any" | "uponly"; // any for pools like USDC/USDT, uponly for pools like xSTRK/STRK
+    customShouldRebalance: (currentPoolPrice: number) => Promise<boolean>; // any additional logic for deciding factor to rebalance or not based on pools
+  };
 }
 
 export class EkuboCLVault extends BaseStrategy<
@@ -297,7 +302,10 @@ export class EkuboCLVault extends BaseStrategy<
         ? (await this.config.provider.getBlockWithTxs(blockIdentifier))
             .timestamp
         : new Date().getTime() / 1000;
-    const blockBefore = Math.max(blockNow - sinceBlocks, this.metadata.launchBlock);
+    const blockBefore = Math.max(
+      blockNow - sinceBlocks,
+      this.metadata.launchBlock
+    );
     const adjustedSupplyNow = supplyNow.minus(
       await this.getHarvestRewardShares(blockBefore, blockNow)
     );
@@ -369,7 +377,7 @@ export class EkuboCLVault extends BaseStrategy<
     blockIdentifier: BlockIdentifier = "pending"
   ): Promise<Web3Number> {
     let bal = await this.contract.call("balance_of", [user.address], {
-      blockIdentifier
+      blockIdentifier,
     });
     return Web3Number.fromWei(bal.toString(), 18);
   }
@@ -795,7 +803,6 @@ export class EkuboCLVault extends BaseStrategy<
     ratio: Web3Number,
     price: number
   ) {
-
     // (amount0 + x) / (amount1 - y) = ratio
     // x = y * Py / Px                                     ---- (1)
     // => (amount0 + y * Py / Px) / (amount1 - y) = ratio
@@ -809,7 +816,9 @@ export class EkuboCLVault extends BaseStrategy<
       .dividedBy(ratio.plus(1 / price));
     const x = y.dividedBy(price);
     logger.verbose(
-      `${EkuboCLVault.name}: _solveExpectedAmountsEq => x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
+      `${
+        EkuboCLVault.name
+      }: _solveExpectedAmountsEq => x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
     );
 
     if (ratio.eq(0)) {
@@ -864,7 +873,7 @@ export class EkuboCLVault extends BaseStrategy<
         tokenInfo: token1Info,
         usdValue: token1PriceUsd,
       },
-    }
+    };
   }
 
   async getSwapInfoToHandleUnused(considerRebalance: boolean = true) {
@@ -872,8 +881,10 @@ export class EkuboCLVault extends BaseStrategy<
 
     // fetch current unused balances of vault
     const unusedBalances = await this.unusedBalances(poolKey);
-    const { amount: token0Bal1, usdValue: token0PriceUsd} = unusedBalances.token0;
-    const { amount: token1Bal1, usdValue: token1PriceUsd} = unusedBalances.token1;
+    const { amount: token0Bal1, usdValue: token0PriceUsd } =
+      unusedBalances.token0;
+    const { amount: token1Bal1, usdValue: token1PriceUsd } =
+      unusedBalances.token1;
 
     // if (token0PriceUsd > 1 && token1PriceUsd > 1) {
     //   // the swap is designed to handle one token only.
@@ -934,8 +945,12 @@ export class EkuboCLVault extends BaseStrategy<
     bounds: EkuboBounds
   ): Promise<SwapInfo> {
     logger.verbose(
-      `${EkuboCLVault.name}: getSwapInfoGivenAmounts::pre => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
+      `${
+        EkuboCLVault.name
+      }: getSwapInfoGivenAmounts::pre => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
     );
+
+    // Compute the expected amounts of token0 and token1 for the given liquidity bounds
     let expectedAmounts = await this._getExpectedAmountsForLiquidity(
       token0Bal,
       token1Bal,
@@ -947,14 +962,16 @@ export class EkuboCLVault extends BaseStrategy<
       }: getSwapInfoToHandleUnused => expectedAmounts2: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
     );
 
-    // get swap info
-    // fetch avnu routes to ensure expected amounts
     let retry = 0;
     const maxRetry = 10;
-    while (retry < maxRetry) {
-      retry++;
-      // assert one token is increased and other is decreased
 
+    // Helper to check for invalid states:
+    // Throws if both tokens are decreased or both are increased, which is not expected
+    function assertValidAmounts(
+      expectedAmounts: any,
+      token0Bal: Web3Number,
+      token1Bal: Web3Number
+    ) {
       if (
         expectedAmounts.amount0.lessThan(token0Bal) &&
         expectedAmounts.amount1.lessThan(token1Bal)
@@ -967,58 +984,75 @@ export class EkuboCLVault extends BaseStrategy<
       ) {
         throw new Error("Both tokens are increased, something is wrong");
       }
+    }
 
+    // Helper to determine which token to sell, which to buy, and the amounts to use
+    function getSwapParams(
+      expectedAmounts: any,
+      poolKey: EkuboPoolKey,
+      token0Bal: Web3Number,
+      token1Bal: Web3Number
+    ) {
+      // Decide which token to sell based on which expected amount is less than the balance
       const tokenToSell = expectedAmounts.amount0.lessThan(token0Bal)
         ? poolKey.token0
         : poolKey.token1;
+      // The other token is the one to buy
       const tokenToBuy =
         tokenToSell == poolKey.token0 ? poolKey.token1 : poolKey.token0;
-      let amountToSell =
+      // Calculate how much to sell
+      const amountToSell =
         tokenToSell == poolKey.token0
           ? token0Bal.minus(expectedAmounts.amount0)
           : token1Bal.minus(expectedAmounts.amount1);
+      // The remaining amount of the sold token after swap
       const remainingSellAmount =
         tokenToSell == poolKey.token0
           ? expectedAmounts.amount0
           : expectedAmounts.amount1;
+      return { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount };
+    }
+
+    // Main retry loop: attempts to find a swap that matches the expected ratio within tolerance
+    while (retry < maxRetry) {
+      retry++;
+      logger.verbose(
+        `getSwapInfoGivenAmounts::Retry attempt: ${retry}/${maxRetry}`
+      );
+
+      // Ensure the expected amounts are valid for swap logic
+      assertValidAmounts(expectedAmounts, token0Bal, token1Bal);
+
+      // Get swap parameters for this iteration
+      const { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount } =
+        getSwapParams(expectedAmounts, poolKey, token0Bal, token1Bal);
+
       const tokenToBuyInfo = await Global.getTokenInfoFromAddr(tokenToBuy);
       const expectedRatio = expectedAmounts.ratio;
 
       logger.verbose(
-        `${EkuboCLVault.name}: getSwapInfoToHandleUnused => tokenToSell: ${
-          tokenToSell.address
-        }, tokenToBuy: ${
-          tokenToBuy.address
-        }, amountToSell: ${amountToSell.toWei()}`
-      );
-      logger.verbose(
-        `${
-          EkuboCLVault.name
-        }: getSwapInfoToHandleUnused => remainingSellAmount: ${remainingSellAmount.toString()}`
-      );
-      logger.verbose(
-        `${EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedRatio: ${expectedRatio}`
-      );
+        `${EkuboCLVault.name}: getSwapInfoToHandleUnused => iteration info: ${JSON.stringify({
+          tokenToSell: tokenToSell.address,
+          tokenToBuy: tokenToBuy.address,
+          amountToSell: amountToSell.toString(),
+          remainingSellAmount: remainingSellAmount.toString(),
+          expectedRatio: expectedRatio
+      })}`);
 
+      // If nothing to sell, return a zero swap
       if (amountToSell.eq(0)) {
-        return {
-          token_from_address: tokenToSell.address,
-          token_from_amount: uint256.bnToUint256(0),
-          token_to_address: tokenToSell.address,
-          token_to_amount: uint256.bnToUint256(0),
-          token_to_min_amount: uint256.bnToUint256(0),
-          beneficiary: this.address.address,
-          integrator_fee_amount_bps: 0,
-          integrator_fee_recipient: this.address.address,
-          routes: [],
-        };
+        return AvnuWrapper.buildZeroSwap(tokenToSell, this.address.address);
       }
+
+      // Get a quote for swapping the calculated amount
       const quote = await this.avnu.getQuotes(
         tokenToSell.address,
         tokenToBuy.address,
         amountToSell.toWei(),
         this.address.address
       );
+
+      // If all of the token is to be swapped, return the swap info directly
       if (remainingSellAmount.eq(0)) {
         const minAmountOut = Web3Number.fromWei(
           quote.buyAmount.toString(),
@@ -1033,36 +1067,34 @@ export class EkuboCLVault extends BaseStrategy<
         );
       }
 
+      // Calculate the actual output and price from the quote
       const amountOut = Web3Number.fromWei(
         quote.buyAmount.toString(),
         tokenToBuyInfo.decimals
       );
+      // Calculate the swap price depending on which token is being sold
       const swapPrice =
         tokenToSell == poolKey.token0
           ? amountOut.dividedBy(amountToSell)
           : amountToSell.dividedBy(amountOut);
+      // Calculate the new ratio after the swap
       const newRatio =
         tokenToSell == poolKey.token0
           ? remainingSellAmount.dividedBy(token1Bal.plus(amountOut))
           : token0Bal.plus(amountOut).dividedBy(remainingSellAmount);
-      logger.verbose(
-        `${
-          EkuboCLVault.name
-        }: getSwapInfoToHandleUnused => amountOut: ${amountOut.toString()}`
+
+      logger.verbose(`${EkuboCLVault.name} getSwapInfoToHandleUnused => iter post calc: ${JSON.stringify({
+          amountOut: amountOut.toString(),
+          swapPrice: swapPrice.toString(),
+          newRatio: newRatio.toString(),
+        })}`
       );
-      logger.verbose(
-        `${
-          EkuboCLVault.name
-        }: getSwapInfoToHandleUnused => swapPrice: ${swapPrice.toString()}`
-      );
-      logger.verbose(
-        `${
-          EkuboCLVault.name
-        }: getSwapInfoToHandleUnused => newRatio: ${newRatio.toString()}`
-      );
+
+      // If the new ratio is not within tolerance, adjust expected amounts and retry
+      const expectedPrecision = Math.min(7, tokenToBuyInfo.decimals - 2);
       if (
-        Number(newRatio.toString()) > expectedRatio * 1.0000001 ||
-        Number(newRatio.toString()) < expectedRatio * 0.9999999
+        Number(newRatio.toString()) > expectedRatio * (1 + 1 / 10 ** expectedPrecision) ||
+        Number(newRatio.toString()) < expectedRatio * (1 - 1 / 10 ** expectedPrecision)
       ) {
         expectedAmounts = await this._solveExpectedAmountsEq(
           token0Bal,
@@ -1076,6 +1108,7 @@ export class EkuboCLVault extends BaseStrategy<
           }: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
         );
       } else {
+        // Otherwise, return the swap info with a slippage buffer
         const minAmountOut = Web3Number.fromWei(
           quote.buyAmount.toString(),
           tokenToBuyInfo.decimals
@@ -1088,10 +1121,10 @@ export class EkuboCLVault extends BaseStrategy<
           minAmountOut.toWei()
         );
       }
-
       retry++;
     }
 
+    // If no suitable swap found after max retries, throw error
     throw new Error("Failed to get swap info");
   }
 
@@ -1308,7 +1341,9 @@ export class EkuboCLVault extends BaseStrategy<
     const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
     const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
     const bounds = await this.getCurrentBounds();
-    logger.verbose(`${EkuboCLVault.name}: harvest => unClaimedRewards: ${unClaimedRewards.length}`);
+    logger.verbose(
+      `${EkuboCLVault.name}: harvest => unClaimedRewards: ${unClaimedRewards.length}`
+    );
     const calls: Call[] = [];
     for (let claim of unClaimedRewards) {
       const fee = claim.claim.amount
@@ -1353,7 +1388,7 @@ export class EkuboCLVault extends BaseStrategy<
       const harvestEstimateCall = async (swapInfo1: SwapInfo) => {
         const swap1Amount = Web3Number.fromWei(
           uint256.uint256ToBN(swapInfo1.token_from_amount).toString(),
-          18, // cause its always STRK?
+          18 // cause its always STRK?
         );
         logger.verbose(
           `${EkuboCLVault.name}: harvest => swap1Amount: ${swap1Amount}`
@@ -1371,12 +1406,12 @@ export class EkuboCLVault extends BaseStrategy<
           `${EkuboCLVault.name}: harvest => swapInfo: ${JSON.stringify(
             swapInfo
           )}`
-        );  
+        );
         logger.verbose(
           `${EkuboCLVault.name}: harvest => swapInfo2: ${JSON.stringify(
             swapInfo2
           )}`
-        );  
+        );
         const calldata = [
           claim.rewardsContract.address,
           {
@@ -1501,9 +1536,20 @@ const faqs: FAQ[] = [
   },
   {
     question: "Is the strategy audited?",
-    answer:
-      <div>Yes, the strategy has been audited. You can review the audit report in our docs <a href="https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details" style={{textDecoration: 'underline', marginLeft: '5px'}}>Here</a>.</div>
-  }
+    answer: (
+      <div>
+        Yes, the strategy has been audited. You can review the audit report in
+        our docs{" "}
+        <a
+          href="https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details"
+          style={{ textDecoration: "underline", marginLeft: "5px" }}
+        >
+          Here
+        </a>
+        .
+      </div>
+    ),
+  },
 ];
 /**
  * Represents the Vesu Rebalance Strategies.
@@ -1565,6 +1611,11 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
           "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"
         ),
         feeBps: 1000,
+        rebalanceConditions: {
+          customShouldRebalance: async (currentPrice: number) => true,
+          minWaitHours: 24,
+          direction: "uponly",
+        },
       },
       faqs: [
         ...faqs,
@@ -1573,7 +1624,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
           answer:
             "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week.",
         },
-      ]
+      ],
     },
     {
       name: "Ekubo USDC/USDT",
@@ -1610,8 +1661,10 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
       risk: {
         riskFactor: _riskFactorStable,
         netRisk:
-        _riskFactorStable.reduce((acc, curr) => acc + curr.value * curr.weight, 0) /
-        _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
+          _riskFactorStable.reduce(
+            (acc, curr) => acc + curr.value * curr.weight,
+            0
+          ) / _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
         notARisks: getNoRiskTags(_riskFactorStable),
       },
       apyMethodology:
@@ -1623,9 +1676,13 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
         },
         truePrice: 1,
         feeBps: 1000,
+        rebalanceConditions: {
+          customShouldRebalance: async (currentPrice: number) =>
+            currentPrice > 0.99 && currentPrice < 1.01,
+          minWaitHours: 6,
+          direction: "any",
+        },
       },
-      faqs: [
-        ...faqs,
-      ]
+      faqs: [...faqs],
     },
   ];

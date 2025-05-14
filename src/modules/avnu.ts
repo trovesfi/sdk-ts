@@ -4,6 +4,7 @@ import { Call, Uint256 } from "starknet";
 import { fetchBuildExecuteTransaction, fetchQuotes, Quote } from "@avnu/avnu-sdk";
 import { assert } from "../utils";
 import { logger } from "@/utils/logger";
+import { ContractAddr } from "@/dataTypes";
 
 export interface Route {
     token_from: string,
@@ -108,5 +109,22 @@ export class AvnuWrapper {
     };
 
     return swapInfo;
+  }
+
+  static buildZeroSwap(
+    tokenToSell: ContractAddr,
+    address: string
+  ): SwapInfo {
+    return {
+      token_from_address: tokenToSell.address,
+      token_from_amount: uint256.bnToUint256(0),
+      token_to_address: tokenToSell.address,
+      token_to_amount: uint256.bnToUint256(0),
+      token_to_min_amount: uint256.bnToUint256(0),
+      beneficiary: address,
+      integrator_fee_amount_bps: 0,
+      integrator_fee_recipient: address,
+      routes: [],
+    };
   }
 }
