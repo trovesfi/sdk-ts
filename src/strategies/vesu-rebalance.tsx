@@ -500,7 +500,7 @@ export class VesuRebalance extends BaseStrategy<
           logger.verbose(
             `VesuRebalance: Pool ${pool.id} not found in Vesu API, using hardcoded data`
           );
-          throw new Error("pool not found [sanity check]");
+          throw new Error(`pool not found [sanity check]: ${pool.id}`);
         }
       }
     } catch (e) {

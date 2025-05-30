@@ -3,6 +3,7 @@ import { logger } from "@/utils/logger";
 import { IConfig } from "@/interfaces";
 import { assert } from "@/utils";
 import { Contract, num } from "starknet";
+import { ERC20 } from "./erc20";
 
 export interface HarvestInfo {
     rewardsContract: ContractAddr,
@@ -36,8 +37,16 @@ export class Harvests {
             const contract = new Contract(cls.abi, reward.rewardsContract.address, this.config.provider);
             const isClaimed = await contract.call('is_claimed', [reward.claim.id]);
             logger.verbose(`${Harvests.name}: isClaimed: ${isClaimed}`);
-            if (isClaimed)
+            if (isClaimed) {
                 return unClaimed;
+            }
+            // rewards contract must have enough balance to claim
+            const bal = await (new ERC20(this.config)).balanceOf(reward.token, reward.rewardsContract.address, 18);
+            if (bal.lessThan(reward.claim.amount)) {
+                logger.verbose(`${Harvests.name}: balance: ${bal.toString()}, amount: ${reward.claim.amount.toString()}`);
+                continue;
+            }
+
             unClaimed.unshift(reward); // to ensure older harvest is first
         }
         return unClaimed;
