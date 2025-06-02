@@ -33,7 +33,8 @@ export class AvnuWrapper {
     toToken: string,
     amountWei: string,
     taker: string,
-    retry = 0
+    retry = 0,
+    excludeSources = ['Haiko(Solvers)']
   ): Promise<Quote> {
     const MAX_RETRY = 5;
     logger.verbose(`${AvnuWrapper.name}: getQuotes => Getting quotes for ${fromToken} -> ${toToken}, amount: ${amountWei}, taker: ${taker}, retry: ${retry}`);
@@ -42,8 +43,9 @@ export class AvnuWrapper {
       buyTokenAddress: toToken,
       sellAmount: amountWei,
       takerAddress: taker,
-    //   excludeSources: ['Nostra', 'Haiko(Solvers)']
-      excludeSources: ['Haiko(Solvers)'] // to resolve InvalidOraclePrice error
+      // excludeSources: ['Nostra', 'Haiko(Solvers)']
+      excludeSources
+      // excludeSources: ['Haiko(Solvers)'] // to resolve InvalidOraclePrice error
     };
     assert(fromToken != toToken, "From and to tokens are the same");
 
@@ -59,7 +61,7 @@ export class AvnuWrapper {
   }
 
   async getSwapInfo(
-    quote: Quote,
+    quote: Pick<Quote, 'quoteId' | 'buyTokenAddress' | 'buyAmount' | 'sellTokenAddress' | 'sellAmount'>,
     taker: string,
     integratorFeeBps: number,
     integratorFeeRecipient: string,

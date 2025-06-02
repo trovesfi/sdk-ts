@@ -1938,7 +1938,7 @@ function assert(condition, message) {
 
 // src/modules/avnu.ts
 var AvnuWrapper = class _AvnuWrapper {
-  async getQuotes(fromToken, toToken, amountWei, taker, retry = 0) {
+  async getQuotes(fromToken, toToken, amountWei, taker, retry = 0, excludeSources = ["Haiko(Solvers)"]) {
     const MAX_RETRY = 5;
     logger.verbose(`${_AvnuWrapper.name}: getQuotes => Getting quotes for ${fromToken} -> ${toToken}, amount: ${amountWei}, taker: ${taker}, retry: ${retry}`);
     const params = {
@@ -1946,9 +1946,9 @@ var AvnuWrapper = class _AvnuWrapper {
       buyTokenAddress: toToken,
       sellAmount: amountWei,
       takerAddress: taker,
-      //   excludeSources: ['Nostra', 'Haiko(Solvers)']
-      excludeSources: ["Haiko(Solvers)"]
-      // to resolve InvalidOraclePrice error
+      // excludeSources: ['Nostra', 'Haiko(Solvers)']
+      excludeSources
+      // excludeSources: ['Haiko(Solvers)'] // to resolve InvalidOraclePrice error
     };
     assert(fromToken != toToken, "From and to tokens are the same");
     const quotes = await fetchQuotes(params);

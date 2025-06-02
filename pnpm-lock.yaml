@@ -29,9 +29,6 @@ importers:
       ethers:
         specifier: ^6.13.5
         version: 6.13.5
-      form-data:
-        specifier: ^4.0.2
-        version: 4.0.2
       inquirer:
         specifier: ^10.1.2
         version: 10.1.2

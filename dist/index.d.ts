@@ -287,8 +287,8 @@ interface SwapInfo {
     routes: Route[];
 }
 declare class AvnuWrapper {
-    getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string, retry?: number): Promise<Quote>;
-    getSwapInfo(quote: Quote, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount?: string): Promise<SwapInfo>;
+    getQuotes(fromToken: string, toToken: string, amountWei: string, taker: string, retry?: number, excludeSources?: string[]): Promise<Quote>;
+    getSwapInfo(quote: Pick<Quote, 'quoteId' | 'buyTokenAddress' | 'buyAmount' | 'sellTokenAddress' | 'sellAmount'>, taker: string, integratorFeeBps: number, integratorFeeRecipient: string, minAmount?: string): Promise<SwapInfo>;
     static buildZeroSwap(tokenToSell: ContractAddr, address: string): SwapInfo;
 }
 
