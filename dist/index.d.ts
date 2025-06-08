@@ -110,6 +110,11 @@ interface IStrategyMetadata<T> {
     apyMethodology?: string;
     additionalInfo: T;
     faqs: FAQ[];
+    points?: {
+        multiplier: number;
+        logo: string;
+        toolTip?: string;
+    }[];
 }
 interface IInvestmentFlow {
     id?: string;

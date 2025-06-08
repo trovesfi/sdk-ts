@@ -52237,67 +52237,66 @@ var strkfarm_risk_engine = (() => {
           question: "Why might I see a negative APY?",
           answer: "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week."
         }
-      ]
+      ],
+      points: [{
+        multiplier: 1,
+        logo: "https://endur.fi/favicon.ico",
+        toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi."
+      }]
+    },
+    {
+      name: "Ekubo USDC/USDT",
+      description: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "USDC/USDT") }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          "ul",
+          {
+            style: {
+              marginLeft: "20px",
+              listStyle: "circle",
+              fontSize: "12px"
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
+          }
+        )
+      ] }),
+      address: ContractAddr.from(
+        "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
+      ),
+      launchBlock: 1385576,
+      type: "Other",
+      // must be same order as poolKey token0 and token1
+      depositTokens: [
+        Global.getDefaultTokens().find((t) => t.symbol === "USDC"),
+        Global.getDefaultTokens().find((t) => t.symbol === "USDT")
+      ],
+      protocols: [_protocol2],
+      auditUrl: AUDIT_URL2,
+      maxTVL: Web3Number.fromWei("0", 6),
+      risk: {
+        riskFactor: _riskFactorStable,
+        netRisk: _riskFactorStable.reduce(
+          (acc, curr) => acc + curr.value * curr.weight,
+          0
+        ) / _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
+        notARisks: getNoRiskTags(_riskFactorStable)
+      },
+      apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
+      additionalInfo: {
+        newBounds: {
+          lower: -1,
+          upper: 1
+        },
+        truePrice: 1,
+        feeBps: 1e3,
+        rebalanceConditions: {
+          customShouldRebalance: async (currentPrice) => currentPrice > 0.99 && currentPrice < 1.01,
+          minWaitHours: 6,
+          direction: "any"
+        }
+      },
+      faqs: [...faqs2]
     }
-    // {
-    //   name: "Ekubo USDC/USDT",
-    //   description: (
-    //     <div>
-    //       <p>{_description.replace("{{POOL_NAME}}", "USDC/USDT")}</p>
-    //       <ul
-    //         style={{
-    //           marginLeft: "20px",
-    //           listStyle: "circle",
-    //           fontSize: "12px",
-    //         }}
-    //       >
-    //         <li style={{ marginTop: "10px" }}>
-    //           During withdrawal, you may receive either or both tokens depending
-    //           on market conditions and prevailing prices.
-    //         </li>
-    //       </ul>
-    //     </div>
-    //   ),
-    //   address: ContractAddr.from(
-    //     "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
-    //   ),
-    //   launchBlock: 1385576,
-    //   type: "Other",
-    //   // must be same order as poolKey token0 and token1
-    //   depositTokens: [
-    //     Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
-    //     Global.getDefaultTokens().find((t) => t.symbol === "USDT")!,
-    //   ],
-    //   protocols: [_protocol],
-    //   auditUrl: AUDIT_URL,
-    //   maxTVL: Web3Number.fromWei("0", 6),
-    //   risk: {
-    //     riskFactor: _riskFactorStable,
-    //     netRisk:
-    //       _riskFactorStable.reduce(
-    //         (acc, curr) => acc + curr.value * curr.weight,
-    //         0
-    //       ) / _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
-    //     notARisks: getNoRiskTags(_riskFactorStable),
-    //   },
-    //   apyMethodology:
-    //     "APY based on 7-day historical performance, including fees and rewards.",
-    //   additionalInfo: {
-    //     newBounds: {
-    //       lower: -1,
-    //       upper: 1,
-    //     },
-    //     truePrice: 1,
-    //     feeBps: 1000,
-    //     rebalanceConditions: {
-    //       customShouldRebalance: async (currentPrice: number) =>
-    //         currentPrice > 0.99 && currentPrice < 1.01,
-    //       minWaitHours: 6,
-    //       direction: "any",
-    //     },
-    //   },
-    //   faqs: [...faqs],
-    // },
   ];
   return __toCommonJS(index_browser_exports);
 })();
