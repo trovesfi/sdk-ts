@@ -15296,7 +15296,7 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     };
   }
   static div2Power128(num5) {
-    return Number(BigInt(num5.toString()) * 1000000n / BigInt(2 ** 128)) / 1e6;
+    return Number(BigInt(num5.toString()) * BigInt(1e18) / BigInt(2 ** 128)) / 1e18;
   }
   static priceToTick(price, isRoundDown, tickSpacing) {
     const value = isRoundDown ? Math.floor(Math.log(price) / Math.log(1.000001)) : Math.ceil(Math.log(price) / Math.log(1.000001));
@@ -15317,18 +15317,15 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       tick_spacing: result.pool_key.tick_spacing.toString(),
       extension: result.pool_key.extension.toString()
     };
-    const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
-    const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
-    assert(
-      token0Info.decimals == token1Info.decimals,
-      "Tested only for equal decimals"
-    );
     this.poolKey = poolKey;
     return poolKey;
   }
   async getNewBounds() {
     const poolKey = await this.getPoolKey();
     const currentPrice = await this._getCurrentPrice(poolKey);
+    if (typeof this.metadata.additionalInfo.newBounds === "string") {
+      throw new Error(`New bounds are managed known, to be set manually/externally`);
+    }
     const newLower = currentPrice.tick + Number(this.metadata.additionalInfo.newBounds.lower) * Number(poolKey.tick_spacing);
     const newUpper = currentPrice.tick + Number(this.metadata.additionalInfo.newBounds.upper) * Number(poolKey.tick_spacing);
     return {
@@ -15343,8 +15340,8 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
    * @param amount1: amount of token1
    * @returns {amount0, amount1}
    */
-  async _getExpectedAmountsForLiquidity(amount0, amount1, bounds, justUseInputAmount = true) {
-    assert(amount0.greaterThan(0) || amount1.greaterThan(0), "Amount is 0");
+  async _getExpectedAmountsForLiquidity(inputAmount0, inputAmount1, bounds, justUseInputAmount = true) {
+    assert(inputAmount0.greaterThan(0) || inputAmount1.greaterThan(0), "Amount is 0");
     const sampleLiq = 1e20;
     const { amount0: sampleAmount0, amount1: sampleAmount1 } = await this.getLiquidityToAmounts(
       Web3Number.fromWei(sampleLiq.toString(), 18),
@@ -15358,39 +15355,37 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     logger.verbose(
       `${_EkuboCLVault.name}: _getExpectedAmountsForLiquidity => price: ${price}`
     );
-    if (amount1.eq(0) && amount0.greaterThan(0)) {
+    if (inputAmount1.eq(0) && inputAmount0.greaterThan(0)) {
       if (sampleAmount1.eq(0)) {
         return {
-          amount0,
-          amount1: Web3Number.fromWei("0", amount1.decimals),
+          amount0: inputAmount0,
+          amount1: Web3Number.fromWei("0", inputAmount1.decimals),
           ratio: Infinity
         };
       } else if (sampleAmount0.eq(0)) {
         return {
-          amount0: Web3Number.fromWei("0", amount0.decimals),
-          amount1: amount0.multipliedBy(price),
+          amount0: Web3Number.fromWei("0", inputAmount0.decimals),
+          // to ensure decimal consistency, we start with 0
+          amount1: Web3Number.fromWei("0", inputAmount1.decimals).plus(inputAmount0.toString()).multipliedBy(price),
           ratio: 0
         };
       }
-    } else if (amount0.eq(0) && amount1.greaterThan(0)) {
+    } else if (inputAmount0.eq(0) && inputAmount1.greaterThan(0)) {
       if (sampleAmount0.eq(0)) {
         return {
-          amount0: Web3Number.fromWei("0", amount0.decimals),
-          amount1,
+          amount0: Web3Number.fromWei("0", inputAmount0.decimals),
+          amount1: inputAmount1,
           ratio: 0
         };
       } else if (sampleAmount1.eq(0)) {
         return {
-          amount0: amount1.dividedBy(price),
-          amount1: Web3Number.fromWei("0", amount1.decimals),
+          // to ensure decimal consistency, we start with 0
+          amount0: Web3Number.fromWei("0", inputAmount0.decimals).plus(inputAmount1.toString()).dividedBy(price),
+          amount1: Web3Number.fromWei("0", inputAmount1.decimals),
           ratio: Infinity
         };
       }
     }
-    assert(
-      sampleAmount0.decimals == sampleAmount1.decimals,
-      "Sample amounts have different decimals"
-    );
     const ratioWeb3Number = sampleAmount0.multipliedBy(1e18).dividedBy(sampleAmount1.toString()).dividedBy(1e18);
     const ratio = Number(ratioWeb3Number.toFixed(18));
     logger.verbose(
@@ -15398,23 +15393,23 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     );
     if (justUseInputAmount)
       return this._solveExpectedAmountsEq(
-        amount0,
-        amount1,
+        inputAmount0,
+        inputAmount1,
         ratioWeb3Number,
         price
       );
-    if (amount1.eq(0) && amount0.greaterThan(0)) {
-      const _amount1 = amount0.dividedBy(ratioWeb3Number);
+    if (inputAmount1.eq(0) && inputAmount0.greaterThan(0)) {
+      const _amount1 = new Web3Number(inputAmount0.toString(), inputAmount1.decimals).dividedBy(ratioWeb3Number);
       return {
-        amount0,
+        amount0: inputAmount0,
         amount1: _amount1,
         ratio
       };
-    } else if (amount0.eq(0) && amount1.greaterThan(0)) {
-      const _amount0 = amount1.multipliedBy(ratio);
+    } else if (inputAmount0.eq(0) && inputAmount1.greaterThan(0)) {
+      const _amount0 = new Web3Number(inputAmount1.toString(), inputAmount0.decimals).multipliedBy(ratio);
       return {
         amount0: _amount0,
-        amount1,
+        amount1: inputAmount1,
         ratio
       };
     } else {
@@ -15477,7 +15472,7 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       }
     };
   }
-  async getSwapInfoToHandleUnused(considerRebalance = true) {
+  async getSwapInfoToHandleUnused(considerRebalance = true, newBounds = null) {
     const poolKey = await this.getPoolKey();
     const unusedBalances = await this.unusedBalances(poolKey);
     const { amount: token0Bal1, usdValue: token0PriceUsd } = unusedBalances.token0;
@@ -15500,7 +15495,9 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
     );
     let ekuboBounds;
-    if (considerRebalance) {
+    if (newBounds) {
+      ekuboBounds = newBounds;
+    } else if (considerRebalance) {
       ekuboBounds = await this.getNewBounds();
     } else {
       ekuboBounds = await this.getCurrentBounds();
@@ -15741,6 +15738,10 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     return BigInt(Math.floor(Math.sqrt(price) * 10 ** 9)) * BigInt(2 ** 128) / BigInt(1e9);
   }
   static i129ToNumber(i129) {
+    if (i129.sign == 0 || i129.sign == 1) {
+      return _EkuboCLVault.i129ToNumber({ mag: i129.mag, sign: i129.sign == 1 ? "true" : "false" });
+    }
+    assert(i129.sign.toString() == "false" || i129.sign.toString() == "true", "Invalid sign value");
     return i129.mag * (i129.sign.toString() == "false" ? 1n : -1n);
   }
   static tickToPrice(tick) {
@@ -15919,7 +15920,7 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       subItems: [
         {
           key: "Range selection",
-          value: `${this.metadata.additionalInfo.newBounds.lower * Number(poolKey.tick_spacing)} to ${this.metadata.additionalInfo.newBounds.upper * Number(poolKey.tick_spacing)} ticks`
+          value: typeof this.metadata.additionalInfo.newBounds == "string" ? this.metadata.additionalInfo.newBounds : `${this.metadata.additionalInfo.newBounds.lower * Number(poolKey.tick_spacing)} to ${this.metadata.additionalInfo.newBounds.upper * Number(poolKey.tick_spacing)} ticks`
         }
       ],
       linkedFlows: [linkedFlow],
@@ -15971,73 +15972,74 @@ var faqs2 = [
     ] })
   }
 ];
-var EkuboCLVaultStrategies = [
-  {
-    name: "Ekubo xSTRK/STRK",
-    description: /* @__PURE__ */ jsxs2("div", { children: [
-      /* @__PURE__ */ jsx2("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-      /* @__PURE__ */ jsxs2(
-        "ul",
-        {
-          style: {
-            marginLeft: "20px",
-            listStyle: "circle",
-            fontSize: "12px"
-          },
-          children: [
-            /* @__PURE__ */ jsx2("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-            /* @__PURE__ */ jsx2("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
-          ]
-        }
-      )
-    ] }),
-    address: ContractAddr.from(
-      "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
-    ),
-    launchBlock: 1209881,
-    type: "Other",
-    // must be same order as poolKey token0 and token1
-    depositTokens: [
-      Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"),
-      Global.getDefaultTokens().find((t) => t.symbol === "STRK")
-    ],
-    protocols: [_protocol2],
-    auditUrl: AUDIT_URL2,
-    maxTVL: Web3Number.fromWei("0", 18),
-    risk: {
-      riskFactor: _riskFactor2,
-      netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
-      notARisks: getNoRiskTags(_riskFactor2)
-    },
-    apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
-    additionalInfo: {
-      newBounds: {
-        lower: -1,
-        upper: 1
-      },
-      lstContract: ContractAddr.from(
-        "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"
-      ),
-      feeBps: 1e3,
-      rebalanceConditions: {
-        customShouldRebalance: async (currentPrice) => true,
-        minWaitHours: 24,
-        direction: "uponly"
-      }
-    },
-    faqs: [
-      ...faqs2,
+var xSTRKSTRK = {
+  name: "Ekubo xSTRK/STRK",
+  description: /* @__PURE__ */ jsxs2("div", { children: [
+    /* @__PURE__ */ jsx2("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+    /* @__PURE__ */ jsxs2(
+      "ul",
       {
-        question: "Why might I see a negative APY?",
-        answer: "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week."
+        style: {
+          marginLeft: "20px",
+          listStyle: "circle",
+          fontSize: "12px"
+        },
+        children: [
+          /* @__PURE__ */ jsx2("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+          /* @__PURE__ */ jsx2("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+        ]
       }
-    ],
-    points: [{
-      multiplier: 1,
-      logo: "https://endur.fi/favicon.ico",
-      toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi."
-    }]
+    )
+  ] }),
+  address: ContractAddr.from(
+    "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
+  ),
+  launchBlock: 1209881,
+  type: "Other",
+  // must be same order as poolKey token0 and token1
+  depositTokens: [
+    Global.getDefaultTokens().find((t) => t.symbol === "xSTRK"),
+    Global.getDefaultTokens().find((t) => t.symbol === "STRK")
+  ],
+  protocols: [_protocol2],
+  auditUrl: AUDIT_URL2,
+  maxTVL: Web3Number.fromWei("0", 18),
+  risk: {
+    riskFactor: _riskFactor2,
+    netRisk: _riskFactor2.reduce((acc, curr) => acc + curr.value * curr.weight, 0) / _riskFactor2.reduce((acc, curr) => acc + curr.weight, 0),
+    notARisks: getNoRiskTags(_riskFactor2)
   },
+  apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
+  additionalInfo: {
+    newBounds: {
+      lower: -1,
+      upper: 1
+    },
+    lstContract: ContractAddr.from(
+      "0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"
+    ),
+    feeBps: 1e3,
+    rebalanceConditions: {
+      customShouldRebalance: async (currentPrice) => true,
+      minWaitHours: 24,
+      direction: "uponly"
+    }
+  },
+  faqs: [
+    ...faqs2,
+    {
+      question: "Why might I see a negative APY?",
+      answer: "A negative APY can occur when xSTRK's price drops on DEXes. This is usually temporary and tends to recover within a few days or a week."
+    }
+  ],
+  points: [{
+    multiplier: 1,
+    logo: "https://endur.fi/favicon.ico",
+    toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi."
+  }]
+};
+var EkuboCLVaultStrategies = [
+  xSTRKSTRK,
   {
     name: "Ekubo USDC/USDT",
     description: /* @__PURE__ */ jsxs2("div", { children: [
@@ -16091,6 +16093,47 @@ var EkuboCLVaultStrategies = [
     },
     faqs: [...faqs2]
   }
+  // {
+  //   ...xSTRKSTRK,
+  //   name: "Ekubo STRK/USDC",
+  //   description: (
+  //     <div>
+  //       <p>{_description.replace("{{POOL_NAME}}", "STRK/USDC")}</p>
+  //       <ul
+  //         style={{
+  //           marginLeft: "20px",
+  //           listStyle: "circle",
+  //           fontSize: "12px",
+  //         }}
+  //       >
+  //         <li style={{ marginTop: "10px" }}>
+  //           During withdrawal, you may receive either or both tokens depending
+  //           on market conditions and prevailing prices.
+  //         </li>
+  //       </ul>
+  //     </div>
+  //   ),
+  //   address: ContractAddr.from(
+  //     "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
+  //   ),
+  //   launchBlock: 1492136,
+  //   // must be same order as poolKey token0 and token1
+  //   depositTokens: [
+  //     Global.getDefaultTokens().find((t) => t.symbol === "STRK")!,
+  //     Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
+  //   ],
+  //   maxTVL: Web3Number.fromWei("0", 6),
+  //   additionalInfo: {
+  //     newBounds: "Managed by Re7",
+  //     feeBps: 1000,
+  //     rebalanceConditions: {
+  //       customShouldRebalance: async (currentPrice: number) =>
+  //         true,
+  //       minWaitHours: 6,
+  //       direction: "any",
+  //     },
+  //   },
+  // },
 ];
 export {
   AutoCompounderSTRK,

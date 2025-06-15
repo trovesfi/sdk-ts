@@ -600,7 +600,7 @@ interface CLVaultStrategySettings {
     newBounds: {
         lower: number;
         upper: number;
-    };
+    } | string;
     lstContract?: ContractAddr;
     truePrice?: number;
     feeBps: number;
@@ -695,7 +695,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
             usdValue: number;
         };
     }>;
-    getSwapInfoToHandleUnused(considerRebalance?: boolean): Promise<SwapInfo>;
+    getSwapInfoToHandleUnused(considerRebalance?: boolean, newBounds?: EkuboBounds | null): Promise<SwapInfo>;
     getSwapInfoGivenAmounts(poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number, bounds: EkuboBounds): Promise<SwapInfo>;
     /**
      * Attempts to rebalance the vault by iteratively adjusting swap amounts if initial attempt fails.
@@ -718,7 +718,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
     static priceToSqrtRatio(price: number): bigint;
     static i129ToNumber(i129: {
         mag: bigint;
-        sign: number;
+        sign: 0 | 1 | "true" | "false";
     }): bigint;
     static tickToPrice(tick: bigint): number;
     getLiquidityToAmounts(liquidity: Web3Number, bounds: EkuboBounds, blockIdentifier?: BlockIdentifier, _poolKey?: EkuboPoolKey | null, _currentPrice?: {
