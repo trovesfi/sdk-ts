@@ -38241,7 +38241,7 @@ var strkfarm_risk_engine = (() => {
   };
   var getRiskColor = (risk) => {
     const value = risk.value;
-    if (value <= 1) return "green";
+    if (value <= 1) return "light_green_2";
     if (value < 3) return "yellow";
     return "red";
   };
@@ -46029,9 +46029,9 @@ var strkfarm_risk_engine = (() => {
     logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png"
   };
   var _riskFactor = [
-    { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-    { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50 },
-    { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25 }
+    { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25, reason: "Audited by CSC" },
+    { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50, reason: "Reasonable max LTV ratios and Curated by well-known risk managers like Re7" },
+    { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25, reason: "Uses Pragma price feeds, Most reputable price feed on Starknet" }
   ];
   var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
   var faqs = [
@@ -46100,7 +46100,8 @@ var strkfarm_risk_engine = (() => {
         feeBps: 1e3
       },
       faqs,
-      contractDetails: []
+      contractDetails: [],
+      investmentSteps: []
     },
     {
       name: "Vesu Fusion ETH",
@@ -46125,7 +46126,8 @@ var strkfarm_risk_engine = (() => {
         feeBps: 1e3
       },
       faqs,
-      contractDetails: []
+      contractDetails: [],
+      investmentSteps: []
     },
     {
       name: "Vesu Fusion USDC",
@@ -46150,7 +46152,8 @@ var strkfarm_risk_engine = (() => {
         feeBps: 1e3
       },
       faqs,
-      contractDetails: []
+      contractDetails: [],
+      investmentSteps: []
     },
     {
       name: "Vesu Fusion USDT",
@@ -46175,7 +46178,8 @@ var strkfarm_risk_engine = (() => {
         feeBps: 1e3
       },
       faqs,
-      contractDetails: []
+      contractDetails: [],
+      investmentSteps: []
       // }, {
       //     name: 'Vesu Fusion WBTC',
       //     description: _description.replace('{{TOKEN}}', 'WBTC'),
@@ -46214,6 +46218,11 @@ var strkfarm_risk_engine = (() => {
         link: "https://defispring.starknet.io/"
       }]
     );
+    s.investmentSteps = [
+      "Split the amount and Supply to configured Vesu pools",
+      "Monitor and Rebalance funds across multiple Vesu pools to maximize yield",
+      "Harvest and supply Defi Spring STRK rewards every week (Auto-compound)"
+    ];
   });
 
   // src/data/cl-vault.abi.json
@@ -52179,14 +52188,15 @@ var strkfarm_risk_engine = (() => {
       return [baseFlow, rebalanceFlow];
     }
   };
-  var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
+  var _description2 = "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy";
   var _protocol2 = {
     name: "Ekubo",
     logo: "https://app.ekubo.org/favicon.ico"
   };
   var _riskFactor2 = [
-    { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 },
-    { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 1, weight: 75 }
+    { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 34, reason: "Audited smart contracts" },
+    { type: "Impermanent Loss Risk" /* IMPERMANENT_LOSS */, value: 0.75, weight: 33, reason: "Low risk due to co-related assets" },
+    { type: "Market Risk" /* MARKET_RISK */, value: 0.75, weight: 33, reason: "Low risk due to co-related assets" }
   ];
   var _riskFactorStable = [
     { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 }
@@ -52224,23 +52234,7 @@ var strkfarm_risk_engine = (() => {
   ];
   var xSTRKSTRK = {
     name: "Ekubo xSTRK/STRK",
-    description: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-        "ul",
-        {
-          style: {
-            marginLeft: "20px",
-            listStyle: "circle",
-            fontSize: "12px"
-          },
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
-          ]
-        }
-      )
-    ] }),
+    description: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, {}),
     address: ContractAddr.from(
       "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
     ),
@@ -52287,27 +52281,15 @@ var strkfarm_risk_engine = (() => {
       logo: "https://endur.fi/favicon.ico",
       toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi."
     }],
-    contractDetails: []
+    contractDetails: [],
+    investmentSteps: []
   };
   var EkuboCLVaultStrategies = [
     xSTRKSTRK,
     {
       ...xSTRKSTRK,
       name: "Ekubo USDC/USDT",
-      description: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "USDC/USDT") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-          "ul",
-          {
-            style: {
-              marginLeft: "20px",
-              listStyle: "circle",
-              fontSize: "12px"
-            },
-            children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
-          }
-        )
-      ] }),
+      description: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, {}),
       address: ContractAddr.from(
         "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
       ),
@@ -52334,20 +52316,7 @@ var strkfarm_risk_engine = (() => {
     {
       ...xSTRKSTRK,
       name: "Ekubo STRK/USDC",
-      description: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "STRK/USDC") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-          "ul",
-          {
-            style: {
-              marginLeft: "20px",
-              listStyle: "circle",
-              fontSize: "12px"
-            },
-            children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
-          }
-        )
-      ] }),
+      description: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, {}),
       address: ContractAddr.from(
         "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
       ),
@@ -52369,6 +52338,44 @@ var strkfarm_risk_engine = (() => {
       }
     }
   ];
+  EkuboCLVaultStrategies.forEach((s) => {
+    s.contractDetails = [
+      {
+        address: s.address,
+        name: "Vault",
+        sourceCodeUrl: "https://github.com/strkfarm/strkfarm-contracts/tree/main/src/strategies/cl_vault"
+      },
+      ...COMMON_CONTRACTS
+    ];
+    s.docs = "https://docs.strkfarm.com/p/ekubo-cl-vaults";
+    s.description = /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: highlightTextWithLinks(
+        _description2.replace("{{POOL_NAME}}", s.name.split(" ")[1]),
+        [{
+          highlight: "Ekubo liquidity pool",
+          link: "https://app.ekubo.org/positions"
+        }, {
+          highlight: "DeFi Spring rewards",
+          link: "https://defispring.starknet.io/"
+        }, {
+          highlight: "ERC-20 token",
+          link: "https://www.investopedia.com/news/what-erc20-and-what-does-it-mean-ethereum/"
+        }]
+      ) }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { style: { padding: "16px 16px", background: "var(--chakra-colors-mycard_light)", marginTop: "16px", borderRadius: "16px" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h4", { style: { fontWeight: "bold" }, children: "Key points to note:" }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { style: { display: "flex", flexDirection: "column", gap: "10px", color: "var(--chakra-colors-text_secondary)" }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { style: {}, children: "1. During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+          s.name.includes("xSTRK/STRK") && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { style: {}, children: "2. Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+        ] })
+      ] })
+    ] });
+    s.investmentSteps = [
+      "Supply tokens to Ekubo's pool",
+      "Monitor and Rebalance position to optimize yield",
+      "Harvest and supply Defi Spring STRK rewards every week (Auto-compound)"
+    ];
+  });
   return __toCommonJS(index_browser_exports);
 })();
 /*! Bundled license information:

@@ -54,6 +54,7 @@ interface RiskFactor {
     type: RiskType;
     value: number;
     weight: number;
+    reason?: string;
 }
 interface TokenInfo {
     name: string;
@@ -121,6 +122,7 @@ interface IStrategyMetadata<T> {
         toolTip?: string;
     }[];
     docs?: string;
+    investmentSteps: string[];
 }
 interface IInvestmentFlow {
     id?: string;
@@ -134,7 +136,7 @@ interface IInvestmentFlow {
 }
 declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
 declare const getRiskExplaination: (riskType: RiskType) => "The risk of the market moving against the position." | "The temporary loss of value experienced by liquidity providers in AMMs when asset prices diverge compared to simply holding them." | "The risk of losing funds due to the position being liquidated." | "The risk of low liquidity in the pool, which can lead to high slippages or reduced in-abilities to quickly exit the position." | "The risk of the oracle being manipulated or incorrect." | "The risk of the smart contract being vulnerable to attacks." | "The risk of technical issues e.g. backend failure." | "The risk of the counterparty defaulting e.g. bad debt on lending platforms.";
-declare const getRiskColor: (risk: RiskFactor) => "green" | "yellow" | "red";
+declare const getRiskColor: (risk: RiskFactor) => "light_green_2" | "yellow" | "red";
 declare const getNoRiskTags: (risks: RiskFactor[]) => RiskType[];
 interface HighlightLink {
     highlight: string;

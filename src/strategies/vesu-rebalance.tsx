@@ -892,9 +892,9 @@ const _protocol: IProtocol = {
 };
 // need to fine tune better
 const _riskFactor: RiskFactor[] = [
-  { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25 },
-  { type: RiskType.COUNTERPARTY_RISK, value: 1, weight: 50 },
-  { type: RiskType.ORACLE_RISK, value: 0.5, weight: 25 }
+  { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25, reason: "Audited by CSC" },
+  { type: RiskType.COUNTERPARTY_RISK, value: 1, weight: 50, reason: "Reasonable max LTV ratios and Curated by well-known risk managers like Re7" },
+  { type: RiskType.ORACLE_RISK, value: 0.5, weight: 25, reason: "Uses Pragma price feeds, Most reputable price feed on Starknet" }
 ];
 const AUDIT_URL =
   "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
@@ -977,6 +977,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       },
       faqs,
       contractDetails: [],
+      investmentSteps: []
     },
     {
       name: "Vesu Fusion ETH",
@@ -1004,6 +1005,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       },
       faqs,
       contractDetails: [],
+      investmentSteps: []
     },
     {
       name: "Vesu Fusion USDC",
@@ -1031,6 +1033,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       },
       faqs,
       contractDetails: [],
+      investmentSteps: []
     },
     {
       name: "Vesu Fusion USDT",
@@ -1058,6 +1061,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       },
       faqs,
       contractDetails: [],
+      investmentSteps: []
       // }, {
       //     name: 'Vesu Fusion WBTC',
       //     description: _description.replace('{{TOKEN}}', 'WBTC'),
@@ -1101,4 +1105,11 @@ VesuRebalanceStrategies.forEach((s) => {
       link: "https://defispring.starknet.io/"
     }]
   );
+
+  // add investment steps
+  s.investmentSteps = [
+    "Split the amount and Supply to configured Vesu pools",
+    "Monitor and Rebalance funds across multiple Vesu pools to maximize yield",
+    "Harvest and supply Defi Spring STRK rewards every week (Auto-compound)",
+  ]
 });

@@ -21,6 +21,7 @@ export interface RiskFactor {
   type: RiskType;
   value: number; // 0 to 5
   weight: number; // 0 to 100
+  reason?: string; // optional reason for the risk factor
 }
 
 export interface TokenInfo {
@@ -91,6 +92,7 @@ export interface IStrategyMetadata<T> {
   faqs: FAQ[];
   points?: {multiplier: number, logo: string, toolTip?: string}[];
   docs?: string;
+  investmentSteps: string[];
 }
 
 export interface IInvestmentFlow {
@@ -138,7 +140,7 @@ export const getRiskExplaination = (riskType: RiskType) => {
 
 export const getRiskColor = (risk: RiskFactor) => {
   const value = risk.value;
-  if (value <= 1) return "green";
+  if (value <= 1) return "light_green_2";
   if (value < 3) return "yellow";
   return "red";
 };

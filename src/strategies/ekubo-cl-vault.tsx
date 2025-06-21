@@ -3,6 +3,7 @@ import {
   FAQ,
   FlowChartColors,
   getNoRiskTags,
+  highlightTextWithLinks,
   IConfig,
   IInvestmentFlow,
   IProtocol,
@@ -32,6 +33,7 @@ import { DualTokenInfo } from "./base-strategy";
 import { log } from "winston";
 import { EkuboHarvests } from "@/modules/harvests";
 import { logger } from "@/utils/logger";
+import { COMMON_CONTRACTS } from "./constants";
 
 export interface EkuboPoolKey {
   token0: ContractAddr;
@@ -1503,15 +1505,16 @@ export class EkuboCLVault extends BaseStrategy<
 }
 
 const _description =
-  "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy. The APY is calculated based on 7-day historical performance.";
+  "Deploys your {{POOL_NAME}} into an Ekubo liquidity pool, automatically rebalancing positions around the current price to optimize yield and reduce the need for manual adjustments. Trading fees and DeFi Spring rewards are automatically compounded back into the strategy. In return, you receive an ERC-20 token representing your share of the strategy";
 const _protocol: IProtocol = {
   name: "Ekubo",
   logo: "https://app.ekubo.org/favicon.ico",
 };
 // need to fine tune better
 const _riskFactor: RiskFactor[] = [
-  { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25 },
-  { type: RiskType.IMPERMANENT_LOSS, value: 1, weight: 75 },
+  { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 34, reason: "Audited smart contracts" },
+  { type: RiskType.IMPERMANENT_LOSS, value: 0.75, weight: 33, reason: "Low risk due to co-related assets" },
+  { type: RiskType.MARKET_RISK, value: 0.75, weight: 33, reason: "Low risk due to co-related assets" },
 ];
 
 const _riskFactorStable: RiskFactor[] = [
@@ -1556,28 +1559,7 @@ const faqs: FAQ[] = [
 
 const xSTRKSTRK: IStrategyMetadata<CLVaultStrategySettings> = {
   name: "Ekubo xSTRK/STRK",
-  description: (
-    <div>
-      <p>{_description.replace("{{POOL_NAME}}", "xSTRK/STRK")}</p>
-      <ul
-        style={{
-          marginLeft: "20px",
-          listStyle: "circle",
-          fontSize: "12px",
-        }}
-      >
-        <li style={{ marginTop: "10px" }}>
-          During withdrawal, you may receive either or both tokens depending
-          on market conditions and prevailing prices.
-        </li>
-        <li style={{ marginTop: "10px" }}>
-          Sometimes you might see a negative APY — this is usually not a big
-          deal. It happens when xSTRK's price drops on DEXes, but things
-          typically bounce back within a few days or a week.
-        </li>
-      </ul>
-    </div>
-  ),
+  description: <></>,
   address: ContractAddr.from(
     "0x01f083b98674bc21effee29ef443a00c7b9a500fd92cf30341a3da12c73f2324"
   ),
@@ -1628,7 +1610,8 @@ const xSTRKSTRK: IStrategyMetadata<CLVaultStrategySettings> = {
     logo: 'https://endur.fi/favicon.ico',
     toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi.",
   }],
-  contractDetails: []
+  contractDetails: [],
+  investmentSteps: []
 };
 
 /**
@@ -1640,23 +1623,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
     {
       ...xSTRKSTRK,
       name: "Ekubo USDC/USDT",
-      description: (
-        <div>
-          <p>{_description.replace("{{POOL_NAME}}", "USDC/USDT")}</p>
-          <ul
-            style={{
-              marginLeft: "20px",
-              listStyle: "circle",
-              fontSize: "12px",
-            }}
-          >
-            <li style={{ marginTop: "10px" }}>
-              During withdrawal, you may receive either or both tokens depending
-              on market conditions and prevailing prices.
-            </li>
-          </ul>
-        </div>
-      ),
+      description: <></>,
       address: ContractAddr.from(
         "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
       ),
@@ -1684,23 +1651,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
     {
       ...xSTRKSTRK,
       name: "Ekubo STRK/USDC",
-      description: (
-        <div>
-          <p>{_description.replace("{{POOL_NAME}}", "STRK/USDC")}</p>
-          <ul
-            style={{
-              marginLeft: "20px",
-              listStyle: "circle",
-              fontSize: "12px",
-            }}
-          >
-            <li style={{ marginTop: "10px" }}>
-              During withdrawal, you may receive either or both tokens depending
-              on market conditions and prevailing prices.
-            </li>
-          </ul>
-        </div>
-      ),
+      description: <></>,
       address: ContractAddr.from(
         "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
       ),
@@ -1724,3 +1675,54 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
     },
 ];
 
+// auto assign contract details to each strategy
+EkuboCLVaultStrategies.forEach((s) => {
+  // set contract details
+  s.contractDetails = [{
+    address: s.address,
+    name: "Vault",
+    sourceCodeUrl: "https://github.com/strkfarm/strkfarm-contracts/tree/main/src/strategies/cl_vault"
+  }, 
+  ...COMMON_CONTRACTS];
+  // set docs link
+  s.docs = "https://docs.strkfarm.com/p/ekubo-cl-vaults"
+
+  // set description
+  s.description = (
+    <div>
+      <p>{highlightTextWithLinks(
+        _description.replace("{{POOL_NAME}}", s.name.split(" ")[1]),
+          [{
+            highlight: "Ekubo liquidity pool",
+            link: "https://app.ekubo.org/positions",
+          }, {
+            highlight: "DeFi Spring rewards",
+            link: "https://defispring.starknet.io/"
+          }, {
+            highlight: "ERC-20 token",
+            link: "https://www.investopedia.com/news/what-erc20-and-what-does-it-mean-ethereum/"
+          }]
+        )}
+      </p>
+      <div style={{padding: '16px 16px', background: 'var(--chakra-colors-mycard_light)', marginTop: '16px', borderRadius: '16px'}}>
+        <h4 style={{fontWeight: 'bold'}}>Key points to note:</h4>
+        <div style={{display: "flex", flexDirection: "column", gap: "10px", color: 'var(--chakra-colors-text_secondary)'}}>
+          <p style={{}}>1. During withdrawal, you may receive either or both tokens depending
+          on market conditions and prevailing prices.</p>
+          {s.name.includes('xSTRK/STRK') && <p style={{}}>
+              2. Sometimes you might see a negative APY — this is usually not a big
+              deal. It happens when xSTRK's price drops on DEXes, but things
+              typically bounce back within a few days or a week.
+          </p>}
+        </div>
+      </div>
+    </div>
+  );
+
+  // add investment steps
+  s.investmentSteps = [
+    "Supply tokens to Ekubo's pool",
+    "Monitor and Rebalance position to optimize yield",
+    "Harvest and supply Defi Spring STRK rewards every week (Auto-compound)",
+  ]
+});
