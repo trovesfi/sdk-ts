@@ -1,6 +1,6 @@
 import { ContractAddr, Web3Number } from "@/dataTypes";
 import { BlockIdentifier, RpcProvider } from "starknet";
-import React from "react";
+import React, { ReactNode } from "react";
 
 export enum RiskType {
   MARKET_RISK = "Market Risk",
@@ -79,12 +79,18 @@ export interface IStrategyMetadata<T> {
   risk: {
     riskFactor: RiskFactor[];
     netRisk: number;
-    notARisks: string[];
+    notARisks: RiskType[];
   };
   apyMethodology?: string;
   additionalInfo: T;
+  contractDetails: {
+    address: ContractAddr;
+    name: string;
+    sourceCodeUrl?: string;
+  }[],
   faqs: FAQ[];
   points?: {multiplier: number, logo: string, toolTip?: string}[];
+  docs?: string;
 }
 
 export interface IInvestmentFlow {
@@ -132,8 +138,8 @@ export const getRiskExplaination = (riskType: RiskType) => {
 
 export const getRiskColor = (risk: RiskFactor) => {
   const value = risk.value;
-  if (value === 0) return "green";
-  if (value < 2.5) return "yellow";
+  if (value <= 1) return "green";
+  if (value < 3) return "yellow";
   return "red";
 };
 
@@ -150,5 +156,42 @@ export const getNoRiskTags = (risks: RiskFactor[]) => {
   const mergedUnique = [...new Set([...noRisks1, ...noRisks2])];
 
   // add `No` to the start of each risk
-  return mergedUnique.map((risk) => `No ${risk}`);
+  return mergedUnique
 };
+
+interface HighlightLink {
+  highlight: string;
+  link: string;
+}
+
+export function highlightTextWithLinks(
+  put: string,
+  highlights: HighlightLink[],
+): ReactNode {
+  // Escape RegExp special characters in highlight strings
+  const escapeRegExp = (text: string) =>
+    text.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+  // Create a single regex for all highlight terms
+  const pattern = new RegExp(
+    `(${highlights.map(m => escapeRegExp(m.highlight)).join('|')})`,
+    'gi'
+  );
+
+  const parts = put.split(pattern);
+
+  return (
+    <>
+      {parts.map((part, i) => {
+        const match = highlights.find(m => m.highlight.toLowerCase() === part.toLowerCase());
+        return match ? (
+          <a key={i} href={match.link} target="_blank" style={{ color: 'var(--chakra-colors-white)', background: 'var(--chakra-colors-highlight)' }}>
+            {part}
+          </a>
+        ) : (
+          <span key={i}>{part}</span>
+        );
+      })}
+    </>
+  );
+}

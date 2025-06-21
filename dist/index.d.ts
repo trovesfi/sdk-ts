@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import * as starknet from 'starknet';
 import { RpcProvider, BlockIdentifier, Contract, Uint256, Call, Account } from 'starknet';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Quote } from '@avnu/avnu-sdk';
 import TelegramBot from 'node-telegram-bot-api';
 
@@ -105,16 +105,22 @@ interface IStrategyMetadata<T> {
     risk: {
         riskFactor: RiskFactor[];
         netRisk: number;
-        notARisks: string[];
+        notARisks: RiskType[];
     };
     apyMethodology?: string;
     additionalInfo: T;
+    contractDetails: {
+        address: ContractAddr;
+        name: string;
+        sourceCodeUrl?: string;
+    }[];
     faqs: FAQ[];
     points?: {
         multiplier: number;
         logo: string;
         toolTip?: string;
     }[];
+    docs?: string;
 }
 interface IInvestmentFlow {
     id?: string;
@@ -129,7 +135,12 @@ interface IInvestmentFlow {
 declare function getMainnetConfig(rpcUrl?: string, blockIdentifier?: BlockIdentifier): IConfig;
 declare const getRiskExplaination: (riskType: RiskType) => "The risk of the market moving against the position." | "The temporary loss of value experienced by liquidity providers in AMMs when asset prices diverge compared to simply holding them." | "The risk of losing funds due to the position being liquidated." | "The risk of low liquidity in the pool, which can lead to high slippages or reduced in-abilities to quickly exit the position." | "The risk of the oracle being manipulated or incorrect." | "The risk of the smart contract being vulnerable to attacks." | "The risk of technical issues e.g. backend failure." | "The risk of the counterparty defaulting e.g. bad debt on lending platforms.";
 declare const getRiskColor: (risk: RiskFactor) => "green" | "yellow" | "red";
-declare const getNoRiskTags: (risks: RiskFactor[]) => string[];
+declare const getNoRiskTags: (risks: RiskFactor[]) => RiskType[];
+interface HighlightLink {
+    highlight: string;
+    link: string;
+}
+declare function highlightTextWithLinks(put: string, highlights: HighlightLink[]): ReactNode;
 
 interface ILendingMetadata {
     name: string;
@@ -859,4 +870,4 @@ declare class PasswordJsonCryptoUtil {
     decrypt(encryptedData: string, password: string): any;
 }
 
-export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, BaseStrategy, type CLVaultStrategySettings, ContractAddr, type DualActionAmount, type DualTokenInfo, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, type FAQ, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, type SingleActionAmount, type SingleTokenInfo, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, type VesuRebalanceSettings, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, logger };
+export { type AccountInfo, type AllAccountsStore, AutoCompounderSTRK, AvnuWrapper, BaseStrategy, type CLVaultStrategySettings, ContractAddr, type DualActionAmount, type DualTokenInfo, ERC20, type EkuboBounds, EkuboCLVault, EkuboCLVaultStrategies, type EkuboPoolKey, type FAQ, FatalError, FlowChartColors, Global, type IConfig, type IInvestmentFlow, ILending, type ILendingMetadata, type ILendingPosition, type IProtocol, type IStrategyMetadata, Initializable, type LendingToken, MarginType, Network, PasswordJsonCryptoUtil, Pragma, type PriceInfo, Pricer, PricerFromApi, PricerRedis, type RequiredFields, type RequiredKeys, type RequiredStoreConfig, type RiskFactor, RiskType, type Route, type SingleActionAmount, type SingleTokenInfo, Store, type StoreConfig, type SwapInfo, TelegramNotif, type TokenInfo, VesuRebalance, type VesuRebalanceSettings, VesuRebalanceStrategies, Web3Number, ZkLend, assert, getAPIUsingHeadlessBrowser, getDefaultStoreConfig, getMainnetConfig, getNoRiskTags, getRiskColor, getRiskExplaination, highlightTextWithLinks, logger };

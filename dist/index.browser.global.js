@@ -17293,7 +17293,8 @@ var strkfarm_risk_engine = (() => {
     getMainnetConfig: () => getMainnetConfig,
     getNoRiskTags: () => getNoRiskTags,
     getRiskColor: () => getRiskColor,
-    getRiskExplaination: () => getRiskExplaination
+    getRiskExplaination: () => getRiskExplaination,
+    highlightTextWithLinks: () => highlightTextWithLinks
   });
 
   // node_modules/.pnpm/axios@1.7.2/node_modules/axios/lib/helpers/bind.js
@@ -38183,7 +38184,8 @@ var strkfarm_risk_engine = (() => {
     }
   };
 
-  // src/interfaces/common.ts
+  // src/interfaces/common.tsx
+  var import_jsx_runtime = __toESM(require_jsx_runtime());
   var RiskType = /* @__PURE__ */ ((RiskType2) => {
     RiskType2["MARKET_RISK"] = "Market Risk";
     RiskType2["IMPERMANENT_LOSS"] = "Impermanent Loss Risk";
@@ -38239,8 +38241,8 @@ var strkfarm_risk_engine = (() => {
   };
   var getRiskColor = (risk) => {
     const value = risk.value;
-    if (value === 0) return "green";
-    if (value < 2.5) return "yellow";
+    if (value <= 1) return "green";
+    if (value < 3) return "yellow";
     return "red";
   };
   var getNoRiskTags = (risks) => {
@@ -38249,8 +38251,20 @@ var strkfarm_risk_engine = (() => {
       (risk) => !risks.map((risk2) => risk2.type).includes(risk)
     );
     const mergedUnique = [.../* @__PURE__ */ new Set([...noRisks1, ...noRisks2])];
-    return mergedUnique.map((risk) => `No ${risk}`);
+    return mergedUnique;
   };
+  function highlightTextWithLinks(put, highlights) {
+    const escapeRegExp = (text) => text.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+    const pattern = new RegExp(
+      `(${highlights.map((m) => escapeRegExp(m.highlight)).join("|")})`,
+      "gi"
+    );
+    const parts = put.split(pattern);
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: parts.map((part, i) => {
+      const match = highlights.find((m) => m.highlight.toLowerCase() === part.toLowerCase());
+      return match ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", { href: match.link, target: "_blank", style: { color: "var(--chakra-colors-white)", background: "var(--chakra-colors-highlight)" }, children: part }, i) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: part }, i);
+    }) });
+  }
 
   // src/interfaces/initializable.ts
   var Initializable = class {
@@ -45366,8 +45380,15 @@ var strkfarm_risk_engine = (() => {
     ]
   };
 
+  // src/strategies/constants.ts
+  var COMMON_CONTRACTS = [{
+    address: ContractAddr.from("0x0636a3f51cc37f5729e4da4b1de6a8549a28f3c0d5bf3b17f150971e451ff9c2"),
+    name: "Access Controller",
+    sourceCodeUrl: "https://github.com/strkfarm/strkfarm-contracts/blob/main/src/components/accessControl.cairo"
+  }];
+
   // src/strategies/vesu-rebalance.tsx
-  var import_jsx_runtime = __toESM(require_jsx_runtime());
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime());
   var VesuRebalance = class _VesuRebalance extends BaseStrategy {
     // 10000 bps = 100%
     /**
@@ -46048,9 +46069,9 @@ var strkfarm_risk_engine = (() => {
     },
     {
       question: "Is the strategy audited?",
-      answer: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+      answer: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
         "Yes, the strategy has been audited. You can review the audit report in our docs ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", { href: "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
         "."
       ] })
     }
@@ -46058,7 +46079,7 @@ var strkfarm_risk_engine = (() => {
   var VesuRebalanceStrategies = [
     {
       name: "Vesu Fusion STRK",
-      description: _description.replace("{{TOKEN}}", "STRK"),
+      description: _description,
       address: ContractAddr.from(
         "0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"
       ),
@@ -46078,7 +46099,8 @@ var strkfarm_risk_engine = (() => {
       additionalInfo: {
         feeBps: 1e3
       },
-      faqs
+      faqs,
+      contractDetails: []
     },
     {
       name: "Vesu Fusion ETH",
@@ -46102,7 +46124,8 @@ var strkfarm_risk_engine = (() => {
       additionalInfo: {
         feeBps: 1e3
       },
-      faqs
+      faqs,
+      contractDetails: []
     },
     {
       name: "Vesu Fusion USDC",
@@ -46126,7 +46149,8 @@ var strkfarm_risk_engine = (() => {
       additionalInfo: {
         feeBps: 1e3
       },
-      faqs
+      faqs,
+      contractDetails: []
     },
     {
       name: "Vesu Fusion USDT",
@@ -46150,7 +46174,8 @@ var strkfarm_risk_engine = (() => {
       additionalInfo: {
         feeBps: 1e3
       },
-      faqs
+      faqs,
+      contractDetails: []
       // }, {
       //     name: 'Vesu Fusion WBTC',
       //     description: _description.replace('{{TOKEN}}', 'WBTC'),
@@ -46169,6 +46194,27 @@ var strkfarm_risk_engine = (() => {
       //     },
     }
   ];
+  VesuRebalanceStrategies.forEach((s) => {
+    s.contractDetails = [
+      {
+        address: s.address,
+        name: "Vault",
+        sourceCodeUrl: "https://github.com/strkfarm/strkfarm-contracts/tree/main/src/strategies/vesu_rebalance"
+      },
+      ...COMMON_CONTRACTS
+    ];
+    s.docs = "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults";
+    s.description = highlightTextWithLinks(
+      _description.replace("{{TOKEN}}", s.depositTokens[0].symbol),
+      [{
+        highlight: "Vesu pools",
+        link: "https://vesu.xyz/pools"
+      }, {
+        highlight: "Defi spring STRK Rewards",
+        link: "https://defispring.starknet.io/"
+      }]
+    );
+  });
 
   // src/data/cl-vault.abi.json
   var cl_vault_abi_default = [
@@ -51070,7 +51116,7 @@ var strkfarm_risk_engine = (() => {
   ];
 
   // src/strategies/ekubo-cl-vault.tsx
-  var import_jsx_runtime2 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime());
   var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
     /**
      * Creates a new VesuRebalance strategy instance.
@@ -51477,18 +51523,16 @@ var strkfarm_risk_engine = (() => {
       console.log(
         `EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, sqrtRatio: ${sqrtRatio}, ${priceInfo.sqrt_ratio.toString()}`
       );
-      const price = sqrtRatio * sqrtRatio;
-      const tick = _EkuboCLVault.priceToTick(
-        price,
-        true,
-        Number(poolKey.tick_spacing)
-      );
+      const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+      const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+      const price = sqrtRatio * sqrtRatio * 10 ** token0Info.decimals / 10 ** token1Info.decimals;
+      const tick = priceInfo.tick;
       console.log(
         `EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, price: ${price}, tick: ${tick.mag}, ${tick.sign}`
       );
       return {
         price,
-        tick: tick.mag * (tick.sign == 0 ? 1 : -1),
+        tick: Number(tick.mag) * (tick.sign ? -1 : 1),
         sqrtRatio: priceInfo.sqrt_ratio.toString()
       };
     }
@@ -52163,10 +52207,10 @@ var strkfarm_risk_engine = (() => {
     },
     {
       question: "Is the strategy audited?",
-      answer: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
+      answer: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
         "Yes, the strategy has been audited. You can review the audit report in our docs",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
           "a",
           {
             href: "https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details",
@@ -52180,9 +52224,9 @@ var strkfarm_risk_engine = (() => {
   ];
   var xSTRKSTRK = {
     name: "Ekubo xSTRK/STRK",
-    description: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+    description: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "xSTRK/STRK") }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
         "ul",
         {
           style: {
@@ -52191,8 +52235,8 @@ var strkfarm_risk_engine = (() => {
             fontSize: "12px"
           },
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "Sometimes you might see a negative APY \u2014 this is usually not a big deal. It happens when xSTRK's price drops on DEXes, but things typically bounce back within a few days or a week." })
           ]
         }
       )
@@ -52242,15 +52286,17 @@ var strkfarm_risk_engine = (() => {
       multiplier: 1,
       logo: "https://endur.fi/favicon.ico",
       toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi."
-    }]
+    }],
+    contractDetails: []
   };
   var EkuboCLVaultStrategies = [
     xSTRKSTRK,
     {
+      ...xSTRKSTRK,
       name: "Ekubo USDC/USDT",
-      description: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "USDC/USDT") }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+      description: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "USDC/USDT") }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
           "ul",
           {
             style: {
@@ -52258,7 +52304,7 @@ var strkfarm_risk_engine = (() => {
               listStyle: "circle",
               fontSize: "12px"
             },
-            children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
+            children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
           }
         )
       ] }),
@@ -52266,24 +52312,11 @@ var strkfarm_risk_engine = (() => {
         "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
       ),
       launchBlock: 1385576,
-      type: "Other",
       // must be same order as poolKey token0 and token1
       depositTokens: [
         Global.getDefaultTokens().find((t) => t.symbol === "USDC"),
         Global.getDefaultTokens().find((t) => t.symbol === "USDT")
       ],
-      protocols: [_protocol2],
-      auditUrl: AUDIT_URL2,
-      maxTVL: Web3Number.fromWei("0", 6),
-      risk: {
-        riskFactor: _riskFactorStable,
-        netRisk: _riskFactorStable.reduce(
-          (acc, curr) => acc + curr.value * curr.weight,
-          0
-        ) / _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
-        notARisks: getNoRiskTags(_riskFactorStable)
-      },
-      apyMethodology: "APY based on 7-day historical performance, including fees and rewards.",
       additionalInfo: {
         newBounds: {
           lower: -1,
@@ -52296,50 +52329,45 @@ var strkfarm_risk_engine = (() => {
           minWaitHours: 6,
           direction: "any"
         }
-      },
-      faqs: [...faqs2]
+      }
+    },
+    {
+      ...xSTRKSTRK,
+      name: "Ekubo STRK/USDC",
+      description: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: _description2.replace("{{POOL_NAME}}", "STRK/USDC") }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          "ul",
+          {
+            style: {
+              marginLeft: "20px",
+              listStyle: "circle",
+              fontSize: "12px"
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { style: { marginTop: "10px" }, children: "During withdrawal, you may receive either or both tokens depending on market conditions and prevailing prices." })
+          }
+        )
+      ] }),
+      address: ContractAddr.from(
+        "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
+      ),
+      launchBlock: 1492136,
+      // must be same order as poolKey token0 and token1
+      depositTokens: [
+        Global.getDefaultTokens().find((t) => t.symbol === "STRK"),
+        Global.getDefaultTokens().find((t) => t.symbol === "USDC")
+      ],
+      maxTVL: Web3Number.fromWei("0", 6),
+      additionalInfo: {
+        newBounds: "Managed by Re7",
+        feeBps: 1e3,
+        rebalanceConditions: {
+          customShouldRebalance: async (currentPrice) => true,
+          minWaitHours: 6,
+          direction: "any"
+        }
+      }
     }
-    // {
-    //   ...xSTRKSTRK,
-    //   name: "Ekubo STRK/USDC",
-    //   description: (
-    //     <div>
-    //       <p>{_description.replace("{{POOL_NAME}}", "STRK/USDC")}</p>
-    //       <ul
-    //         style={{
-    //           marginLeft: "20px",
-    //           listStyle: "circle",
-    //           fontSize: "12px",
-    //         }}
-    //       >
-    //         <li style={{ marginTop: "10px" }}>
-    //           During withdrawal, you may receive either or both tokens depending
-    //           on market conditions and prevailing prices.
-    //         </li>
-    //       </ul>
-    //     </div>
-    //   ),
-    //   address: ContractAddr.from(
-    //     "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
-    //   ),
-    //   launchBlock: 1492136,
-    //   // must be same order as poolKey token0 and token1
-    //   depositTokens: [
-    //     Global.getDefaultTokens().find((t) => t.symbol === "STRK")!,
-    //     Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
-    //   ],
-    //   maxTVL: Web3Number.fromWei("0", 6),
-    //   additionalInfo: {
-    //     newBounds: "Managed by Re7",
-    //     feeBps: 1000,
-    //     rebalanceConditions: {
-    //       customShouldRebalance: async (currentPrice: number) =>
-    //         true,
-    //       minWaitHours: 6,
-    //       direction: "any",
-    //     },
-    //   },
-    // },
   ];
   return __toCommonJS(index_browser_exports);
 })();

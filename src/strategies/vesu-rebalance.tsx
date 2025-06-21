@@ -3,6 +3,7 @@ import {
   FAQ,
   FlowChartColors,
   getNoRiskTags,
+  highlightTextWithLinks,
   IConfig,
   IInvestmentFlow,
   IProtocol,
@@ -26,6 +27,7 @@ import {
 import { getAPIUsingHeadlessBrowser } from "@/node/headless";
 import { VesuHarvests } from "@/modules/harvests";
 import VesuPoolIDs from "@/data/vesu_pools.json";
+import { COMMON_CONTRACTS } from "./constants";
 
 interface PoolProps {
   pool_id: ContractAddr;
@@ -882,8 +884,8 @@ export class VesuRebalance extends BaseStrategy<
   }
 }
 
-const _description =
-  "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
+const _description = "Automatically diversify {{TOKEN}} holdings into different Vesu pools while reducing risk and maximizing yield. Defi spring STRK Rewards are auto-compounded as well.";
+
 const _protocol: IProtocol = {
   name: "Vesu",
   logo: "https://static-assets-8zct.onrender.com/integrations/vesu/logo.png"
@@ -951,7 +953,7 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
   [
     {
       name: "Vesu Fusion STRK",
-      description: _description.replace("{{TOKEN}}", "STRK"),
+      description: _description,
       address: ContractAddr.from(
         "0x7fb5bcb8525954a60fde4e8fb8220477696ce7117ef264775a1770e23571929"
       ),
@@ -973,7 +975,8 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs
+      faqs,
+      contractDetails: [],
     },
     {
       name: "Vesu Fusion ETH",
@@ -999,7 +1002,8 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs
+      faqs,
+      contractDetails: [],
     },
     {
       name: "Vesu Fusion USDC",
@@ -1025,7 +1029,8 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs
+      faqs,
+      contractDetails: [],
     },
     {
       name: "Vesu Fusion USDT",
@@ -1051,7 +1056,8 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       additionalInfo: {
         feeBps: 1000
       },
-      faqs
+      faqs,
+      contractDetails: [],
       // }, {
       //     name: 'Vesu Fusion WBTC',
       //     description: _description.replace('{{TOKEN}}', 'WBTC'),
@@ -1068,5 +1074,31 @@ export const VesuRebalanceStrategies: IStrategyMetadata<VesuRebalanceSettings>[]
       //     additionalInfo: {
       //         feeBps: 1000,
       //     },
+      
     }
-  ];
+];
+
+// auto assign contract details to each strategy
+VesuRebalanceStrategies.forEach((s) => {
+  // set contract details
+  s.contractDetails = [{
+    address: s.address,
+    name: "Vault",
+    sourceCodeUrl: "https://github.com/strkfarm/strkfarm-contracts/tree/main/src/strategies/vesu_rebalance"
+  }, 
+  ...COMMON_CONTRACTS];
+  // set docs link
+  s.docs = "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults"
+
+  // set description
+  s.description = highlightTextWithLinks(
+    _description.replace("{{TOKEN}}", s.depositTokens[0].symbol),
+    [{
+      highlight: "Vesu pools",
+      link: "https://vesu.xyz/pools",
+    }, {
+      highlight: "Defi spring STRK Rewards",
+      link: "https://defispring.starknet.io/"
+    }]
+  );
+});

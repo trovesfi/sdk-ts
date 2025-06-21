@@ -589,18 +589,16 @@ export class EkuboCLVault extends BaseStrategy<
     console.log(
       `EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, sqrtRatio: ${sqrtRatio}, ${priceInfo.sqrt_ratio.toString()}`
     );
-    const price = sqrtRatio * sqrtRatio;
-    const tick = EkuboCLVault.priceToTick(
-      price,
-      true,
-      Number(poolKey.tick_spacing)
-    );
+    const token0Info = await Global.getTokenInfoFromAddr(poolKey.token0);
+    const token1Info = await Global.getTokenInfoFromAddr(poolKey.token1);
+    const price = sqrtRatio * sqrtRatio * (10 ** token0Info.decimals) / ( 10 ** token1Info.decimals);
+    const tick = priceInfo.tick;
     console.log(
       `EkuboCLVault: getCurrentPrice: blockIdentifier: ${blockIdentifier}, price: ${price}, tick: ${tick.mag}, ${tick.sign}`
     );
     return {
       price,
-      tick: tick.mag * (tick.sign == 0 ? 1 : -1),
+      tick: Number(tick.mag) * (tick.sign ? -1 : 1),
       sqrtRatio: priceInfo.sqrt_ratio.toString(),
     };
   }
@@ -1629,7 +1627,8 @@ const xSTRKSTRK: IStrategyMetadata<CLVaultStrategySettings> = {
     multiplier: 1, 
     logo: 'https://endur.fi/favicon.ico',
     toolTip: "This strategy holds xSTRK and STRK tokens. Earn 1x Endur points on your xSTRK portion of Liquidity. STRK portion will earn Endur's DEX Bonus points. Points can be found on endur.fi.",
-  }]
+  }],
+  contractDetails: []
 };
 
 /**
@@ -1639,6 +1638,7 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
   [
     xSTRKSTRK,
     {
+      ...xSTRKSTRK,
       name: "Ekubo USDC/USDT",
       description: (
         <div>
@@ -1661,26 +1661,11 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
         "0xd647ed735f0db52f2a5502b6e06ed21dc4284a43a36af4b60d3c80fbc56c91"
       ),
       launchBlock: 1385576,
-      type: "Other",
       // must be same order as poolKey token0 and token1
       depositTokens: [
         Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
         Global.getDefaultTokens().find((t) => t.symbol === "USDT")!,
       ],
-      protocols: [_protocol],
-      auditUrl: AUDIT_URL,
-      maxTVL: Web3Number.fromWei("0", 6),
-      risk: {
-        riskFactor: _riskFactorStable,
-        netRisk:
-          _riskFactorStable.reduce(
-            (acc, curr) => acc + curr.value * curr.weight,
-            0
-          ) / _riskFactorStable.reduce((acc, curr) => acc + curr.weight, 0),
-        notARisks: getNoRiskTags(_riskFactorStable),
-      },
-      apyMethodology:
-        "APY based on 7-day historical performance, including fees and rewards.",
       additionalInfo: {
         newBounds: {
           lower: -1,
@@ -1695,50 +1680,47 @@ export const EkuboCLVaultStrategies: IStrategyMetadata<CLVaultStrategySettings>[
           direction: "any",
         },
       },
-      faqs: [...faqs],
     },
-    // {
-    //   ...xSTRKSTRK,
-    //   name: "Ekubo STRK/USDC",
-    //   description: (
-    //     <div>
-    //       <p>{_description.replace("{{POOL_NAME}}", "STRK/USDC")}</p>
-    //       <ul
-    //         style={{
-    //           marginLeft: "20px",
-    //           listStyle: "circle",
-    //           fontSize: "12px",
-    //         }}
-    //       >
-    //         <li style={{ marginTop: "10px" }}>
-    //           During withdrawal, you may receive either or both tokens depending
-    //           on market conditions and prevailing prices.
-    //         </li>
-    //       </ul>
-    //     </div>
-    //   ),
-    //   address: ContractAddr.from(
-    //     "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
-    //   ),
-    //   launchBlock: 1492136,
-    //   // must be same order as poolKey token0 and token1
-    //   depositTokens: [
-    //     Global.getDefaultTokens().find((t) => t.symbol === "STRK")!,
-    //     Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
-    //   ],
-    //   maxTVL: Web3Number.fromWei("0", 6),
-    //   additionalInfo: {
-    //     newBounds: "Managed by Re7",
-    //     feeBps: 1000,
-    //     rebalanceConditions: {
-    //       customShouldRebalance: async (currentPrice: number) =>
-    //         true,
-    //       minWaitHours: 6,
-    //       direction: "any",
-    //     },
-    //   },
-    // },
+    {
+      ...xSTRKSTRK,
+      name: "Ekubo STRK/USDC",
+      description: (
+        <div>
+          <p>{_description.replace("{{POOL_NAME}}", "STRK/USDC")}</p>
+          <ul
+            style={{
+              marginLeft: "20px",
+              listStyle: "circle",
+              fontSize: "12px",
+            }}
+          >
+            <li style={{ marginTop: "10px" }}>
+              During withdrawal, you may receive either or both tokens depending
+              on market conditions and prevailing prices.
+            </li>
+          </ul>
+        </div>
+      ),
+      address: ContractAddr.from(
+        "0xb7bd37121041261446d8eedec618955a4490641034942da688e8cbddea7b23"
+      ),
+      launchBlock: 1492136,
+      // must be same order as poolKey token0 and token1
+      depositTokens: [
+        Global.getDefaultTokens().find((t) => t.symbol === "STRK")!,
+        Global.getDefaultTokens().find((t) => t.symbol === "USDC")!,
+      ],
+      maxTVL: Web3Number.fromWei("0", 6),
+      additionalInfo: {
+        newBounds: "Managed by Re7",
+        feeBps: 1000,
+        rebalanceConditions: {
+          customShouldRebalance: async (currentPrice: number) =>
+            true,
+          minWaitHours: 6,
+          direction: "any",
+        },
+      },
+    },
 ];
 
-
-// 0x65b6a3ae00e7343ca8b2463d81401716c6581c18336206f31085c06a7d63936
