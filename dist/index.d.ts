@@ -678,7 +678,11 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
         tick: number;
         sqrtRatio: any;
     }>;
-    private _getCurrentPrice;
+    _getCurrentPrice(poolKey: EkuboPoolKey, blockIdentifier?: BlockIdentifier): Promise<{
+        price: number;
+        tick: number;
+        sqrtRatio: any;
+    }>;
     getCurrentBounds(blockIdentifier?: BlockIdentifier): Promise<EkuboBounds>;
     static div2Power128(num: BigInt): number;
     static priceToTick(price: number, isRoundDown: boolean, tickSpacing: number): {
@@ -695,6 +699,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * @returns {amount0, amount1}
      */
     private _getExpectedAmountsForLiquidity;
+    getRatio(token0Amt: Web3Number, token1Amount: Web3Number): Web3Number;
     private _solveExpectedAmountsEq;
     unusedBalances(_poolKey?: EkuboPoolKey): Promise<{
         token0: {
@@ -708,8 +713,27 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
             usdValue: number;
         };
     }>;
-    getSwapInfoToHandleUnused(considerRebalance?: boolean, newBounds?: EkuboBounds | null): Promise<SwapInfo>;
-    getSwapInfoGivenAmounts(poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number, bounds: EkuboBounds): Promise<SwapInfo>;
+    getSwapInfoToHandleUnused(considerRebalance?: boolean, newBounds?: EkuboBounds | null, maxIterations?: number, priceRatioPrecision?: number): Promise<SwapInfo>;
+    assertValidBounds(bounds: EkuboBounds): void;
+    assertValidAmounts(expectedAmounts: any, token0Bal: Web3Number, token1Bal: Web3Number): void;
+    getSwapParams(expectedAmounts: any, poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number): {
+        tokenToSell: ContractAddr;
+        tokenToBuy: ContractAddr;
+        amountToSell: Web3Number;
+        remainingSellAmount: any;
+    };
+    /**
+     * @description Calculates swap info based on given amounts of token0 and token1
+     * Use token0 and token1 balances to determine the expected amounts for new bounds
+     * @param poolKey
+     * @param token0Bal
+     * @param token1Bal
+     * @param bounds // new bounds
+     * @param maxIterations
+     * @returns {Promise<SwapInfo>}
+     *
+     */
+    getSwapInfoGivenAmounts(poolKey: EkuboPoolKey, token0Bal: Web3Number, token1Bal: Web3Number, bounds: EkuboBounds, maxIterations?: number, priceRatioPrecision?: number): Promise<SwapInfo>;
     /**
      * Attempts to rebalance the vault by iteratively adjusting swap amounts if initial attempt fails.
      * Uses binary search approach to find optimal swap amount.
@@ -723,7 +747,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
      * @returns Array of contract calls needed for rebalancing
      * @throws Error if max retries reached without successful rebalance
      */
-    rebalanceIter(swapInfo: SwapInfo, acc: Account, estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>, isSellTokenToken0?: boolean, retry?: number, lowerLimit?: bigint, upperLimit?: bigint): Promise<Call[]>;
+    rebalanceIter(swapInfo: SwapInfo, acc: Account, estimateCall: (swapInfo: SwapInfo) => Promise<Call[]>, isSellTokenToken0?: boolean, retry?: number, lowerLimit?: bigint, upperLimit?: bigint, MAX_RETRIES?: number): Promise<Call[]>;
     static tickToi129(tick: number): {
         mag: number;
         sign: number;
@@ -742,7 +766,7 @@ declare class EkuboCLVault extends BaseStrategy<DualTokenInfo, DualActionAmount>
         amount0: Web3Number;
         amount1: Web3Number;
     }>;
-    harvest(acc: Account): Promise<Call[]>;
+    harvest(acc: Account, maxIterations?: number, priceRatioPrecision?: number): Promise<Call[]>;
     getInvestmentFlows(): Promise<IInvestmentFlow[]>;
 }
 /**

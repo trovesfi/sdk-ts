@@ -897,7 +897,7 @@ const _riskFactor: RiskFactor[] = [
   { type: RiskType.ORACLE_RISK, value: 0.5, weight: 25, reason: "Uses Pragma price feeds, Most reputable price feed on Starknet" }
 ];
 const AUDIT_URL =
-  "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+  "https://assets.troves.fi/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 
 const faqs: FAQ[] = [
   {
@@ -942,7 +942,7 @@ const faqs: FAQ[] = [
   {
     question: "Is the strategy audited?",
     answer:
-      <div>Yes, the strategy has been audited. You can review the audit report in our docs <a href="https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details" style={{textDecoration: 'underline', marginLeft: '5px'}}>Here</a>.</div>
+      <div>Yes, the strategy has been audited. You can review the audit report in our docs <a href="https://docs.troves.fi/p/strategies/vesu-fusion-rebalancing-vaults#technical-details" style={{textDecoration: 'underline', marginLeft: '5px'}}>Here</a>.</div>
   }
 ];
 
@@ -1092,7 +1092,7 @@ VesuRebalanceStrategies.forEach((s) => {
   }, 
   ...COMMON_CONTRACTS];
   // set docs link
-  s.docs = "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults"
+  s.docs = "https://docs.troves.fi/p/strategies/vesu-fusion-rebalancing-vaults"
 
   // set description
   s.description = highlightTextWithLinks(

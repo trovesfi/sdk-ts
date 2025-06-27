@@ -1,0 +1,106 @@
+2025-06-27 08:52:06 [info]: [Monitor] First run: triggering rebalance {"strategy":{"key":"ETH_USDC_0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947","name":"Ekubo re7 ETH/USDC","address":"0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947","tokens":[{"symbol":"ETH","address":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"},{"symbol":"USDC","address":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"}]},"price":2457.1719794292353}
+getRpcProvider RPC: https://silent-little-glitter.strk-mainnet.quiknode.pro/316f4c27f88bec62aa6570c515dafd9c26fd4eed/
+2025-06-27 08:52:06 verbose: Path: /home/ubuntu/.starknet-store/accounts-relayer-argent.json
+2025-06-27 08:52:06 verbose: Accounts loaded for network: mainnet
+2025-06-27 08:52:06 verbose: nAccounts loaded for network: 1
+2025-06-27 08:52:06 verbose: Account loaded: RELAYER_ACCOUNT from network: mainnet
+2025-06-27 08:52:06 verbose: Address: 0x2403b4b50fbb3e44ca82a10a2774d3e3f8b9774edcec33aed4be13daec70cc7
+2025-06-27 08:52:07 verbose: getPrice from redis: ETH
+2025-06-27 08:52:07 verbose: getPrice from redis: USDC
+2025-06-27 08:52:08 [info]: [Rebalance] User TVL {"token0":{"symbol":"ETH","amount":"0.000000000000000000"},"token1":{"symbol":"USDC","amount":"0.000000"}}
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, sqrtRatio: 0.000049569869673313, 16867752580397553297908359044525465
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, price: 2457.1719794292353, tick: 19824265, true
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getLiquidityToAmounts => currentPrice: 2457.1719794292353, lowerPrice: 2.0488442252233924e-9, upperPrice: 2.7711868400869758e-9
+2025-06-27 08:52:08 verbose: getPrice from redis: ETH
+2025-06-27 08:52:08 verbose: getPrice from redis: USDC
+2025-06-27 08:52:08 [info]: [Rebalance] Vault TVL {"token0":{"symbol":"ETH","amount":"0.003979779126949316"},"token1":{"symbol":"USDC","amount":"14.555609"}}
+2025-06-27 08:52:08 [info]: [Rebalance] Token0 balance: 0.003979779126950560 (ETH) 
+2025-06-27 08:52:08 [info]: [Rebalance] Token1 balance: 14.557182 (USDC) 
+2025-06-27 08:52:08 [info]: [Rebalance] Recalculated Price (token0/token1): 2457.1719794292353 
+2025-06-27 08:52:08 [info]: [Rebalance] New bounds {"lower":-19987000,"upper":-19685000}
+2025-06-27 08:52:08 [info]: [Rebalance] Getting swap info 
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => token0Bal1: 1.244e-15, token1Bal1: 0.001573
+2025-06-27 08:52:08 verbose: getPrice from redis: ETH
+2025-06-27 08:52:08 verbose: getPrice from redis: USDC
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => considerRebalance: true
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, sqrtRatio: 0.000049569869673313, 16867752580397553297908359044525465
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, price: 2457.1719794292353, tick: 19824265, true
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getLiquidityToAmounts => currentPrice: 2457.1719794292353, lowerPrice: 2.0488442252233924e-9, upperPrice: 2.7711868400869758e-9
+2025-06-27 08:52:08 verbose: getPrice from redis: ETH
+2025-06-27 08:52:08 verbose: getPrice from redis: USDC
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => token0Bal: 0.00397977912695056, token1Bal: 14.557182
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => newBounds: -19987000, -19685000
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoGivenAmounts::pre => token0Bal: 0.00397977912695056, token1Bal: 14.557182
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, sqrtRatio: 0.000049569869673313, 16867752580397553297908359044525465
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, price: 2457.1719794292353, tick: 19824265, true
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getLiquidityToAmounts => currentPrice: 2457.1719794292353, lowerPrice: 2.08814441538281e-9, upperPrice: 2.8243427454710565e-9
+2025-06-27 08:52:08 verbose: _EkuboCLVault: _getExpectedAmountsForLiquidity => sampleAmount0: 135674.543191569155882009, sampleAmount1: 387386967.331347
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, sqrtRatio: 0.000049569869673313, 16867752580397553297908359044525465
+EkuboCLVault: getCurrentPrice: blockIdentifier: pending, price: 2457.1719794292353, tick: 19824265, true
+2025-06-27 08:52:08 verbose: _EkuboCLVault: _getExpectedAmountsForLiquidity => price: 2457.1719794292353
+2025-06-27 08:52:08 verbose: _EkuboCLVault: Ekubo re7 ETH/USDC => ratio: 0.000350230014515489
+2025-06-27 08:52:08 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601202697524086, y: 1.477258422313454591, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts2: 0.004580981824474646, 13.079924
+2025-06-27 08:52:08 verbose: getSwapInfoGivenAmounts::Retry attempt: 1/20
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477258","remainingSellAmount":"13.079924","expectedRatio":0.000350230014515489}
+2025-06-27 08:52:08 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477258, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:08 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601756340444174","swapPrice":"2458","newRatio":"0.000350272330893874"}
+2025-06-27 08:52:08 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601109005858776, y: 1.477525936400871486, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580888132809336, 13.079657
+2025-06-27 08:52:08 verbose: getSwapInfoGivenAmounts::Retry attempt: 3/20
+2025-06-27 08:52:08 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477525","remainingSellAmount":"13.079657","expectedRatio":0.0003502300145}
+2025-06-27 08:52:08 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477525, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:09 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601864994378472","swapPrice":"2458.444259567387687188","newRatio":"0.000350287788229387"}
+2025-06-27 08:52:09 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601058749372686, y: 1.477669432058034071, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:09 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580837876323246, 13.079513
+2025-06-27 08:52:09 verbose: getSwapInfoGivenAmounts::Retry attempt: 5/20
+2025-06-27 08:52:09 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477669","remainingSellAmount":"13.079513","expectedRatio":0.0003502300145}
+2025-06-27 08:52:09 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477669, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:09 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601923734045109","swapPrice":"2458.683860232945091514","newRatio":"0.000350296135719706"}
+2025-06-27 08:52:09 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601031648239109, y: 1.477746813014704357, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:09 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580810775189669, 13.079436
+2025-06-27 08:52:09 verbose: getSwapInfoGivenAmounts::Retry attempt: 7/20
+2025-06-27 08:52:09 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477746","remainingSellAmount":"13.079436","expectedRatio":0.0003502300145}
+2025-06-27 08:52:09 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477746, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:09 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601954984706235","swapPrice":"2458.811980033277870216","newRatio":"0.000350300587246789"}
+2025-06-27 08:52:09 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601017157663519, y: 1.477788187468610029, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:09 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580796284614079, 13.079394
+2025-06-27 08:52:09 verbose: getSwapInfoGivenAmounts::Retry attempt: 9/20
+2025-06-27 08:52:09 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477788","remainingSellAmount":"13.079394","expectedRatio":0.0003502300145}
+2025-06-27 08:52:09 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477788, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:10 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601972056826036","swapPrice":"2458.881863560732113144","newRatio":"0.000350303017385713"}
+2025-06-27 08:52:10 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601009254007694, y: 1.47781075451168605, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:10 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580788380958254, 13.079372
+2025-06-27 08:52:10 verbose: getSwapInfoGivenAmounts::Retry attempt: 11/20
+2025-06-27 08:52:10 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.47781","remainingSellAmount":"13.079372","expectedRatio":0.0003502300145}
+2025-06-27 08:52:10 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477810, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:10 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601981026920511","swapPrice":"2458.918469217970049916","newRatio":"0.000350304292428648"}
+2025-06-27 08:52:10 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601005114080462, y: 1.477822575106901564, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:10 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580784241031022, 13.07936
+2025-06-27 08:52:10 verbose: getSwapInfoGivenAmounts::Retry attempt: 13/20
+2025-06-27 08:52:10 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477822","remainingSellAmount":"13.07936","expectedRatio":0.0003502300145}
+2025-06-27 08:52:10 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477822, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:10 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601985946008315","swapPrice":"2458.93843594009983361","newRatio":"0.00035030498991991"}
+2025-06-27 08:52:10 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601002855962373, y: 1.477829022635652919, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:10 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580781982912933, 13.079353
+2025-06-27 08:52:10 verbose: getSwapInfoGivenAmounts::Retry attempt: 15/20
+2025-06-27 08:52:10 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477829","remainingSellAmount":"13.079353","expectedRatio":0.0003502300145}
+2025-06-27 08:52:10 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477829, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:11 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601988839586791","swapPrice":"2458.950083194675540765","newRatio":"0.000350305398633812"}
+2025-06-27 08:52:11 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601001538734658, y: 1.477832783671715524, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:11 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580780665685218, 13.07935
+2025-06-27 08:52:11 verbose: getSwapInfoGivenAmounts::Retry attempt: 17/20
+2025-06-27 08:52:11 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477832","remainingSellAmount":"13.07935","expectedRatio":0.0003502300145}
+2025-06-27 08:52:11 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477832, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:11 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.00060198999701898","swapPrice":"2458.955074875207986688","newRatio":"0.000350305567476177"}
+2025-06-27 08:52:11 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601000974210262, y: 1.477834395539268402, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:11 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580780101160822, 13.079348
+2025-06-27 08:52:11 verbose: getSwapInfoGivenAmounts::Retry attempt: 19/20
+2025-06-27 08:52:11 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => iteration info: {"tokenToSell":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8","tokenToBuy":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7","amountToSell":"1.477834","remainingSellAmount":"13.079348","expectedRatio":0.0003502300145}
+2025-06-27 08:52:11 verbose: _AvnuWrapper: getQuotes => Getting quotes for 0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8 -> 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7, amount: 1477834, taker: 0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947, retry: 0
+2025-06-27 08:52:12 verbose: _EkuboCLVault getSwapInfoToHandleUnused => iter post calc: {"amountOut":"0.000601991009771647","swapPrice":"2458.958402662229617304","newRatio":"0.000350305698473823"}
+2025-06-27 08:52:12 verbose: _EkuboCLVault: _solveExpectedAmountsEq => x: 0.000601000597861254, y: 1.477835470115954892, amount0: 0.00397977912695056, amount1: 14.557182
+2025-06-27 08:52:12 verbose: _EkuboCLVault: getSwapInfoToHandleUnused => expectedAmounts: 0.004580779724811814, 13.079347
+2025-06-27 08:52:12 [error]: [Monitor] Error during price check or rebalance {"strategy":{"key":"ETH_USDC_0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947","name":"Ekubo re7 ETH/USDC","address":"0x160d8fa4569ef6a12e6bf47cb943d7b5ebba8a41a69a14c1d943050ba5ff947","tokens":[{"symbol":"ETH","address":"0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"},{"symbol":"USDC","address":"0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"}]},"error":"Failed to get swap info"}
+
+`

@@ -17,7 +17,7 @@ export class FatalError extends Error {
 const defaultTokens: TokenInfo[] = [{
     name: 'Starknet',
     symbol: 'STRK',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/strk.svg',
+    logo: 'https://assets.troves.fi/integrations/tokens/strk.svg',
     address: ContractAddr.from('0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d'),
     decimals: 18,
     coingeckId: 'starknet',
@@ -25,7 +25,7 @@ const defaultTokens: TokenInfo[] = [{
 }, {
     name: 'xSTRK',
     symbol: 'xSTRK',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/xstrk.svg',
+    logo: 'https://assets.troves.fi/integrations/tokens/xstrk.svg',
     address: ContractAddr.from('0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a'),
     decimals: 18,
     coingeckId: undefined,
@@ -33,7 +33,7 @@ const defaultTokens: TokenInfo[] = [{
 }, {
     name: 'ETH',
     symbol: 'ETH',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/eth.svg',
+    logo: 'https://assets.troves.fi/integrations/tokens/eth.svg',
     address: ContractAddr.from('0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'),
     decimals: 18,
     coingeckId: undefined,
@@ -41,7 +41,7 @@ const defaultTokens: TokenInfo[] = [{
 }, {
     name: 'USDC',
     symbol: 'USDC',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/usdc.svg',
+    logo: 'https://assets.troves.fi/integrations/tokens/usdc.svg',
     address: ContractAddr.from('0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8'),
     decimals: 6,
     coingeckId: undefined,
@@ -49,7 +49,7 @@ const defaultTokens: TokenInfo[] = [{
 }, {
     name: 'USDT',
     symbol: 'USDT',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/usdt.svg',
+    logo: 'https://assets.troves.fi/integrations/tokens/usdt.svg',
     address: ContractAddr.from('0x68f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8'),
     decimals: 6,
     coingeckId: undefined,
@@ -57,7 +57,7 @@ const defaultTokens: TokenInfo[] = [{
 }, {
     name: 'WBTC',
     symbol: 'WBTC',
-    logo: 'https://assets.strkfarm.com/integrations/tokens/wbtc.svg',
+    logo: 'https://assets.troves.fi/integrations/tokens/wbtc.svg',
     address: ContractAddr.from('0x3fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac'),
     decimals: 8,
     coingeckId: undefined,
@@ -90,7 +90,7 @@ export class Global {
         if (tokens.length) return tokens;
 
         // fetch from avnu API
-        const data = await axios.get('https://assets.strkfarm.com/integrations/tokens.json');
+        const data = await axios.get('https://assets.troves.fi/integrations/tokens.json');
         const tokensData = data.data.content;
 
         // Array of the following is returned

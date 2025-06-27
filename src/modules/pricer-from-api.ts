@@ -42,7 +42,7 @@ export class PricerFromApi extends PricerBase {
 
     async getPriceFromMyAPI(tokenSymbol: string) {
         logger.verbose(`getPrice from redis: ${tokenSymbol}`);
-        const endpoint = 'https://app.strkfarm.com'
+        const endpoint = 'https://app.troves.fi'
         const url = `${endpoint}/api/price/${tokenSymbol}`;
         const priceInfoRes = await fetch(url);
         const priceInfo = await priceInfoRes.json();

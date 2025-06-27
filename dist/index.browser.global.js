@@ -36032,7 +36032,7 @@ var strkfarm_risk_engine = (() => {
   var defaultTokens = [{
     name: "Starknet",
     symbol: "STRK",
-    logo: "https://assets.strkfarm.com/integrations/tokens/strk.svg",
+    logo: "https://assets.troves.fi/integrations/tokens/strk.svg",
     address: ContractAddr.from("0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
     decimals: 18,
     coingeckId: "starknet",
@@ -36040,7 +36040,7 @@ var strkfarm_risk_engine = (() => {
   }, {
     name: "xSTRK",
     symbol: "xSTRK",
-    logo: "https://assets.strkfarm.com/integrations/tokens/xstrk.svg",
+    logo: "https://assets.troves.fi/integrations/tokens/xstrk.svg",
     address: ContractAddr.from("0x028d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a"),
     decimals: 18,
     coingeckId: void 0,
@@ -36048,7 +36048,7 @@ var strkfarm_risk_engine = (() => {
   }, {
     name: "ETH",
     symbol: "ETH",
-    logo: "https://assets.strkfarm.com/integrations/tokens/eth.svg",
+    logo: "https://assets.troves.fi/integrations/tokens/eth.svg",
     address: ContractAddr.from("0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"),
     decimals: 18,
     coingeckId: void 0,
@@ -36056,7 +36056,7 @@ var strkfarm_risk_engine = (() => {
   }, {
     name: "USDC",
     symbol: "USDC",
-    logo: "https://assets.strkfarm.com/integrations/tokens/usdc.svg",
+    logo: "https://assets.troves.fi/integrations/tokens/usdc.svg",
     address: ContractAddr.from("0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"),
     decimals: 6,
     coingeckId: void 0,
@@ -36064,7 +36064,7 @@ var strkfarm_risk_engine = (() => {
   }, {
     name: "USDT",
     symbol: "USDT",
-    logo: "https://assets.strkfarm.com/integrations/tokens/usdt.svg",
+    logo: "https://assets.troves.fi/integrations/tokens/usdt.svg",
     address: ContractAddr.from("0x68f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"),
     decimals: 6,
     coingeckId: void 0,
@@ -36072,7 +36072,7 @@ var strkfarm_risk_engine = (() => {
   }, {
     name: "WBTC",
     symbol: "WBTC",
-    logo: "https://assets.strkfarm.com/integrations/tokens/wbtc.svg",
+    logo: "https://assets.troves.fi/integrations/tokens/wbtc.svg",
     address: ContractAddr.from("0x3fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac"),
     decimals: 8,
     coingeckId: void 0,
@@ -36096,7 +36096,7 @@ var strkfarm_risk_engine = (() => {
     }
     static async getTokens() {
       if (tokens.length) return tokens;
-      const data = await axios_default.get("https://assets.strkfarm.com/integrations/tokens.json");
+      const data = await axios_default.get("https://assets.troves.fi/integrations/tokens.json");
       const tokensData = data.data.content;
       tokensData.forEach((token) => {
         if (!token.tags.includes("AVNU") || !token.tags.includes("Verified")) {
@@ -36624,7 +36624,7 @@ var strkfarm_risk_engine = (() => {
     }
     async getPriceFromMyAPI(tokenSymbol) {
       logger.verbose(`getPrice from redis: ${tokenSymbol}`);
-      const endpoint = "https://app.strkfarm.com";
+      const endpoint = "https://app.troves.fi";
       const url = `${endpoint}/api/price/${tokenSymbol}`;
       const priceInfoRes = await fetch(url);
       const priceInfo = await priceInfoRes.json();
@@ -38124,14 +38124,16 @@ var strkfarm_risk_engine = (() => {
       };
       assert3(fromToken != toToken, "From and to tokens are the same");
       const quotes = await fetchQuotes(params);
-      if (quotes.length == 0) {
+      const filteredQuotes = quotes.filter((q) => q.sellAmount.toString() == amountWei);
+      if (filteredQuotes.length == 0) {
         if (retry < MAX_RETRY) {
           await new Promise((res) => setTimeout(res, 3e3));
           return await this.getQuotes(fromToken, toToken, amountWei, taker, retry + 1);
         }
         throw new Error("no quotes found");
       }
-      return quotes[0];
+      logger.verbose(`${_AvnuWrapper.name}: getQuotes => Found ${JSON.stringify(filteredQuotes[0])}`);
+      return filteredQuotes[0];
     }
     async getSwapInfo(quote, taker, integratorFeeBps, integratorFeeRecipient, minAmount) {
       const calldata = await fetchBuildExecuteTransaction(quote.quoteId);
@@ -38154,6 +38156,7 @@ var strkfarm_risk_engine = (() => {
         startIndex += 5 + swap_params_len;
       }
       const _minAmount = minAmount || (quote.buyAmount * 95n / 100n).toString();
+      logger.verbose(`${_AvnuWrapper.name}: getSwapInfo => sellToken: ${quote.sellTokenAddress}, sellAmount: ${quote.sellAmount}`);
       logger.verbose(`${_AvnuWrapper.name}: getSwapInfo => buyToken: ${quote.buyTokenAddress}`);
       logger.verbose(`${_AvnuWrapper.name}: getSwapInfo => buyAmount: ${quote.buyAmount}, minAmount: ${_minAmount}`);
       const swapInfo = {
@@ -46033,7 +46036,7 @@ var strkfarm_risk_engine = (() => {
     { type: "Counterparty Risk" /* COUNTERPARTY_RISK */, value: 1, weight: 50, reason: "Reasonable max LTV ratios and Curated by well-known risk managers like Re7" },
     { type: "Oracle Risk" /* ORACLE_RISK */, value: 0.5, weight: 25, reason: "Uses Pragma price feeds, Most reputable price feed on Starknet" }
   ];
-  var AUDIT_URL = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+  var AUDIT_URL = "https://assets.troves.fi/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
   var faqs = [
     {
       question: "What is the Vesu Rebalancing Strategy?",
@@ -46071,7 +46074,7 @@ var strkfarm_risk_engine = (() => {
       question: "Is the strategy audited?",
       answer: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
         "Yes, the strategy has been audited. You can review the audit report in our docs ",
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://docs.troves.fi/p/strategies/vesu-fusion-rebalancing-vaults#technical-details", style: { textDecoration: "underline", marginLeft: "5px" }, children: "Here" }),
         "."
       ] })
     }
@@ -46207,7 +46210,7 @@ var strkfarm_risk_engine = (() => {
       },
       ...COMMON_CONTRACTS
     ];
-    s.docs = "https://docs.strkfarm.com/p/strategies/vesu-fusion-rebalancing-vaults";
+    s.docs = "https://docs.troves.fi/p/strategies/vesu-fusion-rebalancing-vaults";
     s.description = highlightTextWithLinks(
       _description.replace("{{TOKEN}}", s.depositTokens[0].symbol),
       [{
@@ -51645,7 +51648,7 @@ var strkfarm_risk_engine = (() => {
           };
         }
       }
-      const ratioWeb3Number = sampleAmount0.multipliedBy(1e18).dividedBy(sampleAmount1.toString()).dividedBy(1e18);
+      const ratioWeb3Number = this.getRatio(sampleAmount0, sampleAmount1);
       const ratio = Number(ratioWeb3Number.toFixed(18));
       logger.verbose(
         `${_EkuboCLVault.name}: ${this.metadata.name} => ratio: ${ratio.toString()}`
@@ -51677,11 +51680,18 @@ var strkfarm_risk_engine = (() => {
         );
       }
     }
+    getRatio(token0Amt, token1Amount) {
+      const ratio = token0Amt.multipliedBy(1e18).dividedBy(token1Amount.toString()).dividedBy(1e18);
+      logger.verbose(
+        `${_EkuboCLVault.name}: getRatio => token0Amt: ${token0Amt.toString()}, token1Amount: ${token1Amount.toString()}, ratio: ${ratio.toString()}`
+      );
+      return ratio;
+    }
     _solveExpectedAmountsEq(availableAmount0, availableAmount1, ratio, price) {
       const y = ratio.multipliedBy(availableAmount1).minus(availableAmount0).dividedBy(ratio.plus(1 / price));
       const x = y.dividedBy(price);
       logger.verbose(
-        `${_EkuboCLVault.name}: _solveExpectedAmountsEq => x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
+        `${_EkuboCLVault.name}: _solveExpectedAmountsEq => ratio: ${ratio.toString()}, x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
       );
       if (ratio.eq(0)) {
         return {
@@ -51731,7 +51741,7 @@ var strkfarm_risk_engine = (() => {
         }
       };
     }
-    async getSwapInfoToHandleUnused(considerRebalance = true, newBounds = null) {
+    async getSwapInfoToHandleUnused(considerRebalance = true, newBounds = null, maxIterations = 20, priceRatioPrecision = 4) {
       const poolKey = await this.getPoolKey();
       const unusedBalances = await this.unusedBalances(poolKey);
       const { amount: token0Bal1, usdValue: token0PriceUsd } = unusedBalances.token0;
@@ -51764,14 +51774,59 @@ var strkfarm_risk_engine = (() => {
       logger.verbose(
         `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${ekuboBounds.lowerTick}, ${ekuboBounds.upperTick}`
       );
+      this.assertValidBounds(ekuboBounds);
       return await this.getSwapInfoGivenAmounts(
         poolKey,
         token0Bal,
         token1Bal,
-        ekuboBounds
+        ekuboBounds,
+        maxIterations,
+        priceRatioPrecision
       );
     }
-    async getSwapInfoGivenAmounts(poolKey, token0Bal, token1Bal, bounds) {
+    assertValidBounds(bounds) {
+      assert3(
+        bounds.lowerTick < bounds.upperTick,
+        `Invalid bounds: lowerTick (${bounds.lowerTick}) must be less than upperTick (${bounds.upperTick})`
+      );
+      assert3(Number(bounds.lowerTick) % Number(this.poolKey?.tick_spacing) === 0, `Lower tick (${bounds.lowerTick}) must be a multiple of tick spacing (${this.poolKey?.tick_spacing})`);
+      assert3(Number(bounds.upperTick) % Number(this.poolKey?.tick_spacing) === 0, `Upper tick (${bounds.upperTick}) must be a multiple of tick spacing (${this.poolKey?.tick_spacing})`);
+    }
+    // Helper to check for invalid states:
+    // Throws if both tokens are decreased or both are increased, which is not expected
+    assertValidAmounts(expectedAmounts, token0Bal, token1Bal) {
+      if (expectedAmounts.amount0.lessThan(token0Bal) && expectedAmounts.amount1.lessThan(token1Bal)) {
+        throw new Error("Both tokens are decreased, something is wrong");
+      }
+      if (expectedAmounts.amount0.greaterThan(token0Bal) && expectedAmounts.amount1.greaterThan(token1Bal)) {
+        throw new Error("Both tokens are increased, something is wrong");
+      }
+    }
+    // Helper to determine which token to sell, which to buy, and the amounts to use
+    getSwapParams(expectedAmounts, poolKey, token0Bal, token1Bal) {
+      const tokenToSell = expectedAmounts.amount0.lessThan(token0Bal) ? poolKey.token0 : poolKey.token1;
+      const tokenToBuy = tokenToSell == poolKey.token0 ? poolKey.token1 : poolKey.token0;
+      const amountToSell = tokenToSell == poolKey.token0 ? token0Bal.minus(expectedAmounts.amount0) : token1Bal.minus(expectedAmounts.amount1);
+      if (amountToSell.eq(0)) {
+        throw new Error(
+          `No amount to sell for ${tokenToSell.address}`
+        );
+      }
+      const remainingSellAmount = tokenToSell == poolKey.token0 ? expectedAmounts.amount0 : expectedAmounts.amount1;
+      return { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount };
+    }
+    /**
+     * @description Calculates swap info based on given amounts of token0 and token1
+     * Use token0 and token1 balances to determine the expected amounts for new bounds
+     * @param poolKey 
+     * @param token0Bal 
+     * @param token1Bal 
+     * @param bounds // new bounds
+     * @param maxIterations 
+     * @returns {Promise<SwapInfo>}
+     * 
+     */
+    async getSwapInfoGivenAmounts(poolKey, token0Bal, token1Bal, bounds, maxIterations = 20, priceRatioPrecision = 4) {
       logger.verbose(
         `${_EkuboCLVault.name}: getSwapInfoGivenAmounts::pre => token0Bal: ${token0Bal.toString()}, token1Bal: ${token1Bal.toString()}`
       );
@@ -51784,29 +51839,14 @@ var strkfarm_risk_engine = (() => {
         `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts2: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
       );
       let retry = 0;
-      const maxRetry = 10;
-      function assertValidAmounts(expectedAmounts2, token0Bal2, token1Bal2) {
-        if (expectedAmounts2.amount0.lessThan(token0Bal2) && expectedAmounts2.amount1.lessThan(token1Bal2)) {
-          throw new Error("Both tokens are decreased, something is wrong");
-        }
-        if (expectedAmounts2.amount0.greaterThan(token0Bal2) && expectedAmounts2.amount1.greaterThan(token1Bal2)) {
-          throw new Error("Both tokens are increased, something is wrong");
-        }
-      }
-      function getSwapParams(expectedAmounts2, poolKey2, token0Bal2, token1Bal2) {
-        const tokenToSell = expectedAmounts2.amount0.lessThan(token0Bal2) ? poolKey2.token0 : poolKey2.token1;
-        const tokenToBuy = tokenToSell == poolKey2.token0 ? poolKey2.token1 : poolKey2.token0;
-        const amountToSell = tokenToSell == poolKey2.token0 ? token0Bal2.minus(expectedAmounts2.amount0) : token1Bal2.minus(expectedAmounts2.amount1);
-        const remainingSellAmount = tokenToSell == poolKey2.token0 ? expectedAmounts2.amount0 : expectedAmounts2.amount1;
-        return { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount };
-      }
+      const maxRetry = maxIterations;
       while (retry < maxRetry) {
         retry++;
         logger.verbose(
           `getSwapInfoGivenAmounts::Retry attempt: ${retry}/${maxRetry}`
         );
-        assertValidAmounts(expectedAmounts, token0Bal, token1Bal);
-        const { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount } = getSwapParams(expectedAmounts, poolKey, token0Bal, token1Bal);
+        this.assertValidAmounts(expectedAmounts, token0Bal, token1Bal);
+        const { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount } = this.getSwapParams(expectedAmounts, poolKey, token0Bal, token1Bal);
         const tokenToBuyInfo = await Global.getTokenInfoFromAddr(tokenToBuy);
         const expectedRatio = expectedAmounts.ratio;
         logger.verbose(
@@ -51844,6 +51884,9 @@ var strkfarm_risk_engine = (() => {
           quote.buyAmount.toString(),
           tokenToBuyInfo.decimals
         );
+        logger.verbose(
+          `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => amountOut: ${amountOut.toString()}`
+        );
         const swapPrice = tokenToSell == poolKey.token0 ? amountOut.dividedBy(amountToSell) : amountToSell.dividedBy(amountOut);
         const newRatio = tokenToSell == poolKey.token0 ? remainingSellAmount.dividedBy(token1Bal.plus(amountOut)) : token0Bal.plus(amountOut).dividedBy(remainingSellAmount);
         logger.verbose(
@@ -51853,31 +51896,46 @@ var strkfarm_risk_engine = (() => {
             newRatio: newRatio.toString()
           })}`
         );
-        const expectedPrecision = Math.min(7, tokenToBuyInfo.decimals - 2);
-        if (Number(newRatio.toString()) > expectedRatio * (1 + 1 / 10 ** expectedPrecision) || Number(newRatio.toString()) < expectedRatio * (1 - 1 / 10 ** expectedPrecision)) {
-          expectedAmounts = await this._solveExpectedAmountsEq(
+        const expectedPrecision = Math.min(priceRatioPrecision);
+        const isWithInTolerance = Number(newRatio.toString()) <= expectedRatio * (1 + 1 / 10 ** expectedPrecision) && Number(newRatio.toString()) >= expectedRatio * (1 - 1 / 10 ** expectedPrecision);
+        const currentPrecision = (expectedRatio - Number(newRatio.toString())) / expectedRatio;
+        logger.verbose(
+          `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => isWithInTolerance: ${isWithInTolerance}, currentPrecision: ${currentPrecision.toString()}, expectedPrecision: ${expectedPrecision}`
+        );
+        if (!isWithInTolerance) {
+          const expectedAmountsNew = await this._solveExpectedAmountsEq(
             token0Bal,
             token1Bal,
             new Web3Number(Number(expectedRatio).toFixed(13), 18),
             Number(swapPrice.toString())
           );
           logger.verbose(
-            `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
+            `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmountsNew.amount0.toString()}, ${expectedAmountsNew.amount1.toString()}`
           );
+          if (expectedAmountsNew.amount0.eq(expectedAmounts.amount0.toString()) && expectedAmountsNew.amount1.eq(expectedAmounts.amount1.toString())) {
+            logger.error(
+              `getSwapInfoGivenAmounts: stuck in loop, expected amounts did not change`
+            );
+            throw new Error("Stuck in loop, expected amounts did not change");
+          }
+          expectedAmounts = expectedAmountsNew;
         } else {
           const minAmountOut = Web3Number.fromWei(
             quote.buyAmount.toString(),
             tokenToBuyInfo.decimals
           ).multipliedBy(0.9999);
-          return await this.avnu.getSwapInfo(
+          const output3 = await this.avnu.getSwapInfo(
             quote,
             this.address.address,
             0,
             this.address.address,
             minAmountOut.toWei()
           );
+          logger.verbose(
+            `${_EkuboCLVault.name}: getSwapInfoToHandleUnused => swap info found: ${JSON.stringify(output3)}`
+          );
+          return output3;
         }
-        retry++;
       }
       throw new Error("Failed to get swap info");
     }
@@ -51894,8 +51952,7 @@ var strkfarm_risk_engine = (() => {
      * @returns Array of contract calls needed for rebalancing
      * @throws Error if max retries reached without successful rebalance
      */
-    async rebalanceIter(swapInfo, acc, estimateCall, isSellTokenToken0 = true, retry = 0, lowerLimit = 0n, upperLimit = 0n) {
-      const MAX_RETRIES = 40;
+    async rebalanceIter(swapInfo, acc, estimateCall, isSellTokenToken0 = true, retry = 0, lowerLimit = 0n, upperLimit = 0n, MAX_RETRIES = 40) {
       logger.verbose(
         `Rebalancing ${this.metadata.name}: retry=${retry}, lowerLimit=${lowerLimit}, upperLimit=${upperLimit}, isSellTokenToken0=${isSellTokenToken0}`
       );
@@ -52048,7 +52105,7 @@ var strkfarm_risk_engine = (() => {
         amount1
       };
     }
-    async harvest(acc) {
+    async harvest(acc, maxIterations = 20, priceRatioPrecision = 4) {
       const ekuboHarvests = new EkuboHarvests(this.config);
       const unClaimedRewards = await ekuboHarvests.getUnHarvestedRewards(
         this.address
@@ -52077,7 +52134,9 @@ var strkfarm_risk_engine = (() => {
           poolKey,
           token0Amt,
           token1Amt,
-          bounds
+          bounds,
+          maxIterations,
+          priceRatioPrecision
         );
         swapInfo.token_to_address = token0Info.address.address;
         logger.verbose(
@@ -52201,7 +52260,7 @@ var strkfarm_risk_engine = (() => {
   var _riskFactorStable = [
     { type: "Smart Contract Risk" /* SMART_CONTRACT_RISK */, value: 0.5, weight: 25 }
   ];
-  var AUDIT_URL2 = "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+  var AUDIT_URL2 = "https://assets.troves.fi/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
   var faqs2 = [
     {
       question: "What is the Ekubo CL Vault strategy?",
@@ -52223,7 +52282,7 @@ var strkfarm_risk_engine = (() => {
         /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
           "a",
           {
-            href: "https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details",
+            href: "https://docs.troves.fi/p/ekubo-cl-vaults#technical-details",
             style: { textDecoration: "underline", marginLeft: "5px" },
             children: "Here"
           }
@@ -52347,7 +52406,7 @@ var strkfarm_risk_engine = (() => {
       },
       ...COMMON_CONTRACTS
     ];
-    s.docs = "https://docs.strkfarm.com/p/ekubo-cl-vaults";
+    s.docs = "https://docs.troves.fi/p/ekubo-cl-vaults";
     s.description = /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { children: highlightTextWithLinks(
         _description2.replace("{{POOL_NAME}}", s.name.split(" ")[1]),

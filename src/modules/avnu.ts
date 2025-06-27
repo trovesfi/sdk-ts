@@ -50,14 +50,18 @@ export class AvnuWrapper {
     assert(fromToken != toToken, "From and to tokens are the same");
 
     const quotes = await fetchQuotes(params);
-    if (quotes.length == 0) {
+    // precision is important for us
+    const filteredQuotes = quotes.filter((q) => q.sellAmount.toString() == amountWei);
+    if (filteredQuotes.length == 0) {
         if (retry < MAX_RETRY) {
             await new Promise((res) => setTimeout(res, 3000))
             return await this.getQuotes(fromToken, toToken, amountWei, taker, retry + 1);
         }
         throw new Error('no quotes found')
     }
-    return quotes[0];
+    
+    logger.verbose(`${AvnuWrapper.name}: getQuotes => Found ${JSON.stringify(filteredQuotes[0])}`);
+    return filteredQuotes[0];
   }
 
   async getSwapInfo(
@@ -96,6 +100,7 @@ export class AvnuWrapper {
     // swapInfo as expected by the strategy
     // fallback, max 1% slippage
     const _minAmount = minAmount || (quote.buyAmount * 95n / 100n).toString();
+    logger.verbose(`${AvnuWrapper.name}: getSwapInfo => sellToken: ${quote.sellTokenAddress}, sellAmount: ${quote.sellAmount}`);
     logger.verbose(`${AvnuWrapper.name}: getSwapInfo => buyToken: ${quote.buyTokenAddress}`);
     logger.verbose(`${AvnuWrapper.name}: getSwapInfo => buyAmount: ${quote.buyAmount}, minAmount: ${_minAmount}`);
     const swapInfo: SwapInfo = {

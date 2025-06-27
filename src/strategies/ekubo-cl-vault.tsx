@@ -566,7 +566,7 @@ export class EkuboCLVault extends BaseStrategy<
     return this._getCurrentPrice(poolKey, blockIdentifier);
   }
 
-  private async _getCurrentPrice(
+  async _getCurrentPrice(
     poolKey: EkuboPoolKey,
     blockIdentifier: BlockIdentifier = "pending"
   ) {
@@ -745,10 +745,7 @@ export class EkuboCLVault extends BaseStrategy<
       }
     }
 
-    const ratioWeb3Number = sampleAmount0
-      .multipliedBy(1e18)
-      .dividedBy(sampleAmount1.toString())
-      .dividedBy(1e18);
+    const ratioWeb3Number = this.getRatio(sampleAmount0, sampleAmount1);
 
     const ratio: number = Number(ratioWeb3Number.toFixed(18));
     logger.verbose(
@@ -793,6 +790,17 @@ export class EkuboCLVault extends BaseStrategy<
     }
   }
 
+  getRatio(token0Amt: Web3Number, token1Amount: Web3Number) {
+    const ratio = token0Amt
+      .multipliedBy(1e18)
+      .dividedBy(token1Amount.toString())
+      .dividedBy(1e18);
+    logger.verbose(
+      `${EkuboCLVault.name}: getRatio => token0Amt: ${token0Amt.toString()}, token1Amount: ${token1Amount.toString()}, ratio: ${ratio.toString()}`
+    );
+    return ratio;
+  }
+
   private _solveExpectedAmountsEq(
     availableAmount0: Web3Number,
     availableAmount1: Web3Number,
@@ -814,7 +822,7 @@ export class EkuboCLVault extends BaseStrategy<
     logger.verbose(
       `${
         EkuboCLVault.name
-      }: _solveExpectedAmountsEq => x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
+      }: _solveExpectedAmountsEq => ratio: ${ratio.toString()}, x: ${x.toString()}, y: ${y.toString()}, amount0: ${availableAmount0.toString()}, amount1: ${availableAmount1.toString()}`
     );
 
     if (ratio.eq(0)) {
@@ -872,7 +880,7 @@ export class EkuboCLVault extends BaseStrategy<
     };
   }
 
-  async getSwapInfoToHandleUnused(considerRebalance: boolean = true, newBounds: EkuboBounds | null = null): Promise<SwapInfo> {
+  async getSwapInfoToHandleUnused(considerRebalance: boolean = true, newBounds: EkuboBounds | null = null, maxIterations = 20, priceRatioPrecision = 4): Promise<SwapInfo> {
     const poolKey = await this.getPoolKey();
 
     // fetch current unused balances of vault
@@ -928,19 +936,100 @@ export class EkuboCLVault extends BaseStrategy<
       `${EkuboCLVault.name}: getSwapInfoToHandleUnused => newBounds: ${ekuboBounds.lowerTick}, ${ekuboBounds.upperTick}`
     );
 
+    // assert bounds are valid
+    this.assertValidBounds(ekuboBounds);
+
     return await this.getSwapInfoGivenAmounts(
       poolKey,
       token0Bal,
       token1Bal,
-      ekuboBounds
+      ekuboBounds,
+      maxIterations,
+      priceRatioPrecision
     );
   }
 
+  assertValidBounds(bounds: EkuboBounds) {
+    // Ensure bounds are valid
+    assert(
+      bounds.lowerTick < bounds.upperTick,
+      `Invalid bounds: lowerTick (${bounds.lowerTick}) must be less than upperTick (${bounds.upperTick})`
+    );
+    assert(Number(bounds.lowerTick) % Number(this.poolKey?.tick_spacing) === 0, `Lower tick (${bounds.lowerTick}) must be a multiple of tick spacing (${this.poolKey?.tick_spacing})`);
+    assert(Number(bounds.upperTick) % Number(this.poolKey?.tick_spacing) === 0, `Upper tick (${bounds.upperTick}) must be a multiple of tick spacing (${this.poolKey?.tick_spacing})`);
+  }
+
+  // Helper to check for invalid states:
+    // Throws if both tokens are decreased or both are increased, which is not expected
+  assertValidAmounts(
+      expectedAmounts: any,
+      token0Bal: Web3Number,
+      token1Bal: Web3Number
+    ) {
+    if (
+      expectedAmounts.amount0.lessThan(token0Bal) &&
+      expectedAmounts.amount1.lessThan(token1Bal)
+    ) {
+      throw new Error("Both tokens are decreased, something is wrong");
+    }
+    if (
+      expectedAmounts.amount0.greaterThan(token0Bal) &&
+      expectedAmounts.amount1.greaterThan(token1Bal)
+    ) {
+      throw new Error("Both tokens are increased, something is wrong");
+    }
+  }
+
+      // Helper to determine which token to sell, which to buy, and the amounts to use
+  getSwapParams(
+    expectedAmounts: any,
+    poolKey: EkuboPoolKey,
+    token0Bal: Web3Number,
+    token1Bal: Web3Number
+  ) {
+    // Decide which token to sell based on which expected amount is less than the balance
+    const tokenToSell = expectedAmounts.amount0.lessThan(token0Bal)
+      ? poolKey.token0
+      : poolKey.token1;
+    // The other token is the one to buy
+    const tokenToBuy =
+      tokenToSell == poolKey.token0 ? poolKey.token1 : poolKey.token0;
+    // Calculate how much to sell
+    const amountToSell =
+      tokenToSell == poolKey.token0
+        ? token0Bal.minus(expectedAmounts.amount0)
+        : token1Bal.minus(expectedAmounts.amount1);
+    if (amountToSell.eq(0)) {
+      throw new Error(
+        `No amount to sell for ${tokenToSell.address}`
+      );
+    }
+    // The remaining amount of the sold token after swap
+    const remainingSellAmount =
+      tokenToSell == poolKey.token0
+        ? expectedAmounts.amount0
+        : expectedAmounts.amount1;
+    return { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount };
+  }
+
+  /**
+   * @description Calculates swap info based on given amounts of token0 and token1
+   * Use token0 and token1 balances to determine the expected amounts for new bounds
+   * @param poolKey 
+   * @param token0Bal 
+   * @param token1Bal 
+   * @param bounds // new bounds
+   * @param maxIterations 
+   * @returns {Promise<SwapInfo>}
+   * 
+   */
   async getSwapInfoGivenAmounts(
     poolKey: EkuboPoolKey,
     token0Bal: Web3Number,
     token1Bal: Web3Number,
-    bounds: EkuboBounds
+    bounds: EkuboBounds,
+    maxIterations: number = 20,
+    priceRatioPrecision: number = 4
   ): Promise<SwapInfo> {
     logger.verbose(
       `${
@@ -961,55 +1050,7 @@ export class EkuboCLVault extends BaseStrategy<
     );
 
     let retry = 0;
-    const maxRetry = 10;
-
-    // Helper to check for invalid states:
-    // Throws if both tokens are decreased or both are increased, which is not expected
-    function assertValidAmounts(
-      expectedAmounts: any,
-      token0Bal: Web3Number,
-      token1Bal: Web3Number
-    ) {
-      if (
-        expectedAmounts.amount0.lessThan(token0Bal) &&
-        expectedAmounts.amount1.lessThan(token1Bal)
-      ) {
-        throw new Error("Both tokens are decreased, something is wrong");
-      }
-      if (
-        expectedAmounts.amount0.greaterThan(token0Bal) &&
-        expectedAmounts.amount1.greaterThan(token1Bal)
-      ) {
-        throw new Error("Both tokens are increased, something is wrong");
-      }
-    }
-
-    // Helper to determine which token to sell, which to buy, and the amounts to use
-    function getSwapParams(
-      expectedAmounts: any,
-      poolKey: EkuboPoolKey,
-      token0Bal: Web3Number,
-      token1Bal: Web3Number
-    ) {
-      // Decide which token to sell based on which expected amount is less than the balance
-      const tokenToSell = expectedAmounts.amount0.lessThan(token0Bal)
-        ? poolKey.token0
-        : poolKey.token1;
-      // The other token is the one to buy
-      const tokenToBuy =
-        tokenToSell == poolKey.token0 ? poolKey.token1 : poolKey.token0;
-      // Calculate how much to sell
-      const amountToSell =
-        tokenToSell == poolKey.token0
-          ? token0Bal.minus(expectedAmounts.amount0)
-          : token1Bal.minus(expectedAmounts.amount1);
-      // The remaining amount of the sold token after swap
-      const remainingSellAmount =
-        tokenToSell == poolKey.token0
-          ? expectedAmounts.amount0
-          : expectedAmounts.amount1;
-      return { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount };
-    }
+    const maxRetry = maxIterations;
 
     // Main retry loop: attempts to find a swap that matches the expected ratio within tolerance
     while (retry < maxRetry) {
@@ -1019,11 +1060,11 @@ export class EkuboCLVault extends BaseStrategy<
       );
 
       // Ensure the expected amounts are valid for swap logic
-      assertValidAmounts(expectedAmounts, token0Bal, token1Bal);
+      this.assertValidAmounts(expectedAmounts, token0Bal, token1Bal);
 
       // Get swap parameters for this iteration
       const { tokenToSell, tokenToBuy, amountToSell, remainingSellAmount } =
-        getSwapParams(expectedAmounts, poolKey, token0Bal, token1Bal);
+        this.getSwapParams(expectedAmounts, poolKey, token0Bal, token1Bal);
 
       const tokenToBuyInfo = await Global.getTokenInfoFromAddr(tokenToBuy);
       const expectedRatio = expectedAmounts.ratio;
@@ -1065,12 +1106,16 @@ export class EkuboCLVault extends BaseStrategy<
         );
       }
 
-      // Calculate the actual output and price from the quote
+      // Raw amount out
       const amountOut = Web3Number.fromWei(
         quote.buyAmount.toString(),
         tokenToBuyInfo.decimals
       );
+      logger.verbose(
+        `${EkuboCLVault.name}: getSwapInfoToHandleUnused => amountOut: ${amountOut.toString()}`
+      );
       // Calculate the swap price depending on which token is being sold
+      // price is token1 / token0
       const swapPrice =
         tokenToSell == poolKey.token0
           ? amountOut.dividedBy(amountToSell)
@@ -1089,12 +1134,19 @@ export class EkuboCLVault extends BaseStrategy<
       );
 
       // If the new ratio is not within tolerance, adjust expected amounts and retry
-      const expectedPrecision = Math.min(7, tokenToBuyInfo.decimals - 2);
+      const expectedPrecision = Math.min(priceRatioPrecision); // e.g 7 for STRK, 4 for USDC
+      const isWithInTolerance =
+        Number(newRatio.toString()) <=
+        expectedRatio * (1 + 1 / 10 ** expectedPrecision) &&
+        Number(newRatio.toString()) >= expectedRatio * (1 - 1 / 10 ** expectedPrecision);
+      const currentPrecision = (expectedRatio - Number(newRatio.toString())) / expectedRatio;
+      logger.verbose(
+        `${EkuboCLVault.name}: getSwapInfoToHandleUnused => isWithInTolerance: ${isWithInTolerance}, currentPrecision: ${currentPrecision.toString()}, expectedPrecision: ${expectedPrecision}`
+      );
       if (
-        Number(newRatio.toString()) > expectedRatio * (1 + 1 / 10 ** expectedPrecision) ||
-        Number(newRatio.toString()) < expectedRatio * (1 - 1 / 10 ** expectedPrecision)
+        !isWithInTolerance
       ) {
-        expectedAmounts = await this._solveExpectedAmountsEq(
+        const expectedAmountsNew = await this._solveExpectedAmountsEq(
           token0Bal,
           token1Bal,
           new Web3Number(Number(expectedRatio).toFixed(13), 18),
@@ -1103,23 +1155,34 @@ export class EkuboCLVault extends BaseStrategy<
         logger.verbose(
           `${
             EkuboCLVault.name
-          }: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmounts.amount0.toString()}, ${expectedAmounts.amount1.toString()}`
+          }: getSwapInfoToHandleUnused => expectedAmounts: ${expectedAmountsNew.amount0.toString()}, ${expectedAmountsNew.amount1.toString()}`
         );
+        if (expectedAmountsNew.amount0.eq(expectedAmounts.amount0.toString()) && expectedAmountsNew.amount1.eq(expectedAmounts.amount1.toString())) {
+          // If the expected amounts did not change, we are stuck in a loop
+          logger.error(
+            `getSwapInfoGivenAmounts: stuck in loop, expected amounts did not change`
+          );
+          throw new Error("Stuck in loop, expected amounts did not change");
+        }
+        expectedAmounts = expectedAmountsNew;
       } else {
         // Otherwise, return the swap info with a slippage buffer
         const minAmountOut = Web3Number.fromWei(
           quote.buyAmount.toString(),
           tokenToBuyInfo.decimals
         ).multipliedBy(0.9999);
-        return await this.avnu.getSwapInfo(
+        const output = await this.avnu.getSwapInfo(
           quote,
           this.address.address,
           0,
           this.address.address,
           minAmountOut.toWei()
         );
+        logger.verbose(
+          `${EkuboCLVault.name}: getSwapInfoToHandleUnused => swap info found: ${JSON.stringify(output)}`
+        );
+        return output;
       }
-      retry++;
     }
 
     // If no suitable swap found after max retries, throw error
@@ -1146,9 +1209,9 @@ export class EkuboCLVault extends BaseStrategy<
     isSellTokenToken0 = true,
     retry = 0,
     lowerLimit = 0n,
-    upperLimit = 0n
+    upperLimit = 0n,
+    MAX_RETRIES = 40
   ): Promise<Call[]> {
-    const MAX_RETRIES = 40;
 
     logger.verbose(
       `Rebalancing ${this.metadata.name}: ` +
@@ -1334,7 +1397,7 @@ export class EkuboCLVault extends BaseStrategy<
     };
   }
 
-  async harvest(acc: Account) {
+  async harvest(acc: Account, maxIterations = 20, priceRatioPrecision = 4): Promise<Call[]> {
     const ekuboHarvests = new EkuboHarvests(this.config);
     const unClaimedRewards = await ekuboHarvests.getUnHarvestedRewards(
       this.address
@@ -1377,7 +1440,9 @@ export class EkuboCLVault extends BaseStrategy<
         poolKey,
         token0Amt,
         token1Amt,
-        bounds
+        bounds,
+        maxIterations,
+        priceRatioPrecision
       );
       swapInfo.token_to_address = token0Info.address.address;
       logger.verbose(
@@ -1521,7 +1586,7 @@ const _riskFactorStable: RiskFactor[] = [
   { type: RiskType.SMART_CONTRACT_RISK, value: 0.5, weight: 25 },
 ];
 const AUDIT_URL =
-  "https://assets.strkfarm.com/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
+  "https://assets.troves.fi/strkfarm/audit_report_vesu_and_ekubo_strats.pdf";
 
 const faqs: FAQ[] = [
   {
@@ -1546,7 +1611,7 @@ const faqs: FAQ[] = [
         Yes, the strategy has been audited. You can review the audit report in
         our docs{" "}
         <a
-          href="https://docs.strkfarm.com/p/ekubo-cl-vaults#technical-details"
+          href="https://docs.troves.fi/p/ekubo-cl-vaults#technical-details"
           style={{ textDecoration: "underline", marginLeft: "5px" }}
         >
           Here
@@ -1685,7 +1750,7 @@ EkuboCLVaultStrategies.forEach((s) => {
   }, 
   ...COMMON_CONTRACTS];
   // set docs link
-  s.docs = "https://docs.strkfarm.com/p/ekubo-cl-vaults"
+  s.docs = "https://docs.troves.fi/p/ekubo-cl-vaults"
 
   // set description
   s.description = (
