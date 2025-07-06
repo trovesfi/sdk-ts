@@ -60,7 +60,6 @@ export class AvnuWrapper {
         throw new Error('no quotes found')
     }
     
-    logger.verbose(`${AvnuWrapper.name}: getQuotes => Found ${JSON.stringify(filteredQuotes[0])}`);
     return filteredQuotes[0];
   }
 

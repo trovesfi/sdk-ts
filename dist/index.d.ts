@@ -19,6 +19,8 @@ declare class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     valueOf(): string;
     private maxToFixedDecimals;
     private getStandardString;
+    minimum(value: string | number | T): T;
+    maximum(value: string | number | T): T;
 }
 
 declare class Web3Number extends _Web3Number<Web3Number> {

@@ -19770,6 +19770,19 @@ var strkfarm_risk_engine = (() => {
       }
       return value.toFixed(this.maxToFixedDecimals());
     }
+    minimum(value) {
+      const _value = new import_bignumber.default(value);
+      const _valueMe = new import_bignumber.default(this.toString());
+      const answer = _value.lessThanOrEqualTo(_valueMe) ? _value : _valueMe;
+      return this.construct(answer.toString(), this.decimals);
+    }
+    maximum(value) {
+      const _value = new import_bignumber.default(value);
+      const _valueMe = new import_bignumber.default(this.toString());
+      console.warn(`maximum: _value: ${_value.toString()}, _valueMe: ${_valueMe.toString()}`);
+      const answer = _value.greaterThanOrEqualTo(_valueMe) ? _value : _valueMe;
+      return this.construct(answer.toString(), this.decimals);
+    }
   };
   import_bignumber.default.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: import_bignumber.default.ROUND_DOWN });
   _Web3Number.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: import_bignumber.default.ROUND_DOWN });
@@ -38132,7 +38145,6 @@ var strkfarm_risk_engine = (() => {
         }
         throw new Error("no quotes found");
       }
-      logger.verbose(`${_AvnuWrapper.name}: getQuotes => Found ${JSON.stringify(filteredQuotes[0])}`);
       return filteredQuotes[0];
     }
     async getSwapInfo(quote, taker, integratorFeeBps, integratorFeeRecipient, minAmount) {
@@ -52150,11 +52162,19 @@ var strkfarm_risk_engine = (() => {
             uint256_exports.uint256ToBN(swapInfo1.token_from_amount).toString(),
             18
             // cause its always STRK?
+          ).minimum(
+            postFeeAmount.toFixed(18)
+            // cause always strk
+          );
+          swapInfo.token_from_amount = uint256_exports.bnToUint256(swap1Amount.toWei());
+          swapInfo.token_to_min_amount = uint256_exports.bnToUint256(
+            swap1Amount.multipliedBy(0).toWei()
+            // placeholder
           );
           logger.verbose(
             `${_EkuboCLVault.name}: harvest => swap1Amount: ${swap1Amount}`
           );
-          const remainingAmount = postFeeAmount.minus(swap1Amount);
+          const remainingAmount = postFeeAmount.minus(swap1Amount).maximum(0);
           logger.verbose(
             `${_EkuboCLVault.name}: harvest => remainingAmount: ${remainingAmount}`
           );
@@ -52194,7 +52214,12 @@ var strkfarm_risk_engine = (() => {
         const _callsFinal = await this.rebalanceIter(
           swapInfo,
           acc,
-          harvestEstimateCall
+          harvestEstimateCall,
+          claim.token.eq(poolKey.token0),
+          0,
+          0n,
+          BigInt(postFeeAmount.toWei())
+          // upper limit is the post fee amount
         );
         logger.verbose(
           `${_EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(

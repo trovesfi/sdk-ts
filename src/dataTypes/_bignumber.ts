@@ -61,6 +61,21 @@ export class _Web3Number<T extends _Web3Number<T>> extends BigNumber {
     }
     return value.toFixed(this.maxToFixedDecimals());
   }
+
+  minimum(value: string | number | T): T {
+    const _value = new BigNumber(value);
+    const _valueMe = new BigNumber(this.toString());
+    const answer = _value.lessThanOrEqualTo(_valueMe) ? _value : _valueMe;
+    return this.construct(answer.toString(), this.decimals);
+  }
+
+  maximum(value: string | number | T): T {
+    const _value = new BigNumber(value);
+    const _valueMe = new BigNumber(this.toString());
+    console.warn(`maximum: _value: ${_value.toString()}, _valueMe: ${_valueMe.toString()}`);
+    const answer = _value.greaterThanOrEqualTo(_valueMe) ? _value : _valueMe;
+    return this.construct(answer.toString(), this.decimals);
+  }
 }
 
 BigNumber.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });

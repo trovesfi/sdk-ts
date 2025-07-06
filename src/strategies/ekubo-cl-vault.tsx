@@ -1456,11 +1456,19 @@ export class EkuboCLVault extends BaseStrategy<
         const swap1Amount = Web3Number.fromWei(
           uint256.uint256ToBN(swapInfo1.token_from_amount).toString(),
           18 // cause its always STRK?
-        );
+        ).minimum(
+          postFeeAmount.toFixed(18) // cause always strk
+        ); // ensure we don't swap more than we have
+        swapInfo.token_from_amount = uint256.bnToUint256(swap1Amount.toWei());
+        swapInfo.token_to_min_amount = uint256.bnToUint256(
+          swap1Amount.multipliedBy(0).toWei() // placeholder
+        ); // 0.01% slippage
+
         logger.verbose(
           `${EkuboCLVault.name}: harvest => swap1Amount: ${swap1Amount}`
         );
-        const remainingAmount = postFeeAmount.minus(swap1Amount);
+
+        const remainingAmount = postFeeAmount.minus(swap1Amount).maximum(0);
         logger.verbose(
           `${EkuboCLVault.name}: harvest => remainingAmount: ${remainingAmount}`
         );
@@ -1500,7 +1508,11 @@ export class EkuboCLVault extends BaseStrategy<
       const _callsFinal = await this.rebalanceIter(
         swapInfo,
         acc,
-        harvestEstimateCall
+        harvestEstimateCall,
+        claim.token.eq(poolKey.token0),
+        0,
+        0n,
+        BigInt(postFeeAmount.toWei()), // upper limit is the post fee amount
       );
       logger.verbose(
         `${EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(

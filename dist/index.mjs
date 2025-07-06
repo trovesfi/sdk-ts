@@ -54,6 +54,19 @@ var _Web3Number = class extends BigNumber {
     }
     return value.toFixed(this.maxToFixedDecimals());
   }
+  minimum(value) {
+    const _value = new BigNumber(value);
+    const _valueMe = new BigNumber(this.toString());
+    const answer = _value.lessThanOrEqualTo(_valueMe) ? _value : _valueMe;
+    return this.construct(answer.toString(), this.decimals);
+  }
+  maximum(value) {
+    const _value = new BigNumber(value);
+    const _valueMe = new BigNumber(this.toString());
+    console.warn(`maximum: _value: ${_value.toString()}, _valueMe: ${_valueMe.toString()}`);
+    const answer = _value.greaterThanOrEqualTo(_valueMe) ? _value : _valueMe;
+    return this.construct(answer.toString(), this.decimals);
+  }
 };
 BigNumber.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
 _Web3Number.config({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
@@ -1960,7 +1973,6 @@ var AvnuWrapper = class _AvnuWrapper {
       }
       throw new Error("no quotes found");
     }
-    logger.verbose(`${_AvnuWrapper.name}: getQuotes => Found ${JSON.stringify(filteredQuotes[0])}`);
     return filteredQuotes[0];
   }
   async getSwapInfo(quote, taker, integratorFeeBps, integratorFeeRecipient, minAmount) {
@@ -15992,11 +16004,19 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
           uint2564.uint256ToBN(swapInfo1.token_from_amount).toString(),
           18
           // cause its always STRK?
+        ).minimum(
+          postFeeAmount.toFixed(18)
+          // cause always strk
+        );
+        swapInfo.token_from_amount = uint2564.bnToUint256(swap1Amount.toWei());
+        swapInfo.token_to_min_amount = uint2564.bnToUint256(
+          swap1Amount.multipliedBy(0).toWei()
+          // placeholder
         );
         logger.verbose(
           `${_EkuboCLVault.name}: harvest => swap1Amount: ${swap1Amount}`
         );
-        const remainingAmount = postFeeAmount.minus(swap1Amount);
+        const remainingAmount = postFeeAmount.minus(swap1Amount).maximum(0);
         logger.verbose(
           `${_EkuboCLVault.name}: harvest => remainingAmount: ${remainingAmount}`
         );
@@ -16036,7 +16056,12 @@ var EkuboCLVault = class _EkuboCLVault extends BaseStrategy {
       const _callsFinal = await this.rebalanceIter(
         swapInfo,
         acc,
-        harvestEstimateCall
+        harvestEstimateCall,
+        claim.token.eq(poolKey.token0),
+        0,
+        0n,
+        BigInt(postFeeAmount.toWei())
+        // upper limit is the post fee amount
       );
       logger.verbose(
         `${_EkuboCLVault.name}: harvest => _callsFinal: ${JSON.stringify(
